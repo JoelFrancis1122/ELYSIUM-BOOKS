@@ -73,6 +73,11 @@ const loadGuest = async (req, res) => {
 
 const loadlogin = async (req, res) => {
   try {
+    if (req.query.blocked === "true") {
+      return res.render("login", {
+        bannedMessage: "Your account has been blocked by the administrator. Please contact support."
+      });
+    }
     res.render("login");
   } catch (error) {
     console.error(error);
@@ -202,12 +207,15 @@ const loadHome = async (req, res) => {
 
 const loadLogout = async (req, res) => {
   try {
+    const isBlockedUser = req.query.blocked === "true";
     if (req.session) {
-      console.log(req.session, "maaan");
       delete req.session.user;
     }
 
     req.session.save(() => {
+      if (isBlockedUser) {
+        return res.redirect("/login?blocked=true");
+      }
       res.redirect("/");
     });
   } catch (error) {
@@ -270,19 +278,48 @@ const applyReferral = async (req, res) => {
 const verifyLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const isJson = req.xhr || req.headers['content-type'] === 'application/json' || req.headers.accept?.includes('application/json');
+
     const userData = await User.findOne({ email });
-    if (!userData) return res.render("login", { errmessage: "User not found" });
+    if (!userData) {
+      const msg = "User not found";
+      if (isJson) return res.json({ success: false, message: msg });
+      return res.render("login", { errmessage: msg });
+    }
+
+    if (!userData.is_active) {
+      const blockedMsg = "Your account has been blocked by the administrator. Please contact support.";
+      if (isJson) return res.json({ success: false, isBlocked: true, message: blockedMsg });
+      return res.render("login", { bannedMessage: blockedMsg });
+    }
+
+    if (userData.is_admin) {
+      const msg = "Admins cannot log in here";
+      if (isJson) return res.json({ success: false, message: msg });
+      return res.render("login", { errmessage: msg });
+    }
+
+    if (!userData.password) {
+      const msg = "Please sign in using Google or reset your password.";
+      if (isJson) return res.json({ success: false, message: msg });
+      return res.render("login", { errmessage: msg });
+    }
+
     const passwordMatch = await bcrypt.compare(password, userData.password);
-    if (!passwordMatch)
-      return res.render("login", { errmessage: "Incorrect email or password" });
-    if (!userData.is_active)
-      return res.render("login", { bannedMessage: "User is banned" });
-    if (userData.is_admin)
-      return res.render("login", { errmessage: "Admins cannot log in here" });
+    if (!passwordMatch) {
+      const msg = "Incorrect email or password";
+      if (isJson) return res.json({ success: false, message: msg });
+      return res.render("login", { errmessage: msg });
+    }
+
     req.session.user = userData._id;
+    if (isJson) return res.json({ success: true, redirectUrl: "/home" });
     return res.redirect("/home");
   } catch (error) {
-    console.error(error);
+    console.error("Error in verifyLogin:", error);
+    if (req.xhr || req.headers['content-type'] === 'application/json' || req.headers.accept?.includes('application/json')) {
+      return res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
     res.status(500).send("Internal Server Error");
   }
 };
@@ -467,17 +504,17 @@ const loadProfile = async (req, res) => {
     const paginatedOrders = Order.slice(startIndex, endIndex);
 
     res.render("account", {
-      userData,
-      name: userData.name,
-      email: userData.email,
-      addresses: addressData,
-      orders: paginatedOrders,
-      cartLength,
-      coupons,
-      wallet,
-      wishlistLength,
+      userData: userData || {},
+      name: userData ? userData.name : '',
+      email: userData ? userData.email : '',
+      addresses: addressData || [],
+      orders: paginatedOrders || [],
+      cartLength: cartLength || 0,
+      coupons: coupons || [],
+      wallet: wallet || { balance: 0, history: [] },
+      wishlistLength: wishlistLength || 0,
       currentPage: page,
-      totalPages: totalPages,
+      totalPages: totalPages || 1,
     });
   } catch (error) {
     console.error(error);
@@ -494,7 +531,7 @@ const loadOrderDetails = async (req, res) => {
       "product.productId"
     );
     const orderData = await Orders.findOne({ _id: productID });
-    const userData = await User.findOne({ orderId: productID });
+    const userData = await User.findById(userId);
     const addressData = await Address.findOne({ userId: userId });
     const cartData = await Cart.findOne({ userId: userId });
     const wishlistData = await Wishlist.findOne({ userId: userId }).populate(
@@ -734,7 +771,7 @@ const addTowallet = async (req, res) => {
     }
 
     const order = await instance.orders.create({
-      amount: parsedAmount * 84 * 100,
+      amount: Math.round(Number(parsedAmount) * 100),
       currency: "INR",
       receipt: userId.toString(),
     });

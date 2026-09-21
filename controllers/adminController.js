@@ -4,6 +4,7 @@ import Orders from "../models/orderModel.js";
 import Product from "../models/productModel.js";
 import SubCategory from "../models/subcategoryModel.js";
 import User from "../models/userModel.js";
+import Wallet from "../models/walletModel.js";
 
 import bcrypt from "bcrypt";
 import cron from "node-cron";
@@ -505,36 +506,178 @@ const adminOrderShipped = async (req, res) => {
 const adminOrderDelivered = async (req, res) => {
   try {
     const orderId = req.query.id;
-    const orderDelivered = await Orders.findByIdAndUpdate(orderId, {
-      $set: { orderStatus: "Delivered" },
-    });
+    const order = await Orders.findById(orderId);
+    if (!order) {
+      if (req.xhr || req.headers.accept?.includes("json")) {
+        return res.status(404).json({ success: false, message: "Order not found" });
+      }
+      return res.redirect("/admin/loadOrders");
+    }
+
+    order.orderStatus = "Delivered";
+    // If Cash on delivery, payment is received upon delivery
+    if (order.paymentStatus === "Pending") {
+      order.paymentStatus = "Received";
+    }
+    await order.save();
+
+    if (req.xhr || req.headers.accept?.includes("json")) {
+      return res.json({ success: true, message: "Order marked as Delivered" });
+    }
     res.redirect("/admin/loadOrders");
   } catch (error) {
     console.log(error.message);
+    if (req.xhr || req.headers.accept?.includes("json")) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+    res.redirect("/admin/loadOrders");
   }
 };
 
 const adminOrderReturned = async (req, res) => {
   try {
     const orderId = req.query.id;
-    const orderReturned = await Orders.findByIdAndUpdate(orderId, {
-      $set: { orderStatus: "Returned" },
-    });
+    const order = await Orders.findById(orderId);
+    if (!order) {
+      if (req.xhr || req.headers.accept?.includes("json")) {
+        return res.status(404).json({ success: false, message: "Order not found" });
+      }
+      return res.redirect("/admin/loadOrders");
+    }
+
+    // Prevent double return
+    if (order.orderStatus === "Returned") {
+      if (req.xhr || req.headers.accept?.includes("json")) {
+        return res.json({ success: true, message: "Already marked as Returned" });
+      }
+      return res.redirect("/admin/loadOrders");
+    }
+
+    // Restore stock for items not already returned or cancelled
+    for (const item of order.product) {
+      if (item.productStatus !== "Returned" && item.productStatus !== "Cancelled") {
+        const product = await Product.findById(item.productId);
+        if (product) {
+          product.stock += item.quantity;
+          await product.save();
+        }
+        item.productStatus = "Returned";
+      }
+    }
+
+    order.orderStatus = "Returned";
+
+    // Refund wallet if not already refunded
+    if (order.paymentStatus !== "Refund") {
+      const refundAmount = parseFloat(order.totalAmount) || 0;
+      if (refundAmount > 0 && order.userId) {
+        let wallet = await Wallet.findOne({ userId: order.userId });
+        if (!wallet) {
+          wallet = new Wallet({ userId: order.userId, balance: 0, history: [] });
+        }
+        wallet.balance += refundAmount;
+        wallet.history.push({
+          amount: refundAmount,
+          type: "credit",
+          createdAt: new Date(),
+        });
+        await wallet.save();
+      }
+      order.paymentStatus = "Refund";
+    }
+
+    order.totalAmount = 0;
+    await order.save();
+
+    if (req.xhr || req.headers.accept?.includes("json")) {
+      return res.json({ success: true, message: "Order marked as Returned" });
+    }
     res.redirect("/admin/loadOrders");
   } catch (error) {
     console.log(error.message);
+    if (req.xhr || req.headers.accept?.includes("json")) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+    res.redirect("/admin/loadOrders");
   }
 };
 
 const adminOrderCancelled = async (req, res) => {
   try {
     const orderId = req.query.id;
-    const OrderCancelled = await Orders.findByIdAndUpdate(orderId, {
-      $set: { orderStatus: "Cancelled" },
-    });
+    const order = await Orders.findById(orderId);
+    if (!order) {
+      if (req.xhr || req.headers.accept?.includes("json")) {
+        return res.status(404).json({ success: false, message: "Order not found" });
+      }
+      return res.redirect("/admin/loadOrders");
+    }
+
+    // Prevent double cancel
+    if (order.orderStatus === "Cancelled") {
+      if (req.xhr || req.headers.accept?.includes("json")) {
+        return res.json({ success: true, message: "Already marked as Cancelled" });
+      }
+      return res.redirect("/admin/loadOrders");
+    }
+
+    // Restore stock for items not already cancelled or returned
+    for (const item of order.product) {
+      if (item.productStatus !== "Cancelled" && item.productStatus !== "Returned") {
+        const product = await Product.findById(item.productId);
+        if (product) {
+          product.stock += item.quantity;
+          await product.save();
+        }
+        item.productStatus = "Cancelled";
+      }
+    }
+
+    order.orderStatus = "Cancelled";
+
+    // Refund wallet if payment was received
+    if (order.paymentStatus === "Received") {
+      const refundAmount = parseFloat(order.totalAmount) || 0;
+      if (refundAmount > 0 && order.userId) {
+        let wallet = await Wallet.findOne({ userId: order.userId });
+        if (!wallet) {
+          wallet = new Wallet({ userId: order.userId, balance: 0, history: [] });
+        }
+        wallet.balance += refundAmount;
+        wallet.history.push({
+          amount: refundAmount,
+          type: "credit",
+          createdAt: new Date(),
+        });
+        await wallet.save();
+      }
+      order.paymentStatus = "Refund";
+    }
+
+    // Restore coupon for customer reuse if coupon was used
+    if (order.couponCode && order.userId) {
+      await Coupon.findOneAndUpdate(
+        { couponCode: order.couponCode },
+        {
+          $pull: { redeemedUsers: { userId: order.userId.toString() } },
+          $inc: { timesUsed: -1 },
+        }
+      );
+    }
+
+    order.totalAmount = 0;
+    await order.save();
+
+    if (req.xhr || req.headers.accept?.includes("json")) {
+      return res.json({ success: true, message: "Order marked as Cancelled" });
+    }
     res.redirect("/admin/loadOrders");
   } catch (error) {
     console.log(error.message);
+    if (req.xhr || req.headers.accept?.includes("json")) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+    res.redirect("/admin/loadOrders");
   }
 };
 

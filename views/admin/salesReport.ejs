@@ -164,7 +164,7 @@
                           <td><b><%= order.userId ? order.userId.name : 'N/A' %></b></td>
                           <td><b><%= order.paymentMethod %></b></td>
                           <td><b><%= order.couponDiscount || 0 %>%</b></td>
-                          <td>$<b><%= order.totalAmount %></b></td>
+                          <td>&#8377;<b><%= order.totalAmount %></b></td>
                           <td class="col-date">
                             <span class="fs-0"><%= order.orderDate ? new Date(order.orderDate).toLocaleDateString() : 'N/A' %></span>
                           </td>
@@ -257,7 +257,7 @@
       <% } %>
 
       <h6 style="margin: 10px 0 5px 0; font-size: 14px;">
-        Total Amount: <strong>$ <%= Number(locals.grandTotal || 0).toLocaleString() %></strong>
+        Total Amount: <strong>&#8377; <%= Number(locals.grandTotal || 0).toLocaleString() %></strong>
       </h6>
       <p style="margin: 0 0 10px 0;"></p>
       <h6 style="margin: 10px 0 5px 0; font-size: 14px;">
@@ -267,7 +267,7 @@
 
       <hr style="margin: 10px 0;">
       <p style="margin: 10px 0 5px 0; font-size: 14px;">Total Payment:</p>
-      <p style="margin: 0; font-size: 18px; font-weight: 600;">$<%= Number(locals.grandTotal || 0).toLocaleString() %></p>
+      <p style="margin: 0; font-size: 18px; font-weight: 600;">&#8377;<%= Number(locals.grandTotal || 0).toLocaleString() %></p>
       <hr style="margin: 10px 0;">
 
       <!-- Download Button - Hidden from PDF -->

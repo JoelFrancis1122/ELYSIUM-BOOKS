@@ -3,609 +3,1362 @@
 
 <head>
     <meta charset="utf-8">
-    <title>BOOKSAW</title>
+    <title>BOOKSAW — Discover Your Next Great Read</title>
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="">
+    <meta name="description" content="Shop the finest collection of books at BOOKSAW. Discover bestsellers, new releases, and curated collections.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
+    <meta property="og:title" content="BOOKSAW — Discover Your Next Great Read">
+    <meta property="og:type" content="website">
     <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="/public/assets/css/maind134.css?v=3.4">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
-        /* A simple class for the carousel to handle its full width and height */
-        .full-width-section {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+        /* ============================================================
+           BOOKSAW HOME — WARM LITERARY DESIGN SYSTEM
+           Palette derived from reference design tokens:
+           --canvas     : #f5f0e8  (oklch 0.955 0.012 85)
+           --bg         : #faf8f4  (oklch 0.98 0.006 90)
+           --fg         : #2d2820  (oklch 0.22 0.01 75)
+           --highlight  : #b8542a  (oklch 0.59 0.13 33) — warm terracotta
+           --muted-fg   : #7a6f60  (oklch 0.52 0.012 75)
+           --border     : #ddd8ce  (oklch 0.86 0.012 85)
+           --secondary  : #edeae2  (oklch 0.92 0.012 85)
+           Font: IBM Plex Sans / Libre Baskerville
+        ============================================================ */
+
+        :root {
+            --canvas:    #f5f0e8;
+            --bg:        #faf8f4;
+            --fg:        #2d2820;
+            --highlight: #b8542a;
+            --hi-light:  #d4673a;
+            --muted-fg:  #7a6f60;
+            --border:    #ddd8ce;
+            --secondary: #edeae2;
+            --card:      #ffffff;
+            --sage:      #6b8f71;
+            --amber:     #c9922a;
+
+            --shadow-sm: 0 2px 8px rgba(45,40,32,0.06);
+            --shadow-md: 0 8px 24px rgba(45,40,32,0.09);
+            --shadow-lg: 0 18px 55px rgba(45,40,32,0.10);
+            --shadow-cover: 0 12px 18px rgba(45,40,32,0.20);
+
+            --r-sm: 10px;
+            --r-md: 16px;
+            --r-lg: 22px;
         }
 
-        /* --- Amazing Carousel Styles --- */
-        .amazing-carousel {
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: var(--canvas);
+            color: var(--fg);
+            overflow-x: hidden;
+            letter-spacing: 0;
+        }
+
+        /* ── HERO ──────────────────────────────────────────────── */
+        .bk-hero {
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 80px 0 72px;
             position: relative;
-            width: 100%;
-            height: 600px;
             overflow: hidden;
+        }
+
+        /* Subtle warm grain texture overlay */
+        .bk-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 700px 500px at 85% 50%, rgba(184,84,42,0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 400px 350px at 15% 80%, rgba(107,143,113,0.07) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .bk-hero-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 48px;
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 72px;
+            align-items: center;
+        }
+
+        /* Left copy */
+        .bk-hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--highlight);
+            margin-bottom: 22px;
+        }
+
+        .bk-hero-eyebrow::before {
+            content: '';
+            display: block;
+            width: 28px;
+            height: 2px;
+            background: var(--highlight);
+            border-radius: 2px;
+        }
+
+        .bk-hero-heading {
+            font-family: 'Libre Baskerville', serif;
+            font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+            font-weight: 700;
+            line-height: 1.18;
+            color: var(--fg);
+            margin-bottom: 22px;
+        }
+
+        .bk-hero-heading em {
+            font-style: italic;
+            color: var(--highlight);
+        }
+
+        .bk-hero-sub {
+            font-size: 1.05rem;
+            color: var(--muted-fg);
+            line-height: 1.75;
+            max-width: 480px;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .bk-hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            background: var(--fg);
+            color: var(--bg);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 13px 26px;
+            border-radius: 6px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary:hover {
+            background: var(--highlight);
+            color: #fff;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            background: transparent;
+            color: var(--fg);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 12px 24px;
+            border-radius: 6px;
+            border: 1.5px solid var(--border);
+            text-decoration: none;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s, background 0.2s;
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--highlight);
+            color: var(--highlight);
+            background: rgba(184,84,42,0.04);
+            text-decoration: none;
+        }
+
+        /* Hero stats */
+        .bk-hero-stats {
+            display: flex;
+            gap: 36px;
+            margin-top: 52px;
+            padding-top: 36px;
+            border-top: 1px solid var(--border);
+        }
+
+        .bk-stat-num {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--fg);
+            line-height: 1;
+        }
+
+        .bk-stat-label {
+            font-size: 0.73rem;
+            color: var(--muted-fg);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-top: 5px;
+        }
+
+        .bk-stat-sep {
+            width: 1px;
+            background: var(--border);
+            height: 36px;
+            margin-top: 4px;
+        }
+
+        /* Right: quote card */
+        .bk-hero-right {}
+
+        .bk-quote-shell {
+            background: var(--canvas);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 36px 36px 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .bk-quote-shell::before {
+            content: '\201C';
+            position: absolute;
+            top: -8px;
+            left: 22px;
+            font-family: 'Libre Baskerville', serif;
+            font-size: 7rem;
+            color: var(--highlight);
+            opacity: 0.12;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .bk-quote-tag {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--highlight);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bk-quote-tag::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .bk-quote-slides {
+            position: relative;
+            min-height: 160px;
+        }
+
+        .bk-quote-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .bk-quote-slide.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .bk-quote-text {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.08rem;
+            font-style: italic;
+            color: var(--fg);
+            line-height: 1.75;
+            margin-bottom: 18px;
+        }
+
+        .bk-quote-author {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--highlight);
+            letter-spacing: 0.5px;
+        }
+
+        .bk-quote-author::before { content: '— '; }
+
+        .bk-quote-dots {
+            display: flex;
+            gap: 7px;
+            margin-top: 24px;
+        }
+
+        .bk-quote-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .bk-quote-dot.active {
+            background: var(--highlight);
+            width: 18px;
+            border-radius: 3px;
+        }
+
+        /* Reading week mini-calendar strip */
+        .bk-calendar-strip {
+            margin-top: 24px;
+            padding-top: 22px;
+            border-top: 1px solid var(--border);
+        }
+
+        .bk-cal-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            color: var(--muted-fg);
+            margin-bottom: 14px;
+        }
+
+        .bk-cal-days {
+            display: flex;
+            gap: 4px;
+        }
+
+        .bk-cal-day {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 2px;
+            border-radius: 999px;
+            font-size: 10px;
+            color: var(--muted-fg);
+            cursor: default;
+        }
+
+        .bk-cal-day strong {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--fg);
+        }
+
+        .bk-cal-day:first-child {
+            color: var(--highlight);
+        }
+
+        .bk-cal-day:first-child strong {
+            color: var(--highlight);
+        }
+
+        .bk-cal-day-active {
+            background: var(--bg);
+            box-shadow: var(--shadow-sm);
+            color: var(--fg);
+        }
+
+        .bk-cal-day-active strong { color: var(--fg); }
+
+        /* ── DIVIDER STRIP ─────────────────────────────────────── */
+        .bk-divider-strip {
+            background: var(--secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 18px 0;
+        }
+
+        .bk-divider-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .bk-trust-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bk-trust-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 50px;
-            background: #0d1a26;
+            color: var(--highlight);
+            font-size: 0.85rem;
+            flex-shrink: 0;
         }
 
-        .carousel-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('https://googleusercontent.com/image_collection/image_retrieval/12362878768744363278_0');
-            background-size: cover;
-            background-position: center;
-            filter: blur(5px) brightness(0.6);
-            animation: pan 20s linear infinite alternate;
-            z-index: 1;
+        .bk-trust-text {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--fg);
         }
 
-        @keyframes pan {
-            0% {
-                background-position: 0% 0%;
-            }
-
-            100% {
-                background-position: 100% 100%;
-            }
+        .bk-trust-sub {
+            font-size: 0.72rem;
+            color: var(--muted-fg);
+            margin-top: 1px;
         }
 
-        .carousel-content-wrapper {
+        /* ── MAIN ──────────────────────────────────────────────── */
+        .bk-main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 60px 48px 100px;
+        }
+
+        /* Section header */
+        .bk-section-hd {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .bk-section-label {
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--highlight);
+            margin-bottom: 6px;
+        }
+
+        .bk-section-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.55rem;
+            font-weight: 700;
+            color: var(--fg);
+            line-height: 1.2;
+        }
+
+        .bk-see-all {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--highlight);
+            text-decoration: none;
+            padding: 7px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 999px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .bk-see-all:hover {
+            border-color: var(--highlight);
+            background: rgba(184,84,42,0.05);
+            text-decoration: none;
+        }
+
+        /* ── TOOLBAR ────────────────────────────── */
+        .bk-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 28px;
+            padding: 14px 20px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+        }
+        .bk-toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .bk-result-count {
+            font-size: 0.85rem;
+            color: var(--muted-fg);
+        }
+        .bk-result-count strong { color: var(--fg); font-weight: 700; }
+        .bk-toolbar-right { display: flex; align-items: center; gap: 8px; }
+        .bk-view-btn {
+            width: 34px; height: 34px;
+            border-radius: 7px;
+            border: 1.5px solid var(--border);
+            background: none;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--muted-fg);
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .bk-view-btn:hover, .bk-view-btn.active { border-color: var(--highlight); color: var(--highlight); background: rgba(184,84,42,0.07); }
+
+        /* ── BOOK GRID ────────────────────────────── */
+        .bk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 28px 20px;
+        }
+        .bk-grid.list-view { grid-template-columns: 1fr; }
+        .bk-grid.list-view .bk-card {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 22px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: 18px;
+        }
+        .bk-grid.list-view .bk-cover-wrap {
+            width: 88px;
+            flex-shrink: 0;
+            aspect-ratio: auto;
+            height: 124px;
+        }
+        .bk-grid.list-view .bk-card-body {
+            padding: 0;
+            flex: 1;
+        }
+        .bk-grid.list-view .bk-cover-cta { display: none; }
+        .bk-grid.list-view .bk-list-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        /* ── BOOK CARD ───────────────────────────── */
+        .bk-card { display: flex; flex-direction: column; }
+
+        /* Cover */
+        .bk-cover-wrap {
             position: relative;
-            z-index: 3;
-            width: 90%;
-            max-width: 900px;
-            height: 300px;
-            text-align: center;
-            color: white;
+            border-radius: 6px;
+            overflow: hidden;
+            aspect-ratio: 2/3;
+            background: var(--secondary);
+            /* book spine shadow — left edge slightly darker */
+            box-shadow:
+                inset 6px 0 12px rgba(45,40,32,0.12),
+                4px 6px 20px rgba(45,40,32,0.14);
+            transition: transform 380ms cubic-bezier(0.25,0.46,0.45,0.94),
+                        box-shadow 380ms cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+        .bk-card:hover .bk-cover-wrap {
+            transform: translateY(-6px) rotate3d(0,1,0,2deg);
+            box-shadow:
+                inset 6px 0 12px rgba(45,40,32,0.12),
+                10px 20px 32px rgba(45,40,32,0.20);
+        }
+        .bk-cover-wrap img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
-        .carousel-slide {
+        /* Sold-out dim — only for unavailable books, no badge */
+        .bk-cover-wrap.soldout img { filter: grayscale(40%) brightness(0.85); }
+
+        /* Slide-up CTA strip — appears from the bottom on hover */
+        .bk-cover-cta {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: 100%;
-            opacity: 0;
-            transition: opacity 1s ease, transform 1s ease;
+            bottom: 0; left: 0; right: 0;
+            display: flex;
+            transform: translateY(100%);
+            transition: transform 320ms cubic-bezier(0.4,0,0.2,1);
+        }
+        .bk-card:hover .bk-cover-cta { transform: translateY(0); }
+
+        .bk-cta-cart {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 11px 8px;
+            background: var(--fg);
+            color: rgba(255,255,255,0.92);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+        .bk-cta-cart:hover { background: var(--highlight); }
+
+        .bk-cta-wish {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            background: rgba(250,248,244,0.94);
+            color: var(--fg);
+            font-size: 0.88rem;
+            text-decoration: none;
+            border: none;
+            border-left: 1px solid rgba(45,40,32,0.1);
+            cursor: pointer;
+            transition: background 0.18s, color 0.18s;
+        }
+        .bk-cta-wish:hover { background: var(--highlight); color: #fff; }
+
+        /* Sold-out strip */
+        .bk-soldout-strip {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 9px;
+            background: rgba(45,40,32,0.75);
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.7);
         }
 
-        .carousel-slide.active {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
+        /* Card body */
+        .bk-card-body { padding: 12px 2px 0; }
 
-        .carousel-slide p {
-            font-size: 2.2rem;
-            font-weight: 300;
-            line-height: 1.4;
+        .bk-genre {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--highlight);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 5px;
+            opacity: 0.85;
+        }
+        .bk-genre:hover { opacity: 1; }
+
+        .bk-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 0.87rem;
+            font-weight: 700;
+            color: var(--fg);
+            line-height: 1.45;
+            text-decoration: none;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 9px;
+        }
+        .bk-title:hover { color: var(--highlight); }
+
+        .bk-price-row { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
+        .bk-price { font-size: 0.96rem; font-weight: 700; color: var(--fg); }
+        .bk-price-old { font-size: 0.77rem; color: var(--muted-fg); text-decoration: line-through; }
+        .bk-discount {
+            font-size: 0.63rem; font-weight: 700;
+            color: var(--highlight);
+        }
+        .bk-unavail {
+            font-size: 0.74rem;
+            color: var(--muted-fg);
             font-style: italic;
         }
 
-        .carousel-slide cite {
-            display: block;
-            margin-top: 20px;
-            font-size: 1.2rem;
-            font-style: normal;
-            font-weight: 500;
-            color: #ccc;
-        }
-
-        .carousel-nav {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 12px;
-            z-index: 4;
-        }
-
-        .carousel-dot {
-            width: 12px;
-            height: 12px;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 50%;
+        /* List view action buttons */
+        .bk-list-actions { display: none; }
+        .bk-list-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 6px;
+            text-decoration: none;
             cursor: pointer;
-            transition: background 0.3s ease, transform 0.3s ease;
+            transition: all 0.18s;
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            color: var(--fg);
         }
+        .bk-list-btn:hover { border-color: var(--highlight); color: var(--highlight); }
+        .bk-list-btn.primary { background: var(--fg); color: #fff; border-color: var(--fg); }
+        .bk-list-btn.primary:hover { background: var(--highlight); border-color: var(--highlight); }
 
-        .carousel-dot.active {
-            background: #ffffff;
-            transform: scale(1.2);
-        }
-
-        .amazing-carousel {
+        /* ── PROMO ─────────────────────────────────────────────── */
+        .bk-promo {
+            margin: 64px 0;
+            border-radius: var(--r-lg);
+            background: var(--fg);
+            padding: 56px 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
             position: relative;
-            width: 100%;
-            height: 600px;
             overflow: hidden;
+        }
+
+        .bk-promo::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            right: -5%;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            background: rgba(184,84,42,0.10);
+            pointer-events: none;
+        }
+
+        .bk-promo::after {
+            content: '\1F4DA';
+            position: absolute;
+            right: 56px;
+            bottom: -8px;
+            font-size: 7rem;
+            opacity: 0.06;
+            line-height: 1;
+        }
+
+        .bk-promo-tag {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--highlight);
+            margin-bottom: 12px;
+        }
+
+        .bk-promo-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--bg);
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .bk-promo-title em {
+            font-style: italic;
+            color: #e8906a;
+        }
+
+        .bk-promo-sub {
+            font-size: 0.95rem;
+            color: rgba(250,248,244,0.5);
+            line-height: 1.6;
+        }
+
+        .btn-promo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--highlight);
+            color: #fff;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            padding: 15px 32px;
+            border-radius: 6px;
+            text-decoration: none;
+            white-space: nowrap;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .btn-promo:hover {
+            background: var(--hi-light);
+            transform: translateY(-2px);
+            color: #fff;
+            text-decoration: none;
+        }
+
+        /* ── FEATURE STRIP ─────────────────────────────────────── */
+        .bk-features {
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            padding: 48px 0;
+        }
+
+        .bk-features-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 48px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 28px;
+        }
+
+        .bk-feature-item {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .bk-feature-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--secondary);
+            border: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 50px;
-            background: #e6e2d3;
-            /* A soft, warm background color */
+            font-size: 1.1rem;
+            color: var(--highlight);
+            flex-shrink: 0;
         }
 
-        .carousel-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('https://googleusercontent.com/image_collection/image_retrieval/12362878768744363278_0');
-            background-size: cover;
-            background-position: center;
-            filter: blur(5px) brightness(0.7);
-            /* Adjusted brightness for a warmer feel */
-            animation: pan 20s linear infinite alternate;
-            z-index: 1;
+        .bk-feature-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--fg);
+            margin-bottom: 4px;
         }
 
-        @keyframes pan {
-            0% {
-                background-position: 0% 0%;
-            }
-
-            100% {
-                background-position: 100% 100%;
-            }
+        .bk-feature-sub {
+            font-size: 0.78rem;
+            color: var(--muted-fg);
+            line-height: 1.55;
         }
 
-        .carousel-content-wrapper {
-            position: relative;
-            z-index: 3;
-            width: 90%;
-            max-width: 900px;
-            height: 300px;
+        /* ── EMPTY STATE ───────────────────────────────────────── */
+        .bk-empty {
             text-align: center;
-            color: #088178;
-            /* Rich, dark brown text */
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-            /* Subtle shadow for readability */
+            padding: 80px 20px;
+            color: var(--muted-fg);
         }
 
-        .carousel-slide {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: 100%;
-            opacity: 0;
-            transition: opacity 1s ease, transform 1s ease;
+        .bk-empty-icon { font-size: 3.5rem; margin-bottom: 18px; opacity: 0.35; }
+        .bk-empty-title { font-family: 'Libre Baskerville', serif; font-size: 1.3rem; color: var(--fg); margin-bottom: 8px; }
+
+
+
+        /* ── RESPONSIVE ────────────────────────────────────────── */
+        @media (max-width: 1080px) {
+            .bk-hero-inner { grid-template-columns: 1fr; gap: 40px; }
+            .bk-hero-right { display: none; }
+            .bk-promo { flex-direction: column; text-align: center; }
         }
 
-        .carousel-slide.active {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
+        @media (max-width: 768px) {
+            .bk-hero { padding: 100px 0 60px; }
+            .bk-hero-inner, .bk-main, .bk-features-inner, .bk-divider-inner { padding-left: 24px; padding-right: 24px; }
+            .bk-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 18px; }
+            .bk-promo { padding: 36px 24px; }
+            .bk-promo-title { font-size: 1.5rem; }
+            .bk-section-hd { flex-direction: column; align-items: flex-start; gap: 12px; }
         }
-
-        .carousel-slide p {
-            font-family: 'Georgia', serif;
-            /* A classic serif font for a book feel */
-            font-size: 2.2rem;
-            font-weight: 300;
-            line-height: 1.4;
-            font-style: italic;
-            color: #088178;
-            /* Use the same rich, dark brown */
-        }
-
-        .carousel-slide cite {
-            display: block;
-            margin-top: 20px;
-            font-family: 'Times New Roman', serif;
-            /* Another classic font for citation */
-            font-size: 1.2rem;
-            font-style: normal;
-            font-weight: 500;
-            color: #088178;
-            /* A muted gold or sepia tone */
-        }
-
-        .carousel-nav {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 12px;
-            z-index: 4;
-        }
-
-        .carousel-dot {
-            width: 12px;
-            height: 12px;
-            background: #088178(140, 120, 81, 0.5);
-            /* Semi-transparent sepia dot */
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.3s ease;
-        }
-
-        .carousel-dot.active {
-            background: #088178;
-            /* Solid sepia tone for active dot */
-            transform: scale(1.2);
+        @media (max-width: 600px) {
+            .bk-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+            .bk-toolbar { flex-wrap: wrap; }
         }
     </style>
 </head>
 
 <body>
     <%- include('../partials/userHeader') %>
-        <div class="mobile-header-active mobile-header-wrapper-style">
-            <div class="mobile-header-wrapper-inner">
-                <div class="mobile-header-top">
-                    <div class="mobile-header-logo">
-                        <a href="/home"><img src="/public/main-logo (1).png" alt="logo"></a>
+
+    <!-- Mobile Nav -->
+    <div class="mobile-header-active mobile-header-wrapper-style">
+        <div class="mobile-header-wrapper-inner">
+            <div class="mobile-header-top">
+                <div class="mobile-header-logo">
+                    <a href="/home"><img src="/public/main-logo (1).png" alt="BOOKSAW Logo"></a>
+                </div>
+                <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
+                    <button class="close-style search-close">
+                        <i class="icon-top"></i>
+                        <i class="icon-bottom"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="mobile-header-content-area">
+                <div class="mobile-search search-style-3 mobile-header-border">
+                    <form action="/loadShop">
+                        <input type="text" name="query" placeholder="Search for items…">
+                        <button type="submit"><i class="fi-rs-search"></i></button>
+                    </form>
+                </div>
+                <div class="mobile-menu-wrap mobile-header-border">
+                    <nav>
+                        <ul class="mobile-menu">
+                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="/home">Home</a></li>
+                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="/loadShop">Shop</a></li>
+                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="/loadProfile">Profile</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════ HERO ════════════════ -->
+    <section class="bk-hero">
+        <div class="bk-hero-inner">
+            <!-- Left: Copy -->
+            <div>
+                <div class="bk-hero-eyebrow">Curated Reading, Delivered</div>
+                <h1 class="bk-hero-heading">
+                    Happy reading,<br><em>find your next story.</em>
+                </h1>
+                <p class="bk-hero-sub">
+                    Thousands of handpicked titles across every genre. From timeless classics to this week's bestsellers — your shelf awaits.
+                </p>
+                <div class="bk-hero-actions">
+                    <a href="/loadShop" class="btn-primary" id="hero-browse-btn">
+                        <i class="fas fa-compass"></i> Browse Collection
+                    </a>
+                    <a href="/getWishlist" class="btn-ghost" id="hero-wishlist-btn">
+                        <i class="fas fa-bookmark"></i> My Wishlist
+                    </a>
+                </div>
+                <div class="bk-hero-stats">
+                    <div>
+                        <div class="bk-stat-num"><%= typeof product !== 'undefined' ? product.length : '0' %>+</div>
+                        <div class="bk-stat-label">Books in Stock</div>
                     </div>
-                    <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
-                        <button class="close-style search-close">
-                            <i class="icon-top"></i>
-                            <i class="icon-bottom"></i>
-                        </button>
+                    <div class="bk-stat-sep"></div>
+                    <div>
+                        <div class="bk-stat-num">50+</div>
+                        <div class="bk-stat-label">Genres</div>
+                    </div>
+                    <div class="bk-stat-sep"></div>
+                    <div>
+                        <div class="bk-stat-num">24/7</div>
+                        <div class="bk-stat-label">Support</div>
                     </div>
                 </div>
-                <div class="mobile-header-content-area">
-                    <div class="mobile-search search-style-3 mobile-header-border">
-                        <form action="/loadShop">
-                            <input type="text" name="query" placeholder="Search for items…">
-                            <button type="submit"><i class="fi-rs-search"></i></button>
-                        </form>
-                    </div>
-                    <div class="mobile-menu-wrap mobile-header-border">
-                        <nav>
-                            <ul class="mobile-menu">
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="/home">Home</a></li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="/loadShop">Shop</a></li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="/loadProfile">Profile</a></li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="#">Pages</a></li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="#">Language</a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <div class="mobile-social-icon">
-                        <h5 class="mb-15 text-grey-4">Follow Us</h5>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
+            </div>
+
+            <!-- Right: Quote + Mini calendar -->
+            <div class="bk-hero-right">
+                <div class="bk-quote-shell">
+                    <div class="bk-quote-tag">Daily Inspiration</div>
+                    <div class="bk-quote-slides" id="bk-quote-slides"></div>
+                    <div class="bk-quote-dots" id="bk-quote-dots"></div>
+
+                    <!-- Mini reading calendar -->
+                    <div class="bk-calendar-strip">
+                        <div class="bk-cal-label">This Week</div>
+                        <div class="bk-cal-days" id="bk-cal-days"></div>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <main class="main">
-            <section class="amazing-carousel">
-                <div class="carousel-background"></div>
-                <div class="carousel-content-wrapper" id="carousel-quotes">
-                </div>
-                <div class="carousel-nav" id="carousel-dots"></div>
-            </section>
-
-            <section class="featured section-padding position-relative">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-2 col-md-4 mb-md-3 mb-lg-0">
-                            <div class="banner-features wow fadeIn animated hover-up">
-                                <img src="/public/client-image3.png" alt="" style="height: 95px">
-                            </div>
-                        </div>
-                        <div class="col-lg-2 col-md-4 mb-md-3 mb-lg-0">
-                            <div class="banner-features wow fadeIn animated hover-up">
-                                <img src="/public/client-image1.png" alt="" style="height: 95px;">
-                            </div>
-                        </div>
-                        <div class="col-lg-2 col-md-4 mb-md-3 mb-lg-0">
-                            <div class="banner-features wow fadeIn animated hover-up">
-                                <img src="/public/client-image2.png" alt="">
-                            </div>
-                        </div>
-                        <div class="col-lg-2 col-md-4 mb-md-3 mb-lg-0">
-                            <div class="banner-features wow fadeIn animated hover-up">
-                                <img src="/public/client-image4.png" alt="" style="height: 95px;">
-                            </div>
-                        </div>
-                        <div class="col-lg-2 col-md-4 mb-md-3 mb-lg-0">
-                            <div class="banner-features wow fadeIn animated hover-up">
-                                <img src="/public/client-image5.png" alt="">
-                            </div>
-                        </div>
-                        <div class="col-lg-2 col-md-4 mb-md-3 mb-lg-0">
-                            <div class="banner-features wow fadeIn animated hover-up">
-                                <img src="/public/assets/imgs/theme/icons/feature-6.png" alt="" style="height: 70px">
-                                <h4 class="bg-6">24/7 Support</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="product-tabs section-padding position-relative wow fadeIn animated">
-                <div class="bg-square"></div>
-                <div class="container">
-                    <div class="tab-header">
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="nav-tab-two" data-bs-toggle="tab"
-                                    data-bs-target="#tab-two" type="button" role="tab" aria-controls="tab-two"
-                                    aria-selected="true">Popular</button>
-                            </li>
-                        </ul>
-                        <a href="/loadShop" class="view-more d-none d-md-flex">View More<i
-                                class="fi-rs-angle-double-small-right"></i></a>
-                    </div>
-                    <div class="tab-content wow fadeIn animated" id="myTabContent">
-                        <div class="tab-pane fade show active" id="tab-two" role="tabpanel" aria-labelledby="tab-two">
-                            <p>Products: <%= product.length %>
-                            </p>
-                            <% if(product && product.length> 0) { %>
-                                <div class="row product-grid-3">
-                                    <% for(let i=0 ; i < product.length ; i++) { %>
-                                        <div class="col-lg-4 col-md-4 col-12 col-sm-6">
-                                            <div class="product-cart-wrap mb-30">
-                                                <div class="product-img-action-wrap">
-                                                    <div class="product-img product-img-zoom">
-                                                        <a href="/shop-product?id=<%= product[i]._id %>">
-                                                            <img class="default-img"
-                                                                src="/public/uploads/<%= product[i].Images[0] %>"
-                                                                alt="">
-                                                            <img class="hover-img"
-                                                                src="/public/uploads/<%= product[i].Images[1] %>"
-                                                                alt="">
-                                                        </a>
-                                                    </div>
-                                                    <div class="product-action-1">
-                                                        <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                            href="/wishlist?id=<%= product[i]._id %>"><i
-                                                                class="fi-rs-heart"></i></a>
-                                                    </div>
-                                                    <div
-                                                        class="product-badges product-badges-position product-badges-mrg">
-                                                        <span class="hot">Hot</span>
-                                                    </div>
-                                                </div>
-                                                <div class="product-content-wrap">
-                                                    <div class="product-category">
-                                                        <a
-                                                            href="/loadShop?category=<%= encodeURIComponent(product[i].Categories.categoryName) %>">
-                                                            <%= product[i].Categories.categoryName %>
-                                                        </a>
-                                                    </div>
-                                                    <h2><a href="/shop-product?id=<%= product[i]._id %>">
-                                                            <%= product[i].Bookname %>
-                                                        </a></h2>
-                                                    <div class="rating-result" title="90%">
-                                                    </div>
-                                                    <% if (product[i].stock==0) { %>
-                                                        <div class="product-price">
-                                                            <span
-                                                                style="display: inline-block; padding: 2px 16px; background-color: #ff0000; color: #ffffff; font-weight: bold; border-radius: 4px;">Currently
-                                                                Unavailable</span>
-                                                        </div>
-                                                        <% } else { %>
-                                                            <div class="product-price">
-                                                                <span>$<%= product[i].saleprice %></span>
-                                                                <span class="old-price">$<%= product[i].Regularprice %>
-                                                                        </span>
-                                                            </div>
-                                                            <div class="product-action-1 show">
-                                                                <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                                    onclick="addToCart('<%= product[i]._id %>')">
-                                                                    <i class="fi-rs-shopping-bag-add"></i>
-                                                                </a>
-                                                            </div>
-                                                            <% } %>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <% } %>
-                                </div>
-                                <% } else { %>
-                                    <p>No products available.</p>
-                                    <% } %>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="mb-50">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="banner-bg wow fadeIn animated"
-                                style="background-image: url('/public/assets/imgs/banner/banner-8.jpg')">
-                                <div class="banner-content">
-                                    <h5 class="text-grey-4 mb-15">Shop Today’s Deals</h5>
-                                    <h2 class="fw-600">Happy <span class="text-brand">Mother's Day</span>. Big Sale Up
-                                        to 40%</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <%- include('../partials/userFooter') %>
-
-            <div id="preloader-active">
-                <div class="preloader d-flex align-items-center justify-content-center">
-                    <div class="preloader-inner position-relative">
-                        <div class="text-center">
-                            <h5 class="mb-10">Loading BookSaw</h5>
-                            <div class="loader">
-                                <div class="bar bar1"></div>
-                                <div class="bar bar2"></div>
-                                <div class="bar bar3"></div>
-                            </div>
-                        </div>
-                    </div>
+    <!-- ════════════════ TRUST BAR ════════════════ -->
+    <div class="bk-divider-strip">
+        <div class="bk-divider-inner">
+            <div class="bk-trust-item">
+                <div class="bk-trust-icon"><i class="fas fa-truck-fast"></i></div>
+                <div>
+                    <div class="bk-trust-text">Free Delivery</div>
+                    <div class="bk-trust-sub">On orders over ₹499</div>
                 </div>
             </div>
+            <div class="bk-trust-item">
+                <div class="bk-trust-icon"><i class="fas fa-shield-halved"></i></div>
+                <div>
+                    <div class="bk-trust-text">Secure Payments</div>
+                    <div class="bk-trust-sub">100% protected</div>
+                </div>
+            </div>
+            <div class="bk-trust-item">
+                <div class="bk-trust-icon"><i class="fas fa-rotate-left"></i></div>
+                <div>
+                    <div class="bk-trust-text">Easy Returns</div>
+                    <div class="bk-trust-sub">7-day hassle-free</div>
+                </div>
+            </div>
+            <div class="bk-trust-item">
+                <div class="bk-trust-icon"><i class="fas fa-headset"></i></div>
+                <div>
+                    <div class="bk-trust-text">24/7 Support</div>
+                    <div class="bk-trust-sub">Always here to help</div>
+                </div>
+            </div>
+            <div class="bk-trust-item">
+                <div class="bk-trust-icon"><i class="fas fa-star"></i></div>
+                <div>
+                    <div class="bk-trust-text">Editor's Picks</div>
+                    <div class="bk-trust-sub">Handpicked titles</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-            <script>
-                async function addToCart(productId) {
-                    try {
-                        const response = await fetch(`/addToCart?id=${productId}`, {
-                            method: 'GET',
-                        });
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        const data = await response.json();
-                        if (data.success) {
-                            toastr.success('Product added to cart');
-                            const cartCountSpan = document.getElementById('cart-count');
-                            if (cartCountSpan) {
-                                cartCountSpan.textContent = parseInt(cartCountSpan.textContent || 0) + 1;
-                            }
-                            const cartCountMobileSpan = document.getElementById('cart-count-mobile');
-                            if (cartCountMobileSpan) {
-                                cartCountMobileSpan.textContent = parseInt(cartCountMobileSpan.textContent || 0) + 1;
-                            }
-                        } else {
-                            toastr.error(data.error);
-                        }
-                    } catch (error) {
-                        toastr.error('Stock limit exceeded');
-                        console.error('Stock limit exceeded:', error);
-                    }
+    <!-- ════════════════ MAIN ════════════════ -->
+    <main class="bk-main">
+
+        <!-- Section header -->
+        <div class="bk-section-hd">
+            <div>
+                <div class="bk-section-label">Popular Now</div>
+                <h2 class="bk-section-title">Books You'll Love</h2>
+            </div>
+            <a href="/loadShop" class="bk-see-all" id="see-all-btn">
+                View all <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+                <!-- Toolbar -->
+        <div class="bk-toolbar">
+            <div class="bk-toolbar-left">
+                <% if (typeof product !== 'undefined' && product) { %>
+                    <span class="bk-result-count">
+                        <strong><%= product.length %></strong> book<%= product.length !== 1 ? 's' : '' %> available
+                    </span>
+                <% } %>
+            </div>
+            <div class="bk-toolbar-right">
+                <button class="bk-view-btn active" id="grid-view-btn" onclick="setView('grid')" title="Grid view">
+                    <i class="fas fa-grip"></i>
+                </button>
+                <button class="bk-view-btn" id="list-view-btn" onclick="setView('list')" title="List view">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+        </div>
+
+        <% if (typeof product !== 'undefined' && product && product.length > 0) { %>
+            <div class="bk-grid" id="bk-grid">
+                <% for(let i = 0; i < product.length; i++) { %>
+                    <div class="bk-card" id="bk-card-<%= product[i]._id %>">
+
+                        <!-- Cover -->
+                        <div class="bk-cover-wrap<%= product[i].stock === 0 ? ' soldout' : '' %>">
+                            <a href="/shop-product?id=<%= product[i]._id %>">
+                                <img
+                                    src="/public/uploads/<%= product[i].Images[0] %>"
+                                    alt="<%= product[i].Bookname %>"
+                                    loading="lazy"
+                                >
+                            </a>
+
+                            <% if (product[i].stock > 0) { %>
+                                <!-- Slide-up cart strip -->
+                                <div class="bk-cover-cta">
+                                    <button class="bk-cta-cart"
+                                        onclick="addToCart('<%= product[i]._id %>')"
+                                        id="add-cart-<%= product[i]._id %>">
+                                        <i class="fas fa-shopping-bag"></i> Add to Cart
+                                    </button>
+                                    <a href="/wishlist?id=<%= product[i]._id %>"
+                                       class="bk-cta-wish"
+                                       id="wish-<%= product[i]._id %>"
+                                       title="Save to wishlist">
+                                        <i class="fas fa-bookmark"></i>
+                                    </a>
+                                </div>
+                            <% } else { %>
+                                <div class="bk-soldout-strip">Out of Stock</div>
+                            <% } %>
+                        </div>
+
+                        <!-- Info -->
+                        <div class="bk-card-body">
+                            <a href="/loadShop?category=<%= encodeURIComponent(product[i].Categories ? product[i].Categories.categoryName : '') %>" class="bk-genre">
+                                <%= product[i].Categories ? product[i].Categories.categoryName : '' %>
+                            </a>
+                            <a href="/shop-product?id=<%= product[i]._id %>" class="bk-title">
+                                <%= product[i].Bookname %>
+                            </a>
+                            <% if (product[i].stock === 0) { %>
+                                <span class="bk-unavail">Not available</span>
+                            <% } else { %>
+                                <div class="bk-price-row">
+                                    <span class="bk-price">&#8377;<%= product[i].saleprice %></span>
+                                    <% if (product[i].Regularprice && product[i].Regularprice > product[i].saleprice) { %>
+                                        <span class="bk-price-old">&#8377;<%= product[i].Regularprice %></span>
+                                        <span class="bk-discount">−<%= Math.round(((product[i].Regularprice - product[i].saleprice) / product[i].Regularprice) * 100) %>%</span>
+                                    <% } %>
+                                </div>
+                            <% } %>
+                            <!-- List-view only actions -->
+                            <div class="bk-list-actions">
+                                <% if (product[i].stock > 0) { %>
+                                    <button class="bk-list-btn primary" onclick="addToCart('<%= product[i]._id %>')">
+                                        <i class="fas fa-shopping-bag"></i> Add to Cart
+                                    </button>
+                                <% } %>
+                                <a href="/wishlist?id=<%= product[i]._id %>" class="bk-list-btn">
+                                    <i class="fas fa-bookmark"></i> Save
+                                </a>
+                                <a href="/shop-product?id=<%= product[i]._id %>" class="bk-list-btn">
+                                    <i class="fas fa-eye"></i> Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        <% } else { %>
+            <div class="bk-empty">
+                <div class="bk-empty-icon">📭</div>
+                <div class="bk-empty-title">No books available right now</div>
+                <p>Check back soon — we're always adding new titles.</p>
+            </div>
+        <% } %>
+
+        <!-- Promo banner -->
+        <div class="bk-promo">
+            <div>
+                <div class="bk-promo-tag">✦ Limited Time</div>
+                <h3 class="bk-promo-title">Big Reading Sale.<br><em>Up to 40% off</em> bestsellers.</h3>
+                <p class="bk-promo-sub">Handpicked deals across every genre. Don't miss out.</p>
+            </div>
+            <a href="/loadShop" class="btn-promo" id="promo-cta-btn">
+                Shop the Sale <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+    </main>
+
+    <!-- ════════════════ FEATURE STRIP ════════════════ -->
+    <div class="bk-features">
+        <div class="bk-features-inner">
+            <div class="bk-feature-item">
+                <div class="bk-feature-icon"><i class="fas fa-book-open-reader"></i></div>
+                <div>
+                    <div class="bk-feature-title">Curated Collections</div>
+                    <div class="bk-feature-sub">Every title hand-selected by our editorial team for quality and relevance.</div>
+                </div>
+            </div>
+            <div class="bk-feature-item">
+                <div class="bk-feature-icon"><i class="fas fa-tags"></i></div>
+                <div>
+                    <div class="bk-feature-title">Best Price Guarantee</div>
+                    <div class="bk-feature-sub">We match any lower price. Your savings are our priority.</div>
+                </div>
+            </div>
+            <div class="bk-feature-item">
+                <div class="bk-feature-icon"><i class="fas fa-box-open"></i></div>
+                <div>
+                    <div class="bk-feature-title">Safe Packaging</div>
+                    <div class="bk-feature-sub">Books ship in protective packaging — arriving in perfect condition.</div>
+                </div>
+            </div>
+            <div class="bk-feature-item">
+                <div class="bk-feature-icon"><i class="fas fa-gift"></i></div>
+                <div>
+                    <div class="bk-feature-title">Gift Wrapping</div>
+                    <div class="bk-feature-sub">Add a personal touch at checkout for any order.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/userFooter') %>
+
+
+
+    <!-- Scripts -->
+    <script>
+        // ── Add to Cart ─────────────────────────────────────────────
+        async function addToCart(productId, evt) {
+            const btn = (evt && evt.target) ? evt.target.closest('button') : (window.event && window.event.target ? window.event.target.closest('button') : document.getElementById('add-cart-' + productId));
+            const origHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            }
+
+            try {
+                const res = await fetch('/addToCart?id=' + productId, { method: 'GET' });
+                if (res.status === 401) {
+                    toastr.warning('Please sign in to add books to your cart!');
+                    if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
+                    return;
                 }
-            </script>
-            <script>
-                const fallbackQuotes = [
-                    { content: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-                    { content: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs" },
-                    { content: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
-                    { content: "In the middle of difficulty lies opportunity.", author: "Albert Einstein" },
-                ];
-
-                async function fetchQuotes() {
-                    const quotes = [];
-                    const api_url = "https://dummyjson.com/quotes/random";
-                    const fetchPromises = fallbackQuotes.map(() => fetch(api_url));
-
-                    try {
-                        const responses = await Promise.all(fetchPromises);
-                        for (const response of responses) {
-                            const data = await response.json();
-                            quotes.push({ content: data.quote, author: data.author });
-                        }
-                    } catch (error) {
-                        console.error('Error fetching quotes from API:', error);
-                        return fallbackQuotes;
-                    }
-                    return quotes;
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    toastr.error(errData.error || 'Could not add to cart.');
+                    if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
+                    return;
                 }
-
-                function initCarousel() {
-                    const carousel = document.getElementById('carousel-quotes');
-                    const dotsContainer = document.getElementById('carousel-dots');
-                    let currentIndex = 0;
-                    let rotationInterval;
-                    let quotes = [];
-
-                    function renderCarousel() {
-                        carousel.innerHTML = '';
-                        dotsContainer.innerHTML = '';
-
-                        quotes.forEach((quote, index) => {
-                            const slide = document.createElement('div');
-                            slide.className = `carousel-slide ${index === currentIndex ? 'active' : ''}`;
-                            slide.innerHTML = `<p>${quote.content}</p><cite>- ${quote.author}</cite>`;
-                            carousel.appendChild(slide);
-
-                            const dot = document.createElement('div');
-                            dot.className = `carousel-dot ${index === currentIndex ? 'active' : ''}`;
-                            dot.addEventListener('click', () => {
-                                currentIndex = index;
-                                updateCarousel();
-                                stopRotation();
-                                startRotation();
-                            });
-                            dotsContainer.appendChild(dot);
-                        });
+                const data = await res.json();
+                if (data.success) {
+                    const isNew = window.updateCartBadge ? window.updateCartBadge(productId, data) : true;
+                    toastr.success(isNew ? 'Added to cart!' : 'Cart updated!');
+                    if (btn) {
+                        btn.innerHTML = '<i class="fas fa-check"></i> ' + (isNew ? 'Added' : 'Updated');
+                        setTimeout(() => {
+                            btn.disabled = false;
+                            btn.innerHTML = origHtml;
+                        }, 1400);
                     }
-
-                    function updateCarousel() {
-                        const slides = document.querySelectorAll('.carousel-slide');
-                        const dots = document.querySelectorAll('.carousel-dot');
-                        slides.forEach((slide, index) => slide.classList.toggle('active', index === currentIndex));
-                        dots.forEach((dot, index) => dot.classList.toggle('active', index === currentIndex));
-                    }
-
-                    function startRotation() {
-                        rotationInterval = setInterval(() => {
-                            currentIndex = (currentIndex + 1) % quotes.length;
-                            updateCarousel();
-                        }, 7000);
-                    }
-
-                    function stopRotation() {
-                        clearInterval(rotationInterval);
-                    }
-
-                    async function setup() {
-                        quotes = await fetchQuotes();
-                        if (quotes.length > 0) {
-                            renderCarousel();
-                            startRotation();
-                        }
-
-                        const carouselSection = document.querySelector('.amazing-carousel');
-                        carouselSection.addEventListener('mouseenter', stopRotation);
-                        carouselSection.addEventListener('mouseleave', startRotation);
-                    }
-
-                    setup();
+                } else {
+                    toastr.error(data.error || 'Could not add to cart.');
+                    if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
                 }
+            } catch (err) {
+                toastr.error('Stock limit exceeded.');
+                if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
+            }
+        }
 
-                document.addEventListener('DOMContentLoaded', initCarousel);
-            </script>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-            <script src="/public/assets/js/vendor/modernizr-3.6.0.min.js"></script>
-            <script src="/public/assets/js/vendor/jquery-3.6.0.min.js"></script>
-            <script src="/public/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
-            <script src="/public/assets/js/vendor/bootstrap.bundle.min.js"></script>
-            <script src="/public/assets/js/plugins/slick.js"></script>
-            <script src="/public/assets/js/plugins/jquery.syotimer.min.js"></script>
-            <script src="/public/assets/js/plugins/wow.js"></script>
-            <script src="/public/assets/js/plugins/jquery-ui.js"></script>
-            <script src="/public/assets/js/plugins/perfect-scrollbar.js"></script>
-            <script src="/public/assets/js/plugins/magnific-popup.js"></script>
-            <script src="/public/assets/js/plugins/select2.min.js"></script>
-            <script src="/public/assets/js/plugins/waypoints.js"></script>
-            <script src="/public/assets/js/plugins/counterup.js"></script>
-            <script src="/public/assets/js/plugins/jquery.countdown.min.js"></script>
-            <script src="/public/assets/js/plugins/images-loaded.js"></script>
-            <script src="/public/assets/js/plugins/isotope.js"></script>
-            <script src="/public/assets/js/plugins/scrollup.js"></script>
-            <script src="/public/assets/js/plugins/jquery.vticker-min.js"></script>
-            <script src="/public/assets/js/plugins/jquery.theia.sticky.js"></script>
-            <script src="/public/assets/js/plugins/jquery.elevatezoom.js"></script>
-            <script src="/public/assets/js/maind134.js?v=3.4"></script>
-            <script src="/public/assets/js/shopd134.js?v=3.4"></script>
+        // ── Quote Carousel ──────────────────────────────────────────
+        const FALLBACK_QUOTES = [
+            { content: "A reader lives a thousand lives before he dies. The man who never reads lives only one.", author: "George R.R. Martin" },
+            { content: "There is no friend as loyal as a book.", author: "Ernest Hemingway" },
+            { content: "Not all those who wander are lost.", author: "J.R.R. Tolkien" },
+            { content: "It does not do to dwell on dreams and forget to live.", author: "J.K. Rowling" },
+        ];
+
+        async function fetchQuotes() {
+            try {
+                const ps = FALLBACK_QUOTES.map(() => fetch('https://dummyjson.com/quotes/random'));
+                const rs = await Promise.all(ps);
+                const out = [];
+                for (const r of rs) {
+                    if (r.ok) { const d = await r.json(); out.push({ content: d.quote, author: d.author }); }
+                }
+                return out.length > 0 ? out : FALLBACK_QUOTES;
+            } catch { return FALLBACK_QUOTES; }
+        }
+
+        async function initQuoteCarousel() {
+            const slidesEl = document.getElementById('bk-quote-slides');
+            const dotsEl   = document.getElementById('bk-quote-dots');
+            if (!slidesEl || !dotsEl) return;
+            const quotes = await fetchQuotes();
+            let cur = 0, timer;
+
+            quotes.forEach((q, i) => {
+                const s = document.createElement('div');
+                s.className = 'bk-quote-slide' + (i === 0 ? ' active' : '');
+                s.innerHTML = '<p class="bk-quote-text">' + q.content + '</p><div class="bk-quote-author">' + q.author + '</div>';
+                slidesEl.appendChild(s);
+
+                const d = document.createElement('button');
+                d.className = 'bk-quote-dot' + (i === 0 ? ' active' : '');
+                d.addEventListener('click', () => goTo(i));
+                dotsEl.appendChild(d);
+            });
+
+            function goTo(idx) {
+                slidesEl.querySelectorAll('.bk-quote-slide')[cur].classList.remove('active');
+                dotsEl.querySelectorAll('.bk-quote-dot')[cur].classList.remove('active');
+                cur = idx;
+                slidesEl.querySelectorAll('.bk-quote-slide')[cur].classList.add('active');
+                dotsEl.querySelectorAll('.bk-quote-dot')[cur].classList.add('active');
+            }
+
+            timer = setInterval(() => goTo((cur + 1) % quotes.length), 6000);
+            const card = document.getElementById('bk-quote-slides');
+            if (card) {
+                card.parentElement.addEventListener('mouseenter', () => clearInterval(timer));
+                card.parentElement.addEventListener('mouseleave', () => { timer = setInterval(() => goTo((cur + 1) % quotes.length), 6000); });
+            }
+        }
+
+        // ── Mini Calendar ───────────────────────────────────────────
+        function initCalendar() {
+            const el = document.getElementById('bk-cal-days');
+            if (!el) return;
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const today = new Date();
+            const todayDay = today.getDay(); // Sunday = 0
+            // Show 7 days starting from the beginning of this week (Sun)
+            const startOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - todayDay);
+
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(startOfWeek);
+                d.setDate(startOfWeek.getDate() + i);
+                const isToday = d.toDateString() === today.toDateString();
+                const div = document.createElement('div');
+                div.className = 'bk-cal-day' + (isToday ? ' bk-cal-day-active' : '');
+                div.innerHTML = '<span>' + days[i].slice(0,3) + '</span><strong>' + d.getDate() + '</strong>';
+                el.appendChild(div);
+            }
+        }
+
+        // ── View toggle ──────────────────────────────
+        function setView(mode) {
+            const grid = document.getElementById('bk-grid');
+            const gridBtn = document.getElementById('grid-view-btn');
+            const listBtn = document.getElementById('list-view-btn');
+            if (!grid) return;
+            if (mode === 'list') {
+                grid.classList.add('list-view');
+                if (listBtn) listBtn.classList.add('active');
+                if (gridBtn) gridBtn.classList.remove('active');
+                localStorage.setItem('bk-home-view', 'list');
+            } else {
+                grid.classList.remove('list-view');
+                if (gridBtn) gridBtn.classList.add('active');
+                if (listBtn) listBtn.classList.remove('active');
+                localStorage.setItem('bk-home-view', 'grid');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initQuoteCarousel();
+            initCalendar();
+            const saved = localStorage.getItem('bk-home-view');
+            if (saved === 'list') setView('list');
+        });
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/public/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+    <script src="/public/assets/js/vendor/jquery-3.6.0.min.js"></script>
+    <script src="/public/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
+    <script src="/public/assets/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="/public/assets/js/plugins/slick.js"></script>
+    <script src="/public/assets/js/plugins/wow.js"></script>
+    <script src="/public/assets/js/plugins/jquery-ui.js"></script>
+    <script src="/public/assets/js/plugins/perfect-scrollbar.js"></script>
+    <script src="/public/assets/js/plugins/waypoints.js"></script>
+    <script src="/public/assets/js/plugins/counterup.js"></script>
+    <script src="/public/assets/js/plugins/scrollup.js"></script>
+    <script src="/public/assets/js/plugins/jquery.theia.sticky.js"></script>
+    <script src="/public/assets/js/maind134.js?v=3.4"></script>
+    <script src="/public/assets/js/shopd134.js?v=3.4"></script>
 </body>
 
 </html>

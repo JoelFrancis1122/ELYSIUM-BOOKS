@@ -1,630 +1,349 @@
-﻿<!DOCTYPE html>
-<html class="no-js" lang="en">
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-frontend/shop-cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Jul 2023 10:10:07 GMT -->
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>BOOKSAW</title>
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="">
+    <title>Cart — BOOKSAW</title>
+    <meta name="description" content="Your BOOKSAW shopping cart">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
-    <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
-    <!-- Template CSS -->
-    <link rel="stylesheet" href="public/assets/css/maind134.css?v=3.4">
-    <style>
-        .detail-qty {
-            display: flex;
-            align-items: center;
-        }
-
-        .qty-btn {
-            width: 30px;
-            height: 30px;
-            background-color: #046963;
-            color: #ffffff;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            border-radius: 7px;
-        }
-
-        .qty-btn:hover {
-            background-color: #03423e;
-        }
-
-        .qty-val {
-            margin: 0 10px;
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/assets/css/maind134.css?v=3.4">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+:root {
+  --canvas:#f5f0e8; --bg:#faf8f4; --fg:#2d2820;
+  --hi:#b8542a; --muted:#7a6f60;
+  --border:#ddd8ce; --sec:#edeae2;
+  --r-sm:8px; --r-md:14px; --r-lg:20px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--canvas);color:var(--fg)}
+
+/* BREADCRUMB */
+.bk-crumb{background:var(--bg);border-bottom:1px solid var(--border);padding:14px 0}
+.bk-crumb-inner{max-width:1200px;margin:0 auto;padding:0 40px;display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--muted)}
+.bk-crumb-inner a{color:var(--muted);text-decoration:none;transition:color .2s}
+.bk-crumb-inner a:hover{color:var(--hi)}
+.bk-crumb-sep{font-size:.68rem;color:var(--border)}
+.bk-crumb-cur{color:var(--fg);font-weight:600}
+
+/* PAGE LAYOUT */
+.bk-cart-page{max-width:1200px;margin:0 auto;padding:36px 40px 80px;display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start}
+.bk-cart-page-title{font-family:'Libre Baskerville',serif;font-size:1.5rem;font-weight:700;color:var(--fg);grid-column:1/-1;padding-bottom:10px;border-bottom:2px solid var(--border);margin-bottom:4px;display:flex;align-items:baseline;gap:12px}
+.bk-cart-count{font-family:'IBM Plex Sans',sans-serif;font-size:.78rem;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+
+/* PANEL */
+.bk-panel{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.bk-panel-head{padding:16px 22px;border-bottom:1px solid var(--border);font-family:'Libre Baskerville',serif;font-size:.95rem;font-weight:700;color:var(--fg);display:flex;align-items:center;gap:9px}
+.bk-panel-head i{color:var(--hi);font-size:.85rem}
+
+/* CART ITEM ROWS */
+.bk-cart-item{display:grid;grid-template-columns:80px 1fr auto;gap:18px;align-items:center;padding:18px 22px;border-bottom:1px solid var(--border);transition:background .18s}
+.bk-cart-item:last-child{border-bottom:none}
+.bk-cart-item:hover{background:rgba(245,240,232,.5)}
+
+.bk-item-cover{width:80px;height:114px;border-radius:6px;object-fit:cover;flex-shrink:0;box-shadow:inset 4px 0 8px rgba(45,40,32,.1),3px 5px 14px rgba(45,40,32,.12)}
+
+.bk-item-meta{min-width:0}
+.bk-item-genre{font-size:.65rem;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:var(--hi);opacity:.85;margin-bottom:4px}
+.bk-item-title{font-family:'Libre Baskerville',serif;font-size:.9rem;font-weight:700;color:var(--fg);text-decoration:none;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:10px;display:block}
+.bk-item-title:hover{color:var(--hi)}
+.bk-item-price{font-size:.84rem;color:var(--fg);margin-bottom:10px}
+.bk-item-price-lbl{color:var(--muted);font-size:.8rem;margin-right:4px}
+
+/* QTY */
+.bk-qty{display:inline-flex;align-items:center;border:1.5px solid var(--border);border-radius:var(--r-sm);overflow:hidden;background:var(--canvas)}
+.bk-qty-btn{width:32px;height:32px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg);font-size:.75rem;transition:background .18s,color .18s}
+.bk-qty-btn:hover{background:var(--fg);color:#fff}
+.bk-qty-val{min-width:32px;text-align:center;font-size:.88rem;font-weight:700;color:var(--fg);padding:0 4px;border-left:1px solid var(--border);border-right:1px solid var(--border);line-height:32px}
+
+/* RIGHT */
+.bk-item-right{display:flex;flex-direction:column;align-items:flex-end;gap:12px;flex-shrink:0}
+.bk-item-subtotal{font-family:'Libre Baskerville',serif;font-size:.95rem;font-weight:700;color:var(--fg)}
+.bk-remove-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:.78rem;display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:var(--r-sm);transition:background .18s,color .18s}
+.bk-remove-btn:hover{background:rgba(185,28,28,.07);color:#b91c1c}
+
+/* EMPTY */
+.bk-cart-empty{text-align:center;padding:60px 30px}
+.bk-cart-empty-icon{font-size:3rem;opacity:.2;margin-bottom:14px;color:var(--fg)}
+.bk-cart-empty-title{font-family:'Libre Baskerville',serif;font-size:1.1rem;color:var(--fg);margin-bottom:6px}
+.bk-cart-empty-sub{font-size:.84rem;color:var(--muted);margin-bottom:22px}
+
+/* FOOTER STRIP */
+.bk-cart-footer{padding:14px 22px;background:var(--sec);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-start}
+
+/* BUTTONS */
+.bk-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;font-family:'IBM Plex Sans',sans-serif;font-size:.84rem;font-weight:600;border-radius:var(--r-sm);text-decoration:none;cursor:pointer;transition:all .18s;border:1.5px solid transparent;white-space:nowrap}
+.bk-btn-dark{background:var(--fg);color:#fff;border-color:var(--fg)}
+.bk-btn-dark:hover{background:var(--hi);border-color:var(--hi)}
+.bk-btn-outline{background:none;color:var(--fg);border-color:var(--border)}
+.bk-btn-outline:hover{border-color:var(--hi);color:var(--hi)}
+.bk-btn-full{width:100%;justify-content:center}
+
+/* SUMMARY */
+.bk-summary{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;position:sticky;top:88px}
+.bk-summary-head{padding:18px 22px;border-bottom:1px solid var(--border);font-family:'Libre Baskerville',serif;font-size:.95rem;font-weight:700;color:var(--fg);display:flex;align-items:center;gap:9px}
+.bk-summary-head i{color:var(--hi);font-size:.85rem}
+.bk-summary-body{padding:20px 22px}
+.bk-summary-row{display:flex;align-items:center;justify-content:space-between;font-size:.85rem;padding:9px 0;border-bottom:1px solid var(--border)}
+.bk-summary-row:last-of-type{border-bottom:none}
+.bk-summary-label{color:var(--muted)}
+.bk-summary-val{font-weight:600;color:var(--fg)}
+.bk-summary-total{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:var(--fg);color:#fff}
+.bk-summary-total-label{font-size:.88rem;font-weight:600;opacity:.65}
+.bk-summary-total-val{font-family:'Libre Baskerville',serif;font-size:1.3rem;font-weight:700}
+.bk-summary-cta{padding:16px 22px;display:flex;flex-direction:column;gap:10px}
+.bk-note{font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:5px;justify-content:center}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .bk-cart-page{grid-template-columns:1fr;padding:22px 20px 60px}
+  .bk-summary{position:static}
+  .bk-cart-page-title{grid-column:1}
+}
+@media(max-width:560px){
+  .bk-crumb-inner{padding:0 16px}
+  .bk-cart-item{grid-template-columns:64px 1fr;}
+  .bk-item-right{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding-top:12px}
+  .bk-item-cover{width:64px;height:90px}
+}
+</style>
 </head>
-
 <body>
-    <%-include('../partials/userHeader')-%>
+<%- include('../partials/userHeader') %>
 
-    <div class="mobile-header-active mobile-header-wrapper-style">
-        <div class="mobile-header-wrapper-inner">
-            <div class="mobile-header-top">
-                <div class="mobile-header-logo">
-                    <a href="index.html"><img src="/public/main-logo (1).png" alt="logo"></a>
-                </div>
-                <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
-                    <button class="close-style search-close">
-                        <i class="icon-top"></i>
-                        <i class="icon-bottom"></i>
-                    </button>
-                </div>
+<!-- Breadcrumb -->
+<div class="bk-crumb">
+  <div class="bk-crumb-inner">
+    <a href="/home">Home</a>
+    <span class="bk-crumb-sep"><i class="fas fa-chevron-right" style="font-size:.65rem"></i></span>
+    <a href="/loadShop">Shop</a>
+    <span class="bk-crumb-sep"><i class="fas fa-chevron-right" style="font-size:.65rem"></i></span>
+    <span class="bk-crumb-cur">Cart</span>
+  </div>
+</div>
+
+<div class="bk-cart-page">
+  <h1 class="bk-cart-page-title">
+    Your Cart
+    <% if(locals.cartData && cartData.product.length > 0) { %>
+      <span class="bk-cart-count"><%= cartData.product.length %> item<%= cartData.product.length !== 1 ? 's' : '' %></span>
+    <% } %>
+  </h1>
+
+  <!-- ITEMS PANEL -->
+  <div class="bk-panel">
+    <div class="bk-panel-head"><i class="fas fa-shopping-bag"></i> Order Items</div>
+    <div id="cart-tbody">
+      <% if(locals.cartData && cartData.product.length > 0) { %>
+        <% for(let i = 0; i < cartData.product.length; i++) { 
+             if(!cartData.product[i] || !cartData.product[i].productId) continue;
+             const pObj = cartData.product[i].productId;
+             const pId = (pObj._id || pObj.id || pObj).toString();
+             const pStock = pObj.stock !== undefined ? pObj.stock : 999;
+             const pPrice = Number(pObj.saleprice) || 0;
+             const pQty = Number(cartData.product[i].quantity) || 1;
+             const pTitle = pObj.Bookname || 'Book';
+             const pImg = (pObj.Images && pObj.Images.length > 0) ? '/public/uploads/' + pObj.Images[0] : '/public/spellbook.png';
+             const pCat = (pObj.Categories && pObj.Categories.categoryName) ? pObj.Categories.categoryName : 'Book';
+        %>
+          <div class="bk-cart-item" id="row_<%= pId %>">
+            <span id="stock_<%= pId %>" style="display:none"><%= pStock %></span>
+
+            <img class="bk-item-cover"
+                 src="<%= pImg %>"
+                 alt="<%= pTitle %>">
+
+            <div class="bk-item-meta">
+              <div class="bk-item-genre"><%= pCat %></div>
+              <a href="/shop-product?id=<%= pId %>" class="bk-item-title"><%= pTitle %></a>
+              <div class="bk-item-price">
+                <span class="bk-item-price-lbl">Unit</span>
+                <strong><span id="saleprice_<%= pId %>">&#8377;<%= pPrice.toFixed(2) %></span></strong>
+              </div>
+              <div class="bk-qty">
+                <button class="bk-qty-btn" onclick="decrease('<%= pId %>')">
+                  <i class="fas fa-minus" style="font-size:.7rem"></i>
+                </button>
+                <span class="bk-qty-val" id="quantity_<%= pId %>"><%= pQty %></span>
+                <button class="bk-qty-btn" onclick="increase('<%= pId %>')">
+                  <i class="fas fa-plus" style="font-size:.7rem"></i>
+                </button>
+              </div>
             </div>
-            <div class="mobile-header-content-area">
-                <div class="mobile-search search-style-3 mobile-header-border">
-                    <form action="#">
-                        <input type="text" placeholder="Search for items…">
-                        <button type="submit"><i class="fi-rs-search"></i></button>
-                    </form>
-                </div>
-                <div class="mobile-menu-wrap mobile-header-border">
-                    <div class="main-categori-wrap mobile-header-border">
-                        <a class="categori-button-active-2" href="#">
-                            <span class="fi-rs-apps"></span> Browse Categories
-                        </a>
-                        <div class="categori-dropdown-wrap categori-dropdown-active-small">
-                            <ul>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-dress"></i>Women's Clothing</a>
-                                </li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-tshirt"></i>Men's Clothing</a>
-                                </li>
-                                <li> <a href="shop-grid-right.html"><i class="evara-font-smartphone"></i> Cellphones</a>
-                                </li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-desktop"></i>Computer &
-                                        Office</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-cpu"></i>Consumer
-                                        Electronics</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-home"></i>Home & Garden</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-high-heels"></i>Shoes</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-teddy-bear"></i>Mother &
-                                        Kids</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-kite"></i>Outdoor fun</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- mobile menu start -->
-                    <nav>
-                        <ul class="mobile-menu">
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="/home">Home</a>
-                                <ul class="dropdown">
-                                    <li><a href="index.html">Home 1</a></li>
-                                    <li><a href="index-2.html">Home 2</a></li>
-                                    <li><a href="index-3.html">Home 3</a></li>
-                                    <li><a href="index-4.html">Home 4</a></li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                    href="shop-grid-right.html">shop</a>
-                                <ul class="dropdown">
-                                    <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
-                                    <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>
-                                    <li><a href="shop-list-right.html">Shop List – Right Sidebar</a></li>
-                                    <li><a href="shop-list-left.html">Shop List – Left Sidebar</a></li>
-                                    <li><a href="shop-fullwidth.html">Shop - Wide</a></li>
-                                    <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                            href="#">Single Product</a>
-                                        <ul class="dropdown">
-                                            <li><a href="#">Product – Right Sidebar</a></li>
-                                            <li><a href="shop-product-left.html">Product – Left Sidebar</a></li>
-                                            <li><a href="shop-product-full.html">Product – No sidebar</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="shop-filter.html">Shop – Filter</a></li>
-                                    <li><a href="shop-wishlist.html">Shop – Wishlist</a></li>
-                                    <li><a href="shop-cart.html">Shop – Cart</a></li>
-                                    <li><a href="shop-checkout.html">Shop – Checkout</a></li>
-                                    <li><a href="shop-compare.html">Shop – Compare</a></li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Mega
-                                    menu</a>
-                            </li>
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                    href="blog-category-fullwidth.html">Blog</a>
-                                <ul class="dropdown">
-                                    <li><a href="blog-category-grid.html">Blog Category Grid</a></li>
-                                    <li><a href="blog-category-list.html">Blog Category List</a></li>
-                                    <li><a href="blog-category-big.html">Blog Category Big</a></li>
-                                    <li><a href="blog-category-fullwidth.html">Blog Category Wide</a></li>
-                                    <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                            href="#">Single Product Layout</a>
-                                        <ul class="dropdown">
-                                            <li><a href="blog-post-left.html">Left Sidebar</a></li>
-                                            <li><a href="blog-post-right.html">Right Sidebar</a></li>
-                                            <li><a href="blog-post-fullwidth.html">No Sidebar</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Pages</a>
-                                <ul class="dropdown">
-                                    <li><a href="page-about.html">About Us</a></li>
-                                    <li><a href="page-contact.html">Contact</a></li>
-                                    <li><a href="page-account.html">My Account</a></li>
-                                    <li><a href="page-login-register.html">login/register</a></li>
-                                    <li><a href="page-purchase-guide.html">Purchase Guide</a></li>
-                                    <li><a href="page-privacy-policy.html">Privacy Policy</a></li>
-                                    <li><a href="page-terms.html">Terms of Service</a></li>
-                                    <li><a href="page-404.html">404 Page</a></li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Language</a>
-                                <ul class="dropdown">
-                                    <li><a href="#">English</a></li>
-                                    <li><a href="#">French</a></li>
-                                    <li><a href="#">German</a></li>
-                                    <li><a href="#">Spanish</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </nav>
-                    <!-- mobile menu end -->
-                </div>
-                <div class="mobile-header-info-wrap mobile-header-border">
-                    <div class="single-mobile-header-info mt-30">
-                        <a href="page-contact.html"> Our location </a>
-                    </div>
-                    <div class="single-mobile-header-info">
-                        <a href="page-login-register.html">Log In / Sign Up </a>
-                    </div>
-                    <div class="single-mobile-header-info">
-                        <a href="#">(+01) - 2345 - 6789 </a>
-                    </div>
-                </div>
-                <div class="mobile-social-icon">
-                    <h5 class="mb-15 text-grey-4">Follow Us</h5>
-                    <a href="#"><img src="public/assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                    <a href="#"><img src="public/assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                    <a href="#"><img src="public/assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
-                    <a href="#"><img src="public/assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
-                    <a href="#"><img src="public/assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
-                </div>
+
+            <div class="bk-item-right">
+              <span class="bk-item-subtotal" id="subtotal_<%= pId %>">
+                &#8377;<%= (pPrice * pQty).toFixed(2) %>
+              </span>
+              <button class="bk-remove-btn" onclick="removeItem('<%= pId %>')">
+                <i class="fas fa-trash"></i> Remove
+              </button>
             </div>
+          </div>
+        <% } %>
+      <% } else { %>
+        <div class="bk-cart-empty" id="empty-cart-row">
+          <div class="bk-cart-empty-icon"><i class="fas fa-basket-shopping"></i></div>
+          <div class="bk-cart-empty-title">Your cart is empty</div>
+          <p class="bk-cart-empty-sub">Add books from the shop to get started.</p>
+          <a href="/loadShop" class="bk-btn bk-btn-dark"><i class="fas fa-compass"></i> Explore Books</a>
         </div>
+      <% } %>
     </div>
-    <main class="main">
-        <div class="page-header breadcrumb-wrap">
-            <div class="container">
-                <div class="breadcrumb">
-                    <a href="/" rel="nofollow">Home</a>
-                    <span></span> Your Cart
-                </div>
-            </div>
-        </div>
-        <section class="mt-50 mb-50">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="table-responsive">
-                            <!-- ============================================ -->
-                            <!-- SECTION CHANGED: Added tbody id for easier targeting -->
-                            <!-- ============================================ -->
-                            <table class="table shopping-summery text-center clean">
-                                <thead>
-                                    <tr class="main-heading">
-                                        <th scope="col">Image</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Quantity</th>
-                                        <th scope="col">Subtotal</th>
-                                        <th scope="col">Remove</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="cart-tbody">
-                                    <% if(locals.cartData) { %>
-                                        <% for(let i=0; i < cartData.product.length; i++) { %>
-                                            <!-- ============================================ -->
-                                            <!-- SECTION CHANGED: Added row ID for targeting -->
-                                            <!-- ============================================ -->
-                                            <tr id="row_<%= cartData.product[i].productId.id %>">
-                                                <td class="image product-thumbnail">
-                                                    <img src="/public/uploads/<%= cartData.product[i].productId.Images[0] %>"
-                                                        alt="#">
-                                                </td>
-                                                <td class="product-des product-name">
-                                                    <h5 class="product-name"><a href="#">
-                                                            <%= cartData.product[i].productId.Bookname %>
-                                                        </a></h5>
-                                                </td>
-                                                <td class="price" data-title="Price" style="display: none;">
-                                                    <span id="stock_<%= cartData.product[i].productId.id %>">
-                                                        <%= cartData.product[i].productId.stock%>
-                                                    </span>
-                                                </td>
-                                                <td class="price" data-title="Price"><span
-                                                        id="saleprice_<%= cartData.product[i].productId.id %>">$<%=
-                                                            cartData.product[i].productId.saleprice %></span></td>
-                                                <td class="text-center" data-title="Stock">
-                                                    <button class="qty-btn qty-down"
-                                                        onclick="decrease('<%= cartData.product[i].productId.id %>')">
-                                                        <i class="fa-solid fa-minus"></i>
-                                                    </button>
+    <div class="bk-cart-footer">
+      <a href="/loadShop" class="bk-btn bk-btn-outline"><i class="fas fa-arrow-left"></i> Continue Shopping</a>
+    </div>
+  </div>
 
-                                                    <span class="qty-val"
-                                                        id="quantity_<%= cartData.product[i].productId.id %>">
-                                                        <%= cartData.product[i].quantity %>
-                                                    </span>
-                                                    <button class="qty-btn qty-up"
-                                                        onclick="increase('<%= cartData.product[i].productId.id %>')">
-                                                        <i class="fa-solid fa-plus"></i>
-                                                    </button>
-                                                </td>
-                                                <td class="text-right" data-title="Cart">
-                                                    <span id="subtotal_<%= cartData.product[i].productId.id %>">$<%=
-                                                        (cartData.product[i].productId.saleprice * cartData.product[i].quantity).toFixed(2) %></span>
-                                                </td>
-                                                <td class="price" data-title="Price" style="display: none;">
-                                                    <span id="stock_<%= cartData.product[i].productId.id %>">
-                                                        <%= cartData.product[i].productId.stock%>
-                                                    </span>
-                                                </td>
-                                                <td class="action" data-title="Remove">
-                                                    <a class="text-muted"
-                                                        onclick="removeItem('<%= cartData.product[i].productId.id %>')">
-                                                        <i class="fa-solid fa-trash fa-xl"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        <% } %>
-                                    <% } %>
+  <!-- ORDER SUMMARY -->
+  <div class="bk-summary">
+    <div class="bk-summary-head"><i class="fas fa-receipt"></i> Order Summary</div>
+    <div class="bk-summary-body">
+      <div class="bk-summary-row">
+        <span class="bk-summary-label">Subtotal</span>
+        <span class="bk-summary-val" id="summarySubtotal">&#8377;0.00</span>
+      </div>
+      <div class="bk-summary-row">
+        <span class="bk-summary-label">Shipping</span>
+        <span class="bk-summary-val" style="color:#16a34a">Free</span>
+      </div>
+      <div class="bk-summary-row">
+        <span class="bk-summary-label">Tax</span>
+        <span class="bk-summary-val">—</span>
+      </div>
+    </div>
+    <div class="bk-summary-total">
+      <span class="bk-summary-total-label">Total</span>
+      <span class="bk-summary-total-val" id="totalPrice">&#8377;0.00</span>
+    </div>
+    <div class="bk-summary-cta">
+      <% if(locals.cartData && cartData.product.length > 0) { %>
+        <a href="/loadCheckOut" class="bk-btn bk-btn-dark bk-btn-full">
+          <i class="fas fa-lock"></i> Proceed to Checkout
+        </a>
+      <% } else { %>
+        <button class="bk-btn bk-btn-dark bk-btn-full" onclick="showEmptyCartMessage()">
+          <i class="fas fa-lock"></i> Proceed to Checkout
+        </button>
+      <% } %>
+      <a href="/loadShop" class="bk-btn bk-btn-outline bk-btn-full"><i class="fas fa-shop"></i> Keep Shopping</a>
+      <p class="bk-note"><i class="fas fa-shield-halved"></i> Secure &amp; encrypted checkout</p>
+    </div>
+  </div>
 
-                                    <!-- ============================================ -->
-                                    <!-- SECTION CHANGED: Added empty cart message with ID -->
-                                    <!-- ============================================ -->
-                                    <% if(!locals.cartData || cartData.product.length === 0) { %>
-                                        <tr id="empty-cart-row">
-                                            <td colspan="6" class="text-center">Your cart is empty</td>
-                                        </tr>
-                                    <% } %>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="cart-action text-end">
-                            <a href="/loadShop" class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue
-                                Shopping</a>
-                            <% if(locals.cartData && cartData.product.length> 0) { %>
-                                <a href="/loadCheckOut" class="btn "><i class="fi-rs-box-alt mr-10"></i> Proceed To
-                                    CheckOut</a>
-                            <% } else { %>
-                                <button class="btn" onclick="showEmptyCartMessage()">Proceed To CheckOut</button>
-                            <% } %>
+</div>
 
-                            <script>
-                                function showEmptyCartMessage() {
-                                    toastr.error('Your cart is empty');
-                                }
-                            </script>
+<%- include('../partials/userFooter') %>
 
-                            <hr>
-                            <div class="total-section">
-                                <h3 style="color: #2c3e50; font-size: 20px; font-weight: bold; margin-top: 20px; margin-bottom: 10px; text-align: center; background-color: #f8f9fa; padding: 10px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">Total Price: $<span id="totalPrice"></span></h3>
-                            </div>
-                            <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        </section>
-    </main>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+toastr.options = { closeButton: true, progressBar: true, positionClass: 'toast-top-right', timeOut: 1400, extendedTimeOut: 400, showDuration: 150, hideDuration: 180, preventDuplicates: true, newestOnTop: true };
 
-    <footer class="main">
-        <section class="newsletter p-30 text-white wow fadeIn animated">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-7 mb-md-3 mb-lg-0">
-                        <div class="row align-items-center">
-                            <div class="col flex-horizontal-center">
-                            </div>
-                            <div class="col my-4 my-md-0 des">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5">
-                        <form class="form-subcriber d-flex wow fadeIn animated">
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="section-padding footer-mid">
-            <div class="container pt-15 pb-20">
-                <div class="row">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="widget-about font-md mb-md-5 mb-lg-0">
-                            <div class="logo logo-width-1 wow fadeIn animated">
-                                <a href="/loadHome"><img src="/public/main-logo (1).png" alt="logo"></a>
-                            </div>
-                            <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
-                            <p class="wow fadeIn animated">
-                                <strong>Address: </strong>562 Wellington Road, Street 32, San Francisco
-                            </p>
-                            <p class="wow fadeIn animated">
-                                <strong>Phone: </strong>+01 2222 365 /(+91) 01 2345 6789
-                            </p>
-                            <p class="wow fadeIn animated">
-                                <strong>Hours: </strong>10:00 - 18:00, Mon - Sat
-                            </p>
-                            <h5 class="mb-10 mt-30 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
-                            <div class="mobile-social-icon wow fadeIn animated mb-sm-5 mb-md-0">
-                                <a href="#"><img src="public/assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                                <a href="#"><img src="public/assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                                <a href="#"><img src="public/assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
-                                <a href="#"><img src="public/assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
-                                <a href="#"><img src="public/assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-md-3">
-                        <h5 class="widget-title wow fadeIn animated">About</h5>
-                        <ul class="footer-list wow fadeIn animated mb-sm-5 mb-md-0">
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Delivery Information</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms &amp; Conditions</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Support Center</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-2  col-md-3">
-                        <h5 class="widget-title wow fadeIn animated">My Account</h5>
-                        <ul class="footer-list wow fadeIn animated">
-                            <li><a href="#">Sign In</a></li>
-                            <li><a href="#">View Cart</a></li>
-                            <li><a href="#">My Wishlist</a></li>
-                            <li><a href="#">Track My Order</a></li>
-                            <li><a href="#">Help</a></li>
-                            <li><a href="#">Order</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-4">
-                        <h5 class="widget-title wow fadeIn animated">Install App</h5>
-                        <div class="row">
-                            <div class="col-md-8 col-lg-12">
-                                <p class="wow fadeIn animated">From App Store or Google Play</p>
-                                <div class="download-app wow fadeIn animated">
-                                    <a href="#" class="hover-up mb-sm-4 mb-lg-0"><img class="active"
-                                            src="public/assets/imgs/theme/app-store.jpg" alt=""></a>
-                                    <a href="#" class="hover-up"><img src="public/assets/imgs/theme/google-play.jpg"
-                                            alt=""></a>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-lg-12 mt-md-3 mt-lg-0">
-                                <p class="mb-20 wow fadeIn animated">Secured Payment Gateways</p>
-                                <img class="wow fadeIn animated" src="public/assets/imgs/theme/payment-method.png"
-                                    alt="">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <div class="container pb-20 wow fadeIn animated">
-            <div class="row">
-                <div class="col-12 mb-20">
-                    <div class="footer-bottom"></div>
-                </div>
-                <div class="col-lg-6">
-                    <p class="float-md-left font-sm text-muted mb-0">&copy; 2022, <strong
-                            class="text-brand">BOOKSAW</strong>  </p>
-                </div>
-            </div>
-        </div>
-    </footer>
+function parseRupee(str) {
+  return parseFloat(String(str).replace(/[^0-9.]/g,'')) || 0;
+}
+function formatRupee(n) {
+  return '\u20b9' + parseFloat(n).toFixed(2);
+}
+function updateTotalPrice() {
+  let total = 0;
+  document.querySelectorAll('[id^="subtotal_"]').forEach(el => { total += parseRupee(el.textContent); });
+  const fmt = formatRupee(total);
+  const tp = document.getElementById('totalPrice');
+  const ss = document.getElementById('summarySubtotal');
+  if(tp) tp.textContent = fmt;
+  if(ss) ss.textContent = fmt;
+}
+function showEmptyCartMessage() { toastr.error('Your cart is empty'); }
 
-    <script>
-        function increaseQuantity(button) {
-            var quantitySpan = button.previousElementSibling;
-            var currentQuantity = parseInt(quantitySpan.textContent);
-            quantitySpan.textContent = currentQuantity + 1;
-        }
+function increase(productId) {
+  const qEl = document.getElementById('quantity_' + productId);
+  const stEl = document.getElementById('stock_' + productId);
+  const curQty = parseInt(qEl.textContent) || 1;
+  const stock = stEl ? parseInt(stEl.textContent) : 999;
+  if(curQty >= stock) { toastr.error('Maximum stock limit reached.'); return; }
 
-        function decreaseQuantity(button) {
-            var quantitySpan = button.nextElementSibling;
-            var currentQuantity = parseInt(quantitySpan.textContent);
-            if (currentQuantity > 1) {
-                quantitySpan.textContent = currentQuantity - 1;
-            }
-        }
-    </script>
+  fetch('/updateCart', { 
+    method:'POST', 
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ productId, quantity: 1 }) 
+  })
+  .then(async r => {
+    const data = await r.json().catch(() => ({}));
+    if(r.ok && data.success !== false) {
+      const nextQty = data.newQuantity !== undefined ? data.newQuantity : curQty + 1;
+      qEl.textContent = nextQty;
+      const sp = parseRupee(document.getElementById('saleprice_' + productId).textContent);
+      document.getElementById('subtotal_' + productId).textContent = formatRupee(sp * nextQty);
+      updateTotalPrice();
+      toastr.success('Quantity updated');
+    } else { 
+      toastr.error(data.message || 'Failed to update quantity'); 
+    }
+  }).catch(e => toastr.error('Error: ' + e.message));
+}
 
-    <script>
-        function increase(productId) {
-            const quantityElement = document.getElementById(`quantity_${productId}`);
-            const currentQuantity = parseInt(quantityElement.textContent);
-            const stockElement = document.getElementById(`stock_${productId}`);
-            const stock = parseInt(stockElement.textContent);
+function decrease(productId) {
+  const qEl = document.getElementById('quantity_' + productId);
+  const curQty = parseInt(qEl.textContent) || 1;
+  if(curQty <= 1) { toastr.warning('Minimum quantity is 1.'); return; }
 
-            if (currentQuantity >= stock) {
-                toastr.error("Sorry, the maximum stock limit exceeded.");
-                return;
-            }
+  fetch('/updateCart', { 
+    method:'POST', 
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ productId, quantity: -1 }) 
+  })
+  .then(async r => {
+    const data = await r.json().catch(() => ({}));
+    if(r.ok && data.success !== false) {
+      const nextQty = data.newQuantity !== undefined ? data.newQuantity : curQty - 1;
+      qEl.textContent = nextQty;
+      const sp = parseRupee(document.getElementById('saleprice_' + productId).textContent);
+      document.getElementById('subtotal_' + productId).textContent = formatRupee(sp * nextQty);
+      updateTotalPrice();
+      toastr.success('Quantity updated');
+    } else { 
+      toastr.error(data.message || 'Failed to update quantity'); 
+    }
+  }).catch(e => toastr.error('Error: ' + e.message));
+}
 
-            fetch('/updateCart', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    productId: productId,
-                    quantity: 1
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    quantityElement.textContent = currentQuantity + 1;
+function removeItem(productId) {
+  fetch('/removeItem', { 
+    method:'POST', 
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ productId }) 
+  })
+  .then(async r => {
+    const data = await r.json().catch(() => ({}));
+    if(r.ok && data.success !== false) {
+      const row = document.getElementById('row_' + productId);
+      if(row) row.remove();
+      updateTotalPrice();
+      toastr.success('Item removed from cart.');
+      const tbody = document.getElementById('cart-tbody');
+      if(tbody && !tbody.querySelector('.bk-cart-item')) {
+        tbody.innerHTML = '<div class="bk-cart-empty" id="empty-cart-row">' +
+          '<div class="bk-cart-empty-icon"><i class="fas fa-basket-shopping"></i></div>' +
+          '<div class="bk-cart-empty-title">Your cart is empty</div>' +
+          '<p class="bk-cart-empty-sub">Add books from the shop to get started.</p>' +
+          '<a href="/loadShop" class="bk-btn bk-btn-dark"><i class="fas fa-compass"></i> Explore Books</a>' +
+          '</div>';
+        const coBtn = document.querySelector('.bk-summary-cta a[href="/loadCheckOut"]');
+        if(coBtn) coBtn.outerHTML = '<button class="bk-btn bk-btn-dark bk-btn-full" onclick="showEmptyCartMessage()"><i class="fas fa-lock"></i> Proceed to Checkout</button>';
+      }
+    } else { 
+      toastr.error(data.message || 'Failed to remove item.'); 
+    }
+  }).catch(e => toastr.error('Error: ' + e.message));
+}
 
-                    const salePrice = document.getElementById(`saleprice_${productId}`).textContent;
-                    const subtotalElement = document.getElementById(`subtotal_${productId}`);
-                    const saleP = parseFloat(salePrice.replace('$', ''));
-                    const subtotal = (saleP * (currentQuantity + 1)).toFixed(2);
-                    subtotalElement.textContent = `$${subtotal}`;
-
-                    updateTotalPrice();
-                } else {
-                    console.error('Failed to update cart');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-    </script>
-
-    <script>
-        function decrease(pId) {
-            const quantityElement = document.getElementById('quantity_' + pId);
-            const currentQuantity = parseInt(quantityElement.textContent);
-            if (currentQuantity > 1) {
-                fetch('/updateCart', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        productId: pId,
-                        quantity: -1
-                    })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        quantityElement.textContent = currentQuantity - 1;
-                        const subtotalElement = document.getElementById('subtotal_' + pId);
-                        const salePrice = document.getElementById('saleprice_' + pId);
-                        let saleP = parseFloat(salePrice.textContent.replace('$', ''));
-                        const newSubtotal = (saleP * (currentQuantity - 1)).toFixed(2);
-                        subtotalElement.textContent = `$${newSubtotal}`;
-                        updateTotalPrice();
-                    } else {
-                        console.error('Failed to update cart');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            } else {
-                console.log('Cannot decrease further. Quantity is already 1.');
-            }
-        }
-
-    
-        function removeItem(productId) {
-            fetch('/removeItem', {
-                method: 'delete',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ productId })
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Remove the row from the DOM
-                    const row = document.getElementById(`row_${productId}`);
-                    if (row) {
-                        row.remove();
-                    }
-
-                    // Update total price
-                    updateTotalPrice();
-
-                    // Show success message
-                    toastr.success('Item removed from cart successfully');
-
-                    // Check if cart is empty
-                    const tbody = document.getElementById('cart-tbody');
-                    const remainingRows = tbody.querySelectorAll('tr:not(#empty-cart-row)');
-                    
-                    if (remainingRows.length === 0) {
-                        // Cart is empty, show empty message
-                        tbody.innerHTML = '<tr id="empty-cart-row"><td colspan="6" class="text-center">Your cart is empty</td></tr>';
-                        
-                        // Update the checkout button
-                        const checkoutArea = document.querySelector('.cart-action');
-                        const checkoutButton = checkoutArea.querySelector('a[href="/loadCheckOut"]');
-                        if (checkoutButton) {
-                            checkoutButton.outerHTML = '<button class="btn" onclick="showEmptyCartMessage()">Proceed To CheckOut</button>';
-                        }
-                    }
-
-                    console.log('Product removed successfully');
-                } else {
-                    console.error('Failed to remove product');
-                    toastr.error('Failed to remove item from cart');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                toastr.error('An error occurred while removing the item');
-            });
-        }
-    </script>
-
-    <script>
-        // Function to calculate total price
-        function calculateTotalPrice() {
-            let totalPrice = 0;
-            const subtotalElements = document.querySelectorAll('[id^="subtotal_"]');
-            subtotalElements.forEach(subtotalElement => {
-                totalPrice += parseFloat(subtotalElement.textContent.replace('$', ''));
-            });
-            return totalPrice.toFixed(2);
-        }
-
-        // Function to update total price display
-        function updateTotalPrice() {
-            const totalPriceElement = document.getElementById('totalPrice');
-            totalPriceElement.textContent = calculateTotalPrice();
-        }
-
-        // Call updateTotalPrice() initially to display the total price
-        updateTotalPrice();
-    </script>
-
-    <script>
-        const cartCountSpan = document.getElementById('cart-count');
-    </script>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-    <script src="public/assets/js/vendor/modernizr-3.6.0.min.js"></script>
-    <script src="public/assets/js/vendor/jquery-3.6.0.min.js"></script>
-    <script src="public/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
-    <script src="public/assets/js/vendor/bootstrap.bundle.min.js"></script>
-    <script src="public/assets/js/plugins/slick.js"></script>
-    <script src="public/assets/js/plugins/jquery.syotimer.min.js"></script>
-    <script src="public/assets/js/plugins/wow.js"></script>
-    <script src="public/assets/js/plugins/jquery-ui.js"></script>
-    <script src="public/assets/js/plugins/perfect-scrollbar.js"></script>
-    <script src="public/assets/js/plugins/magnific-popup.js"></script>
-    <script src="public/assets/js/plugins/select2.min.js"></script>
-    <script src="public/assets/js/plugins/waypoints.js"></script>
-    <script src="public/assets/js/plugins/counterup.js"></script>
-    <script src="public/assets/js/plugins/jquery.countdown.min.js"></script>
-    <script src="public/assets/js/plugins/images-loaded.js"></script>
-    <script src="public/assets/js/plugins/isotope.js"></script>
-    <script src="public/assets/js/plugins/scrollup.js"></script>
-    <script src="public/assets/js/plugins/jquery.vticker-min.js"></script>
-    <script src="public/assets/js/maind134.js?v=3.4"></script>
-    <script src="public/assets/js/shopd134.js?v=3.4"></script>
+updateTotalPrice();
+</script>
 </body>
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-frontend/shop-cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Jul 2023 10:10:07 GMT -->
-
 </html>

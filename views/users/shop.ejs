@@ -1,707 +1,858 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
-
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-frontend/shop-grid-left.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Jul 2023 10:10:46 GMT -->
-
 <head>
     <meta charset="utf-8">
-    <title>BOOKSAW</title>
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="">
+    <title>Shop — BOOKSAW</title>
+    <meta name="description" content="Browse our complete collection of books. Filter by genre, sort by price, and find your next great read.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
-    <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
-    <!-- Template CSS -->
-    <link rel="stylesheet" href="public/assets/css/maind134.css?v=3.4">
-    <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/assets/css/maind134.css?v=3.4">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <style>
+        /* ── BOOKSAW SHOP — WARM LITERARY DESIGN ── */
+        :root {
+            --canvas:    #f5f0e8;
+            --bg:        #faf8f4;
+            --fg:        #2d2820;
+            --highlight: #b8542a;
+            --hi-light:  #d4673a;
+            --muted-fg:  #7a6f60;
+            --border:    #ddd8ce;
+            --secondary: #edeae2;
+            --card:      #ffffff;
+            --shadow-sm: 0 2px 8px rgba(45,40,32,0.06);
+            --shadow-md: 0 8px 24px rgba(45,40,32,0.09);
+            --shadow-cover: 0 10px 18px rgba(45,40,32,0.18);
+            --r-sm: 8px; --r-md: 14px; --r-lg: 20px;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: var(--canvas);
+            color: var(--fg);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* ── BREADCRUMB ─────────────────────────── */
+        .bk-crumb {
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 0;
+        }
+        .bk-crumb-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 48px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--muted-fg);
+        }
+        .bk-crumb-inner a {
+            color: var(--muted-fg);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .bk-crumb-inner a:hover { color: var(--highlight); }
+        .bk-crumb-sep { color: var(--border); font-size: 0.7rem; }
+        .bk-crumb-current { color: var(--fg); font-weight: 600; }
+
+        /* ── SHOP LAYOUT ───────────────────────── */
+        .bk-shop {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 40px 48px 80px;
+            display: grid;
+            grid-template-columns: 256px 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        /* ── SIDEBAR ───────────────────────────── */
+        .bk-sidebar {
+            position: sticky;
+            top: 90px;
+        }
+
+        .bk-sidebar-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .bk-sidebar-head {
+            padding: 16px 20px 14px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .bk-sidebar-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--fg);
+        }
+        .bk-sidebar-count {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--muted-fg);
+            background: var(--secondary);
+            border: 1px solid var(--border);
+            padding: 2px 8px;
+            border-radius: 999px;
+        }
+
+        /* Search sidebar */
+        .bk-sidebar-search {
+            padding: 16px;
+        }
+        .bk-sidebar-search form {
+            display: flex;
+            align-items: center;
+            background: var(--canvas);
+            border: 1.5px solid var(--border);
+            border-radius: var(--r-sm);
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .bk-sidebar-search form:focus-within { border-color: var(--highlight); }
+        .bk-sidebar-search input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 9px 12px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.85rem;
+            color: var(--fg);
+            outline: none;
+        }
+        .bk-sidebar-search input::placeholder { color: var(--muted-fg); }
+        .bk-sidebar-search button {
+            background: none;
+            border: none;
+            padding: 9px 12px;
+            color: var(--muted-fg);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+        .bk-sidebar-search button:hover { color: var(--highlight); }
+
+        /* Category list */
+        .bk-cat-list { padding: 8px 0; }
+        .bk-cat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            font-size: 0.86rem;
+            font-weight: 500;
+            color: var(--fg);
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            transition: background 0.15s, color 0.15s;
+            border-radius: 0;
+        }
+        .bk-cat-item:hover { background: rgba(184,84,42,0.06); color: var(--highlight); }
+        .bk-cat-item.active { background: rgba(184,84,42,0.09); color: var(--highlight); font-weight: 600; }
+        .bk-cat-item i { width: 16px; text-align: center; font-size: 0.8rem; color: var(--muted-fg); transition: color 0.15s; }
+        .bk-cat-item:hover i, .bk-cat-item.active i { color: var(--highlight); }
+        .bk-cat-item .bk-cat-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--border);
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .bk-cat-item:hover .bk-cat-dot,
+        .bk-cat-item.active .bk-cat-dot { background: var(--highlight); }
+
+        /* Sort sidebar card */
+        .bk-sort-list { padding: 8px 0; }
+        .bk-sort-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 20px;
+            font-size: 0.84rem;
+            color: var(--fg);
+            text-decoration: none;
+            transition: background 0.15s, color 0.15s;
+        }
+        .bk-sort-item:hover { background: rgba(184,84,42,0.06); color: var(--highlight); }
+        .bk-sort-item.active { color: var(--highlight); font-weight: 600; background: rgba(184,84,42,0.06); }
+        .bk-sort-item i { font-size: 0.75rem; color: var(--muted-fg); width: 14px; text-align: center; }
+        .bk-sort-item.active i { color: var(--highlight); }
+
+        /* ── MAIN CONTENT ──────────────────────── */
+        .bk-shop-main {}
+
+        /* Toolbar */
+        .bk-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding: 14px 20px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+        }
+        .bk-toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .bk-result-count {
+            font-size: 0.85rem;
+            color: var(--muted-fg);
+        }
+        .bk-result-count strong { color: var(--fg); font-weight: 700; }
+        .bk-active-filter {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--highlight);
+            background: rgba(184,84,42,0.08);
+            border: 1px solid rgba(184,84,42,0.2);
+            padding: 3px 10px;
+            border-radius: 999px;
+        }
+        .bk-active-filter a { color: var(--muted-fg); text-decoration: none; margin-left: 4px; }
+        .bk-active-filter a:hover { color: var(--fg); }
+        .bk-toolbar-right { display: flex; align-items: center; gap: 8px; }
+        .bk-view-btn {
+            width: 34px; height: 34px;
+            border-radius: 7px;
+            border: 1.5px solid var(--border);
+            background: none;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--muted-fg);
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .bk-view-btn:hover, .bk-view-btn.active { border-color: var(--highlight); color: var(--highlight); background: rgba(184,84,42,0.07); }
+
+        /* ── BOOK GRID ────────────────────────────── */
+        .bk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 28px 20px;
+        }
+        .bk-grid.list-view { grid-template-columns: 1fr; }
+        .bk-grid.list-view .bk-card {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 22px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: 18px;
+        }
+        .bk-grid.list-view .bk-cover-wrap {
+            width: 88px;
+            flex-shrink: 0;
+            aspect-ratio: auto;
+            height: 124px;
+        }
+        .bk-grid.list-view .bk-card-body {
+            padding: 0;
+            flex: 1;
+        }
+        .bk-grid.list-view .bk-cover-cta { display: none; }
+        .bk-grid.list-view .bk-list-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        /* ── BOOK CARD ───────────────────────────── */
+        .bk-card { display: flex; flex-direction: column; }
+
+        /* Cover */
+        .bk-cover-wrap {
+            position: relative;
+            border-radius: 6px;
+            overflow: hidden;
+            aspect-ratio: 2/3;
+            background: var(--secondary);
+            /* book spine shadow — left edge slightly darker */
+            box-shadow:
+                inset 6px 0 12px rgba(45,40,32,0.12),
+                4px 6px 20px rgba(45,40,32,0.14);
+            transition: transform 380ms cubic-bezier(0.25,0.46,0.45,0.94),
+                        box-shadow 380ms cubic-bezier(0.25,0.46,0.45,0.94);
+        }
+        .bk-card:hover .bk-cover-wrap {
+            transform: translateY(-6px) rotate3d(0,1,0,2deg);
+            box-shadow:
+                inset 6px 0 12px rgba(45,40,32,0.12),
+                10px 20px 32px rgba(45,40,32,0.20);
+        }
+        .bk-cover-wrap img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Sold-out dim — only for unavailable books, no badge */
+        .bk-cover-wrap.soldout img { filter: grayscale(40%) brightness(0.85); }
+
+        /* Slide-up CTA strip — appears from the bottom on hover */
+        .bk-cover-cta {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            display: flex;
+            transform: translateY(100%);
+            transition: transform 320ms cubic-bezier(0.4,0,0.2,1);
+        }
+        .bk-card:hover .bk-cover-cta { transform: translateY(0); }
+
+        .bk-cta-cart {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 11px 8px;
+            background: var(--fg);
+            color: rgba(255,255,255,0.92);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+        .bk-cta-cart:hover { background: var(--highlight); }
+
+        .bk-cta-wish {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            background: rgba(250,248,244,0.94);
+            color: var(--fg);
+            font-size: 0.88rem;
+            text-decoration: none;
+            border: none;
+            border-left: 1px solid rgba(45,40,32,0.1);
+            cursor: pointer;
+            transition: background 0.18s, color 0.18s;
+        }
+        .bk-cta-wish:hover { background: var(--highlight); color: #fff; }
+
+        /* Sold-out strip */
+        .bk-soldout-strip {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 9px;
+            background: rgba(45,40,32,0.75);
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Card body */
+        .bk-card-body { padding: 12px 2px 0; }
+
+        .bk-genre {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--highlight);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 5px;
+            opacity: 0.85;
+        }
+        .bk-genre:hover { opacity: 1; }
+
+        .bk-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 0.87rem;
+            font-weight: 700;
+            color: var(--fg);
+            line-height: 1.45;
+            text-decoration: none;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 9px;
+        }
+        .bk-title:hover { color: var(--highlight); }
+
+        .bk-price-row { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
+        .bk-price { font-size: 0.96rem; font-weight: 700; color: var(--fg); }
+        .bk-price-old { font-size: 0.77rem; color: var(--muted-fg); text-decoration: line-through; }
+        .bk-discount {
+            font-size: 0.63rem; font-weight: 700;
+            color: var(--highlight);
+            /* No background box — just plain text saves */ 
+        }
+        .bk-unavail {
+            font-size: 0.74rem;
+            color: var(--muted-fg);
+            font-style: italic;
+        }
+
+        /* List view action buttons */
+        .bk-list-actions { display: none; }
+        .bk-list-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.18s;
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            color: var(--fg);
+        }
+        .bk-list-btn:hover { border-color: var(--highlight); color: var(--highlight); }
+        .bk-list-btn.primary { background: var(--fg); color: #fff; border-color: var(--fg); }
+        .bk-list-btn.primary:hover { background: var(--highlight); border-color: var(--highlight); }
+
+        /* Empty state */
+        .bk-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+        }
+        .bk-empty-icon { font-size: 3.5rem; opacity: 0.3; margin-bottom: 16px; }
+        .bk-empty-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.35rem;
+            color: var(--fg);
+            margin-bottom: 8px;
+        }
+        .bk-empty-sub { font-size: 0.9rem; color: var(--muted-fg); margin-bottom: 24px; }
+        .bk-empty a {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 11px 24px;
+            background: var(--fg); color: #fff;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.88rem; font-weight: 600;
+            border-radius: 7px; text-decoration: none;
+            transition: background 0.2s;
+        }
+        .bk-empty a:hover { background: var(--highlight); }
+
+        /* ── PAGINATION ────────────────────────── */
+        .bk-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 40px;
+        }
+        .bk-page-btn {
+            min-width: 38px; height: 38px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            color: var(--fg);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 500;
+            display: flex; align-items: center; justify-content: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 0 10px;
+        }
+        .bk-page-btn:hover { border-color: var(--highlight); color: var(--highlight); background: rgba(184,84,42,0.06); }
+        .bk-page-btn.active { background: var(--fg); color: #fff; border-color: var(--fg); }
+        .bk-page-btn:disabled, .bk-page-btn.disabled { opacity: 0.4; pointer-events: none; }
+
+
+
+        /* ── RESPONSIVE ────────────────────────── */
+        @media (max-width: 1024px) {
+            .bk-shop { grid-template-columns: 1fr; padding: 24px 24px 60px; }
+            .bk-sidebar { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+            .bk-sidebar-card:last-child { grid-column: 1 / -1; }
+        }
+        @media (max-width: 600px) {
+            .bk-shop { padding: 16px 16px 60px; gap: 16px; }
+            .bk-crumb-inner { padding: 0 16px; }
+            .bk-sidebar { grid-template-columns: 1fr; }
+            .bk-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+            .bk-toolbar { flex-wrap: wrap; }
+        }
+    </style>
 </head>
-<style>
-    .search-form {
-        display: flex;
-        align-items: center;
-    }
-
-    .search-input {
-        padding: 10px;
-        border: 2px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
-        flex: 1;
-        margin-right: 10px;
-    }
-
-    .search-button {
-        padding: 10px 20px;
-        background-color: #088178;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
-    }
-
-    .search-button:hover {
-        background-color: #065a49;
-    }
-    
-</style>
 
 <body>
-    <!-- Quick view -->
-  <%- include('../partials/userHeader') %>
+    <%- include('../partials/userHeader') %>
 
-    <div class="mobile-header-active mobile-header-wrapper-style">
-        <div class="mobile-header-wrapper-inner">
-            <div class="mobile-header-top">
-                <div class="mobile-header-logo">
-                    <a href="index.html"><img src="/public/main-logo (1).png" alt="logo"></a>
+    <!-- Breadcrumb -->
+    <div class="bk-crumb">
+        <div class="bk-crumb-inner">
+            <a href="/home">Home</a>
+            <span class="bk-crumb-sep"><i class="fas fa-chevron-right" style="font-size:0.65rem"></i></span>
+            <span class="bk-crumb-current">Shop</span>
+            <% if (typeof category !== 'undefined' && category) { %>
+                <span class="bk-crumb-sep"><i class="fas fa-chevron-right" style="font-size:0.65rem"></i></span>
+                <span class="bk-crumb-current"><%= decodeURIComponent(category) %></span>
+            <% } %>
+            <% if (typeof search !== 'undefined' && search) { %>
+                <span class="bk-crumb-sep"><i class="fas fa-chevron-right" style="font-size:0.65rem"></i></span>
+                <span class="bk-crumb-current">"<%= search %>"</span>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Shop Layout -->
+    <div class="bk-shop">
+
+        <!-- ════ SIDEBAR ════ -->
+        <aside class="bk-sidebar">
+
+            <!-- Search -->
+            <div class="bk-sidebar-card">
+                <div class="bk-sidebar-head">
+                    <span class="bk-sidebar-title">Search</span>
                 </div>
-                <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
-                    <button class="close-style search-close">
-                        <i class="icon-top"></i>
-                        <i class="icon-bottom"></i>
+                <div class="bk-sidebar-search">
+                    <form id="searchForm" action="/loadShop">
+                        <input type="hidden" id="selectedCategory" name="category" value="<%= (typeof category !== 'undefined' && category) ? category : '' %>">
+                        <input type="text" name="query" placeholder="Books, authors…"
+                            value="<%= (typeof search !== 'undefined' && search) ? search : '' %>">
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="bk-sidebar-card">
+                <div class="bk-sidebar-head">
+                    <span class="bk-sidebar-title">Genres</span>
+                    <% if (typeof categories !== 'undefined' && categories) { %>
+                        <span class="bk-sidebar-count"><%= categories.length %></span>
+                    <% } %>
+                </div>
+                <div class="bk-cat-list">
+                    <button class="bk-cat-item <% if(!(typeof category !== 'undefined' && category)) { %>active<% } %>"
+                        onclick="filterCategory('')">
+                        <span class="bk-cat-dot"></span> All Books
+                    </button>
+                    <% if (typeof categories !== 'undefined' && categories) { %>
+                        <% for(let i = 0; i < categories.length; i++) { %>
+                            <button class="bk-cat-item <%= (typeof category !== 'undefined' && decodeURIComponent(category) === categories[i].categoryName) ? 'active' : '' %>"
+                                id="category<%= i %>"
+                                onclick="filterCategory('<%= encodeURIComponent(categories[i].categoryName) %>')">
+                                <span class="bk-cat-dot"></span>
+                                <%= categories[i].categoryName %>
+                            </button>
+                        <% } %>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Sort -->
+            <div class="bk-sidebar-card">
+                <div class="bk-sidebar-head">
+                    <span class="bk-sidebar-title">Sort By</span>
+                </div>
+                <div class="bk-sort-list">
+                    <% const curFilter = (typeof filter !== 'undefined') ? filter : ''; %>
+                    <% const curSearch = (typeof search !== 'undefined' && search) ? search : ''; %>
+                    <% const curCat = (typeof category !== 'undefined' && category) ? category : ''; %>
+                    <a href="/loadShop?query=<%= curSearch %>&category=<%= curCat %>" class="bk-sort-item <%= !curFilter ? 'active' : '' %>">
+                        <i class="fas fa-star"></i> Featured
+                    </a>
+                    <a href="/loadShop?query=<%= curSearch %>&category=<%= curCat %>&filter=low-high" class="bk-sort-item <%= curFilter === 'low-high' ? 'active' : '' %>">
+                        <i class="fas fa-arrow-up-short-wide"></i> Price: Low to High
+                    </a>
+                    <a href="/loadShop?query=<%= curSearch %>&category=<%= curCat %>&filter=high-low" class="bk-sort-item <%= curFilter === 'high-low' ? 'active' : '' %>">
+                        <i class="fas fa-arrow-down-short-wide"></i> Price: High to Low
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ════ MAIN ════ -->
+        <div class="bk-shop-main">
+
+            <!-- Toolbar -->
+            <div class="bk-toolbar">
+                <div class="bk-toolbar-left">
+                    <% if (typeof product !== 'undefined' && product) { %>
+                        <span class="bk-result-count">
+                            <strong><%= product.length %></strong> book<%= product.length !== 1 ? 's' : '' %> found
+                        </span>
+                    <% } %>
+                    <% if (typeof category !== 'undefined' && category) { %>
+                        <span class="bk-active-filter">
+                            <i class="fas fa-tag" style="font-size:0.65rem"></i>
+                            <%= decodeURIComponent(category) %>
+                            <a href="/loadShop?query=<%= (typeof search !== 'undefined' && search) ? search : '' %>"><i class="fas fa-xmark"></i></a>
+                        </span>
+                    <% } %>
+                    <% if (typeof search !== 'undefined' && search) { %>
+                        <span class="bk-active-filter">
+                            <i class="fas fa-search" style="font-size:0.65rem"></i>
+                            "<%= search %>"
+                            <a href="/loadShop?category=<%= (typeof category !== 'undefined' && category) ? category : '' %>"><i class="fas fa-xmark"></i></a>
+                        </span>
+                    <% } %>
+                </div>
+                <div class="bk-toolbar-right">
+                    <button class="bk-view-btn active" id="grid-view-btn" onclick="setView('grid')" title="Grid view">
+                        <i class="fas fa-grip"></i>
+                    </button>
+                    <button class="bk-view-btn" id="list-view-btn" onclick="setView('list')" title="List view">
+                        <i class="fas fa-list"></i>
                     </button>
                 </div>
             </div>
-            <div class="mobile-header-content-area">
-                <div class="mobile-search search-style-3 mobile-header-border">
-                    <form action="#">
-                        <input type="text" placeholder="Search for items…">
-                        <button type="submit"><i class="fi-rs-search"></i></button>
-                    </form>
-                </div>
-                <div class="mobile-menu-wrap mobile-header-border">
-                    <div class="main-categori-wrap mobile-header-border">
-                        <a class="categori-button-active-2" href="#">
-                            <span class="fi-rs-apps"></span> Browse Categories
-                        </a>
-                        <div class="categori-dropdown-wrap categori-dropdown-active-small">
-                            <ul>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-dress"></i>Women's Clothing</a>
-                                </li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-tshirt"></i>Men's Clothing</a>
-                                </li>
-                                <li> <a href="shop-grid-right.html"><i class="evara-font-smartphone"></i> Cellphones</a>
-                                </li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-desktop"></i>Computer &
-                                        Office</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-cpu"></i>Consumer
-                                        Electronics</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-home"></i>Home & Garden</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-high-heels"></i>Shoes</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-teddy-bear"></i>Mother &
-                                        Kids</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-kite"></i>Outdoor fun</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- mobile menu start -->
-                    <nav>
-                        <ul class="mobile-menu">
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="/home">Home</a>
-                                <ul class="dropdown">
-                                    <li><a href="index.html">Home 1</a></li>
-                                    <li><a href="index-2.html">Home 2</a></li>
-                                    <li><a href="index-3.html">Home 3</a></li>
-                                    <li><a href="index-4.html">Home 4</a></li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                    href="shop-grid-right.html">shop</a>
-                                <ul class="dropdown">
-                                    <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
-                                    <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>
-                                    <li><a href="shop-list-right.html">Shop List – Right Sidebar</a></li>
-                                    <li><a href="shop-list-left.html">Shop List – Left Sidebar</a></li>
-                                    <li><a href="shop-fullwidth.html">Shop - Wide</a></li>
-                                    <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                            href="#">Single Product</a>
-                                        <ul class="dropdown">
-                                            <li><a href="shop-product-right.html">Product – Right Sidebar</a></li>
-                                            <li><a href="shop-product-left.html">Product – Left Sidebar</a></li>
-                                            <li><a href="shop-product-full.html">Product – No sidebar</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="shop-filter.html">Shop – Filter</a></li>
-                                    <li><a href="shop-wishlist.html">Shop – Wishlist</a></li>
-                                    <li><a href="shop-cart.html">Shop – Cart</a></li>
-                                    <li><a href="shop-checkout.html">Shop – Checkout</a></li>
-                                    <li><a href="shop-compare.html">Shop – Compare</a></li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Mega
-                                    menu</a>
-                                <ul class="dropdown">
-                                    <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                            href="#">Women's Fashion</a>
-                                        <ul class="dropdown">
-                                            <li><a href="shop-product-right.html">Dresses</a></li>
-                                            <li><a href="shop-product-right.html">Blouses & Shirts</a></li>
-                                            <li><a href="shop-product-right.html">Hoodies & Sweatshirts</a></li>
-                                            <li><a href="shop-product-right.html">Women's Sets</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                            href="#">Men's Fashion</a>
-                                        <ul class="dropdown">
-                                            <li><a href="shop-product-right.html">Jackets</a></li>
-                                            <li><a href="shop-product-right.html">Casual Faux Leather</a></li>
-                                            <li><a href="shop-product-right.html">Genuine Leather</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                            href="#">Technology</a>
-                                        <ul class="dropdown">
-                                            <li><a href="shop-product-right.html">Gaming Laptops</a></li>
-                                            <li><a href="shop-product-right.html">Ultraslim Laptops</a></li>
-                                            <li><a href="shop-product-right.html">Tablets</a></li>
-                                            <li><a href="shop-product-right.html">Laptop Accessories</a></li>
-                                            <li><a href="shop-product-right.html">Tablet Accessories</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                    href="blog-category-fullwidth.html">Blog</a>
-                                <ul class="dropdown">
-                                    <li><a href="blog-category-grid.html">Blog Category Grid</a></li>
-                                    <li><a href="blog-category-list.html">Blog Category List</a></li>
-                                    <li><a href="blog-category-big.html">Blog Category Big</a></li>
-                                    <li><a href="blog-category-fullwidth.html">Blog Category Wide</a></li>
-                                    <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                            href="#">Single Product Layout</a>
-                                        <ul class="dropdown">
-                                            <li><a href="blog-post-left.html">Left Sidebar</a></li>
-                                            <li><a href="blog-post-right.html">Right Sidebar</a></li>
-                                            <li><a href="blog-post-fullwidth.html">No Sidebar</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Pages</a>
-                                <ul class="dropdown">
-                                    <li><a href="page-about.html">About Us</a></li>
-                                    <li><a href="page-contact.html">Contact</a></li>
-                                    <li><a href="page-account.html">My Account</a></li>
-                                    <li><a href="page-login-register.html">login/register</a></li>
-                                    <li><a href="page-purchase-guide.html">Purchase Guide</a></li>
-                                    <li><a href="page-privacy-policy.html">Privacy Policy</a></li>
-                                    <li><a href="page-terms.html">Terms of Service</a></li>
-                                    <li><a href="page-404.html">404 Page</a></li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Language</a>
-                                <ul class="dropdown">
-                                    <li><a href="#">English</a></li>
-                                    <li><a href="#">French</a></li>
-                                    <li><a href="#">German</a></li>
-                                    <li><a href="#">Spanish</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </nav>
-                    <!-- mobile menu end -->
-                </div>
-                <div class="mobile-header-info-wrap mobile-header-border">
-                    <div class="single-mobile-header-info mt-30">
-                        <a href="page-contact.html"> Our location </a>
-                    </div>
-                    <div class="single-mobile-header-info">
-                        <a href="page-login-register.html">Log In / Sign Up </a>
-                    </div>
-                    <div class="single-mobile-header-info">
-                        <a href="#">(+01) - 2345 - 6789 </a>
-                    </div>
-                </div>
-                <div class="mobile-social-icon">
-                    <h5 class="mb-15 text-grey-4">Follow Us</h5>
-                    <a href="#"><img src="public/assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                    <a href="#"><img src="public/assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                    <a href="#"><img src="public/assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
-                    <a href="#"><img src="public/assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
-                    <a href="#"><img src="public/assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <main class="main">
-        <div class="page-header breadcrumb-wrap">
-            <div class="container">
-                <div class="breadcrumb">
-                    <a href="/" rel="nofollow">Home</a>
-                    <span></span> Shop
-                </div>
-            </div>
-        </div>
-        <section class="mt-50 mb-50">
-            <div class="container">
-                <div class="row flex-row-reverse">
-                    <div class="col-lg-9">
-                        <div class="shop-product-fillter">
-                            <div class="totall-product">
-                                <p> We found <strong class="text-brand">
-                                        <%=product.length%>
-                                    </strong> Books for you!</p>
-                            </div>
-                            <div class="sort-by-product-area">
-                                <!-- <div class="sort-by-cover mr-10">
-                                    <div class="sort-by-product-wrap">
-                                        <div class="sort-by">
-                                            <span><i class="fi-rs-apps"></i>Show:</span>
-                                        </div>
-                                        <div class="sort-by-dropdown-wrap">
-                                            <span> 50 <i class="fi-rs-angle-small-down"></i></span>
-                                        </div>
-                                    </div>
-                                    <div class="sort-by-dropdown">
-                                        <ul>
-                                            <li><a class="active" href="#">50</a></li>
-                                            <li><a href="#">100</a></li>
-                                            <li><a href="#">150</a></li>
-                                            <li><a href="#">200</a></li>
-                                            <li><a href="#">All</a></li>
-                                        </ul>
-                                    </div>
-                                </div> -->
 
+            <!-- Book Grid -->
+            <% if (typeof product !== 'undefined' && product && product.length > 0) { %>
+                <div class="bk-grid" id="bk-grid">
+                    <% for(let i = 0; i < product.length; i++) { %>
+                        <div class="bk-card" id="bk-card-<%= product[i]._id %>">
 
-
-                                <!-- Sort  -->
-                                <% if(categories) { %>
-
-                                    <div class="sort-by-cover">
-                                        <div class="sort-by-product-wrap">
-                                            <div class="sort-by">
-                                                <span><i class="fi-rs-apps-sort"></i>Sort by:</span>
-                                            </div>
-                                            <div class="sort-by-dropdown-wrap">
-                                                <span> Featured <i class="fi-rs-angle-small-down"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="sort-by-dropdown">
-                                            <ul>
-                                                <li>
-                                                    <a class="active" href="/loadShop?query=<%= search %>&category=<%= category %>">Featured</a>
-                                                </li>
-                                                <li>
-                                                    <a href="/loadShop?query=<%= search %>&category=<%= category %>&filter=low-high">Price: Low to High</a>
-                                                </li>
-                                                <li>
-                                                    <a href="/loadShop?query=<%= search %>&category=<%= category %>&filter=high-low">Price: High to Low</a>
-                                                </li>
-                                                <!-- <li><a href="#">Release Date</a></li> -->
-                                                <!-- <li><a href="#">Avg. Rating</a></li> -->
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    
-                                    <% } %>
-                                    
-
-
-                            </div>
-                        </div>
-
-                        <% if(product && product.length> 0) { %>
-
-
-                            <div class="row product-grid-3">
-                                <% for(let i=0 ; i < product.length ; i++) { %>
-                                    <div class="col-lg-4 col-md-4 col-12 col-sm-6">
-                                        <div class="product-cart-wrap mb-30">
-                                            <div class="product-img-action-wrap">
-                                                <div class="product-img product-img-zoom">
-                                                    <a href="/shop-product?id=<%=product[i]._id%>">
-                                                        <img class="default-img"
-                                                            src="/public/uploads/<%=product[i].Images[0]%>" alt="">
-                                                        <img class="hover-img"
-                                                            src="/public/uploads/<%=product[i].Images[1] || product[i].Images[0]%>" alt="">
-                                                    </a>
-                                                </div>
-                                                <div class="product-action-1">
-                                                    <!-- <a aria-label="Quick view" class="action-btn hover-up" -->
-                                                        <!-- data-bs-toggle="modal" data-bs-target="#quickViewModal"> -->
-                                                        <i class="fi-rs-search"></i></a>
-                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                        href="/wishlist?id=<%=product[i]._id%>"><i class="fi-rs-heart"></i></a>
-                                                    <!-- <a aria-label="Compare" class="action-btn hover-up" -->
-                                                        <!-- href="shop-compare.html"><i class="fi-rs-shuffle"></i></a> -->
-                                                </div>
-                                                <div class="product-badges product-badges-position product-badges-mrg">
-                                                    <span class="hot">Hot</span>
-                                                </div>
-                                            </div>
-                                            <div class="product-content-wrap">
-                                                <div class="product-category">
-                                                    <a href="shop-grid-right.html">
-                                                        <%=product[i].Categories.categoryName%>
-                                                    </a>
-                                                </div>
-                                                <h2><a href="shop-product-right.html">
-                                                        <%=product[i].Bookname%>
-                                                    </a></h2>
-                                                <div class="rating-result" title="90%">
-                                                    <span>
-                                                    </span>
-                                                </div>
-                                                <% if (product[i].stock == 0) { %>
-                                                    <div class="product-price">
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <span style="display: inline-block; padding: 2px 16px; background-color: #ff0000; color: #ffffff; font-weight: bold; border-radius: 4px;">Currently Unavailable</span>
-
-                                                    </div>
-                                                <% } else { %>
-                                                    <div class="product-price">
-                                                        <span>$<%= product[i].saleprice %></span>
-                                                        <span class="old-price">$<%= product[i].Regularprice %></span>
-                                                    </div>
-                                                    <div class="product-action-1 show">
-                                                        <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                        onclick="addToCart('<%= product[i]._id %>')">
-                                                        <i class="fi-rs-shopping-bag-add"></i>
-                                                    </a>
-                                                    </div>
-                                                <% } %>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <% } %>
-                            </div>
-
-
-
-                            <% } %>
-
-                            <div class="pagination-container">
-                                <% if (currentPage > 1) { %>
-                                    <a href="/loadShop?page=<%= currentPage - 1 %>" class="btn btn-primary btn-sm">Previous</a>
-                                <% } %>
-                            
-                                <% for (let i = 1; i <= totalPages; i++) { %>
-                                    <a href="/loadShop?page=<%= i %>" class="btn btn-primary btn-sm <%= currentPage === i ? 'active' : '' %>"><%= i %></a>
-                                <% } %>
-                            
-                                <% if (currentPage < totalPages) { %>
-                                    <a href="/loadShop?page=<%= currentPage + 1 %>" class="btn btn-primary btn-sm">Next</a>
-                                <% } %>
-                            </div>
-
-                       
-                    </div>
-                    <div class="col-lg-3 primary-sidebar sticky-sidebar">
-                        <div class="widget-category mb-30">
-                            <h5 class="section-title style-1 mb-30 wow fadeIn animated">Categories</h5>
-                            <ul class="category-list">
-                              <% for(let i = 0; i < categories.length; i++) { %>
-                              <li class="category-item">
-                                <a href="#" class="category-link <%= categories[i].isActive ? 'active' : '' %>" id="category<%= i %>" onclick="changeColor(this)">
-                                  <span class="category-icon">
-                                    <i class="fas fa-tags"></i>
-                                  </span>
-                                  <span class="category-name"><%= categories[i].categoryName %></span>
+                            <!-- Cover -->
+                            <div class="bk-cover-wrap<%= product[i].stock === 0 ? ' soldout' : '' %>">
+                                <a href="/shop-product?id=<%= product[i]._id %>">
+                                    <img
+                                        src="/public/uploads/<%= product[i].Images[0] %>"
+                                        alt="<%= product[i].Bookname %>"
+                                        loading="lazy"
+                                    >
                                 </a>
-                              </li>
-                              <% } %>
-                            </ul>
-                          </div>
-                 
-                        <!-- Search Form -->
-              
-                        
-                        <script>
-                            function changeColor(link) {
-                                const categoryLinks = document.querySelectorAll('.category-link');
-                                categoryLinks.forEach((cl) => {
-                                    cl.classList.remove('selected-category');
-                                });
-                                link.classList.add('selected-category');
-                                const categoryName = link.querySelector('.category-name').textContent;
-                                document.getElementById('selectedCategory').value = encodeURIComponent(categoryName);
-                            }
-                        
-                            document.getElementById('searchForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevent the default form submission
 
-    // Get the selected category and current query value
-    const selectedCategory = document.getElementById('selectedCategory').value;
-    const queryInput = document.querySelector('input[name="query"]').value;
-
-    // Get the form action and remove any existing query parameters
-    let action = this.action.split('?')[0];
-
-    // Construct the new queryString
-    let queryString = '';
-
-    if (selectedCategory) {
-        queryString += `?category=${encodeURIComponent(selectedCategory)}`;
-    }
-
-    if (queryInput) {
-        if (queryString) {
-            queryString += `&query=${encodeURIComponent(queryInput)}`;
-        } else {
-            queryString += `?query=${encodeURIComponent(queryInput)}`;
-        }
-    }
-
-    // Update the form action with the new queryString
-    this.action = `${action}${queryString}`;
-
-    // Submit the form
-    this.submit();
-});
-
-function changeColor(link) {
-    const categoryLinks = document.querySelectorAll('.category-link');
-    categoryLinks.forEach((cl) => {
-        cl.classList.remove('selected-category');
-    });
-    link.classList.add('selected-category');
-    
-    const categoryName = link.querySelector('.category-name').textContent;
-    document.getElementById('selectedCategory').value = encodeURIComponent(categoryName);
-}
-
-                        </script>
-
-
-                            </ul>
-                        </div>
-                        
-
-                        <!-- <div class="sidebar-widget price_range range mb-30">
-                            <div class="widget-header position-relative mb-20 pb-10">
-                                <h5 class="widget-title mb-10">Fill by price</h5>
-                                <div class="bt-1 border-color-1"></div>
-                            </div>
-                            <div class="price-filter">
-                                <div class="price-filter-inner">
-                                    <div id="slider-range"></div>
-                                    <div class="price_slider_amount">
-                                        <div class="label-input">
-                                            <span>Range:</span><input type="text" id="amount" name="price" placeholder="Add Your Price" />
-                                        </div>
+                                <% if (product[i].stock > 0) { %>
+                                    <!-- Slide-up cart strip -->
+                                    <div class="bk-cover-cta">
+                                        <button class="bk-cta-cart"
+                                            onclick="addToCart('<%= product[i]._id %>')"
+                                            id="add-cart-<%= product[i]._id %>">
+                                            <i class="fas fa-shopping-bag"></i> Add to Cart
+                                        </button>
+                                        <a href="/wishlist?id=<%= product[i]._id %>"
+                                           class="bk-cta-wish"
+                                           id="wish-<%= product[i]._id %>"
+                                           title="Save to wishlist">
+                                            <i class="fas fa-bookmark"></i>
+                                        </a>
                                     </div>
-                                </div>
+                                <% } else { %>
+                                    <div class="bk-soldout-strip">Out of Stock</div>
+                                <% } %>
                             </div>
-                            <div class="list-group">
-                                <div class="list-group-item mb-10 mt-10">
-                                </div>
-                            </div>
-                            <a href="shop-grid-right.html" class="btn btn-sm btn-default"><i class="fi-rs-filter mr-5"></i> Fillter</a>
-                        </div> -->
-                        <!-- Product sidebar Widget -->
 
-                        <!-- <div class="banner-img wow fadeIn mb-45 animated d-lg-block d-none">
-                            <img src="public/assets/imgs/banner/banner-11.jpg" alt="">
-                            <div class="banner-text">
-                                <span>Women Zone</span>
-                                <h4>Save 17% on <br>Office Dress</h4>
-                                <a href="shop-grid-right.html">Shop Now <i class="fi-rs-arrow-right"></i></a>
-                            </div>
-                        </div> -->
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-    <footer class="main">
-        <section class="newsletter p-30 text-white wow fadeIn animated">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-7 mb-md-3 mb-lg-0">
-                        <div class="row align-items-center">
-                            <div class="col flex-horizontal-center">
-                                <!-- <img class="icon-email" src="public/assets/imgs/theme/icons/icon-email.svg" alt=""> -->
-                                <!-- <h4 class="font-size-20 mb-0 ml-3">Sign up to Newsletter</h4> -->
-                            </div>
-                            <div class="col my-4 my-md-0 des">
-                                <!-- <h5 class="font-size-15 ml-4 mb-0">...and receive <strong>$25 coupon for first -->
-                                        <!-- shopping.</strong></h5> -->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5">
-                        <!-- Subscribe Form -->
-                        <form class="form-subcriber d-flex wow fadeIn animated">
-                            <!-- <input type="email" class="form-control bg-white font-small" placeholder="Enter your email"> -->
-                            <!-- <button class="btn bg-dark text-white" type="submit">Subscribe</button> -->
-                        </form>
-                        <!-- End Subscribe Form -->
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="section-padding footer-mid">
-            <div class="container pt-15 pb-20">
-                <div class="row">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="widget-about font-md mb-md-5 mb-lg-0">
-                            <div class="logo logo-width-1 wow fadeIn animated">
-                                <a href="index.html"><img src="/public/main-logo (1).png" alt="logo"></a>
-                            </div>
-                            <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
-                            <p class="wow fadeIn animated">
-                                <strong>Address: </strong>562 Wellington Road, Street 32, San Francisco
-                            </p>
-                            <p class="wow fadeIn animated">
-                                <strong>Phone: </strong>+01 2222 365 /(+91) 01 2345 6789
-                            </p>
-                            <p class="wow fadeIn animated">
-                                <strong>Hours: </strong>10:00 - 18:00, Mon - Sat
-                            </p>
-                            <h5 class="mb-10 mt-30 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
-                            <div class="mobile-social-icon wow fadeIn animated mb-sm-5 mb-md-0">
-                                <a href="#"><img src="public/assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                                <a href="#"><img src="public/assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                                <a href="#"><img src="public/assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
-                                <a href="#"><img src="public/assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
-                                <a href="#"><img src="public/assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-md-3">
-                        <h5 class="widget-title wow fadeIn animated">About</h5>
-                        <ul class="footer-list wow fadeIn animated mb-sm-5 mb-md-0">
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Delivery Information</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms &amp; Conditions</a></li>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Support Center</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-2  col-md-3">
-                        <h5 class="widget-title wow fadeIn animated">My Account</h5>
-                        <ul class="footer-list wow fadeIn animated">
-                            <li><a href="#">Sign In</a></li>
-                            <li><a href="#">View Cart</a></li>
-                            <li><a href="#">My Wishlist</a></li>
-                            <li><a href="#">Track My Order</a></li>
-                            <li><a href="#">Help</a></li>
-                            <li><a href="#">Order</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-4">
-                        <h5 class="widget-title wow fadeIn animated">Install App</h5>
-                        <div class="row">
-                            <div class="col-md-8 col-lg-12">
-                                <p class="wow fadeIn animated">From App Store or Google Play</p>
-                                <div class="download-app wow fadeIn animated">
-                                    <a href="#" class="hover-up mb-sm-4 mb-lg-0"><img class="active"
-                                            src="public/assets/imgs/theme/app-store.jpg" alt=""></a>
-                                    <a href="#" class="hover-up"><img src="public/assets/imgs/theme/google-play.jpg"
-                                            alt=""></a>
+                            <!-- Info -->
+                            <div class="bk-card-body">
+                                <a href="/loadShop?category=<%= encodeURIComponent(product[i].Categories.categoryName) %>" class="bk-genre">
+                                    <%= product[i].Categories.categoryName %>
+                                </a>
+                                <a href="/shop-product?id=<%= product[i]._id %>" class="bk-title">
+                                    <%= product[i].Bookname %>
+                                </a>
+                                <% if (product[i].stock === 0) { %>
+                                    <span class="bk-unavail">Not available</span>
+                                <% } else { %>
+                                    <div class="bk-price-row">
+                                        <span class="bk-price">&#8377;<%= product[i].saleprice %></span>
+                                        <% if (product[i].Regularprice && product[i].Regularprice > product[i].saleprice) { %>
+                                            <span class="bk-price-old">&#8377;<%= product[i].Regularprice %></span>
+                                            <span class="bk-discount">−<%= Math.round(((product[i].Regularprice - product[i].saleprice) / product[i].Regularprice) * 100) %>%</span>
+                                        <% } %>
+                                    </div>
+                                <% } %>
+                                <!-- List-view only actions -->
+                                <div class="bk-list-actions">
+                                    <% if (product[i].stock > 0) { %>
+                                        <button class="bk-list-btn primary" onclick="addToCart('<%= product[i]._id %>')">
+                                            <i class="fas fa-shopping-bag"></i> Add to Cart
+                                        </button>
+                                    <% } %>
+                                    <a href="/wishlist?id=<%= product[i]._id %>" class="bk-list-btn">
+                                        <i class="fas fa-bookmark"></i> Save
+                                    </a>
+                                    <a href="/shop-product?id=<%= product[i]._id %>" class="bk-list-btn">
+                                        <i class="fas fa-eye"></i> Details
+                                    </a>
                                 </div>
                             </div>
-                            <div class="col-md-4 col-lg-12 mt-md-3 mt-lg-0">
-                                <p class="mb-20 wow fadeIn animated">Secured Payment Gateways</p>
-                                <img class="wow fadeIn animated" src="public/assets/imgs/theme/payment-method.png"
-                                    alt="">
-                            </div>
                         </div>
+                    <% } %>
+                </div>
+            <% } else { %>
+                <div class="bk-grid">
+                    <div class="bk-empty">
+                        <div class="bk-empty-icon">📭</div>
+                        <div class="bk-empty-title">No books found</div>
+                        <p class="bk-empty-sub">
+                            <% if (typeof search !== 'undefined' && search) { %>
+                                No results for "<%= search %>". Try a different search or browse all books.
+                            <% } else if (typeof category !== 'undefined' && category) { %>
+                                No books in "<%= decodeURIComponent(category) %>" yet.
+                            <% } else { %>
+                                Our shelves are being restocked. Check back soon!
+                            <% } %>
+                        </p>
+                        <a href="/loadShop"><i class="fas fa-compass"></i> Browse All Books</a>
                     </div>
                 </div>
-            </div>
-        </section>
-        <div class="container pb-20 wow fadeIn animated">
-            <div class="row">
-                <div class="col-12 mb-20">
-                    <div class="footer-bottom"></div>
-                </div>
-              
-             
-            </div>
-        </div>
-    </footer>
-    <!-- Preloader Start -->
-    <div id="preloader-active">
-        <div class="preloader d-flex align-items-center justify-content-center">
-            <div class="preloader-inner position-relative">
-                <div class="text-center">
-                    <h5 class="mb-5">Loading BookSaw</h5>
-                    <div class="loader">
-                        <div class="bar bar1"></div>
-                        <div class="bar bar2"></div>
-                        <div class="bar bar3"></div>
-                    </div>
-                </div>
-            </div>
+            <% } %>
+
+            <!-- Pagination -->
+            <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+                <nav class="bk-pagination" aria-label="Shop pages">
+                    <% if (currentPage > 1) { %>
+                        <a href="/loadShop?page=<%= currentPage - 1 %>&query=<%= (typeof search !== 'undefined' && search) ? search : '' %>&category=<%= (typeof category !== 'undefined' && category) ? category : '' %>&filter=<%= (typeof filter !== 'undefined' && filter) ? filter : '' %>"
+                           class="bk-page-btn" id="prev-page-btn">
+                            <i class="fas fa-chevron-left" style="font-size:0.75rem"></i>
+                        </a>
+                    <% } else { %>
+                        <span class="bk-page-btn disabled"><i class="fas fa-chevron-left" style="font-size:0.75rem"></i></span>
+                    <% } %>
+
+                    <% for (let p = 1; p <= totalPages; p++) { %>
+                        <a href="/loadShop?page=<%= p %>&query=<%= (typeof search !== 'undefined' && search) ? search : '' %>&category=<%= (typeof category !== 'undefined' && category) ? category : '' %>&filter=<%= (typeof filter !== 'undefined' && filter) ? filter : '' %>"
+                           class="bk-page-btn <%= currentPage === p ? 'active' : '' %>"
+                           id="page-btn-<%= p %>">
+                            <%= p %>
+                        </a>
+                    <% } %>
+
+                    <% if (currentPage < totalPages) { %>
+                        <a href="/loadShop?page=<%= currentPage + 1 %>&query=<%= (typeof search !== 'undefined' && search) ? search : '' %>&category=<%= (typeof category !== 'undefined' && category) ? category : '' %>&filter=<%= (typeof filter !== 'undefined' && filter) ? filter : '' %>"
+                           class="bk-page-btn" id="next-page-btn">
+                            <i class="fas fa-chevron-right" style="font-size:0.75rem"></i>
+                        </a>
+                    <% } else { %>
+                        <span class="bk-page-btn disabled"><i class="fas fa-chevron-right" style="font-size:0.75rem"></i></span>
+                    <% } %>
+                </nav>
+            <% } %>
         </div>
     </div>
-    <!-- Vendor JS-->
-            
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <%- include('../partials/userFooter') %>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/public/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+    <script src="/public/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
+    <script src="/public/assets/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="/public/assets/js/plugins/wow.js"></script>
+    <script src="/public/assets/js/plugins/scrollup.js"></script>
+    <script src="/public/assets/js/plugins/jquery.theia.sticky.js"></script>
+    <script src="/public/assets/js/maind134.js?v=3.4"></script>
+    <script src="/public/assets/js/shopd134.js?v=3.4"></script>
+
     <script>
-        async function addToCart(productId) {
+        // ── Add to Cart ──────────────────────────────
+        async function addToCart(productId, evt) {
+            const btn = (evt && evt.target) ? evt.target.closest('button') : (window.event && window.event.target ? window.event.target.closest('button') : null);
+            const origHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            }
+
             try {
-                const response = await fetch(`/addToCart?id=${productId}`, {
-                    method: 'GET',
-                });
-    
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                const res = await fetch('/addToCart?id=' + productId, { method: 'GET' });
+                if (res.status === 401) {
+                    toastr.warning('Please sign in to add books to your cart!');
+                    if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
+                    return;
                 }
-    
-                const data = await response.json();
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    toastr.error(errData.error || 'Could not add to cart.');
+                    if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
+                    return;
+                }
+                const data = await res.json();
                 if (data.success) {
-                    // Product added to cart successfully
-                    toastr.success('Product added to cart');
-                    const cartCountSpan = document.getElementById('cart-count');
-                    if (cartCountSpan) {
-                        cartCountSpan.textContent = parseInt(cartCountSpan.textContent || 0) + 1;
-                    }
-                    const cartCountMobileSpan = document.getElementById('cart-count-mobile');
-                    if (cartCountMobileSpan) {
-                        cartCountMobileSpan.textContent = parseInt(cartCountMobileSpan.textContent || 0) + 1;
+                    const isNew = window.updateCartBadge ? window.updateCartBadge(productId, data) : true;
+                    toastr.success(isNew ? 'Added to cart!' : 'Cart updated!');
+                    if (btn) {
+                        btn.innerHTML = '<i class="fas fa-check"></i> ' + (isNew ? 'Added' : 'Updated');
+                        setTimeout(() => {
+                            btn.disabled = false;
+                            btn.innerHTML = origHtml;
+                        }, 1400);
                     }
                 } else {
-                    toastr.error(data.error);
+                    toastr.error(data.error || 'Could not add to cart.');
+                    if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
                 }
-            } catch (error) {
-                toastr.error('Stock limit exeeded');
-                console.error('Error adding product to cart:', error);
+            } catch (err) {
+                toastr.error('Stock limit exceeded.');
+                if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
             }
         }
+
+        // ── Filter by category ───────────────────────
+        function filterCategory(cat) {
+            const q = document.querySelector('input[name="query"]') ? document.querySelector('input[name="query"]').value : '';
+            let url = '/loadShop';
+            const params = [];
+            if (cat) params.push('category=' + cat);
+            if (q) params.push('query=' + encodeURIComponent(q));
+            if (params.length) url += '?' + params.join('&');
+            window.location.href = url;
+        }
+
+        // ── View toggle ──────────────────────────────
+        function setView(mode) {
+            const grid = document.getElementById('bk-grid');
+            const gridBtn = document.getElementById('grid-view-btn');
+            const listBtn = document.getElementById('list-view-btn');
+            if (!grid) return;
+            if (mode === 'list') {
+                grid.classList.add('list-view');
+                listBtn.classList.add('active');
+                gridBtn.classList.remove('active');
+                localStorage.setItem('bk-shop-view', 'list');
+            } else {
+                grid.classList.remove('list-view');
+                gridBtn.classList.add('active');
+                listBtn.classList.remove('active');
+                localStorage.setItem('bk-shop-view', 'grid');
+            }
+        }
+
+        // Restore saved view
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('bk-shop-view');
+            if (saved === 'list') setView('list');
+        });
     </script>
-    
-    
-           <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-           <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-           <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-           <script src="/public/assets/js/vendor/modernizr-3.6.0.min.js"></script>
-    <script src="public/assets/js/vendor/jquery-3.6.0.min.js"></script>
-    <script src="public/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
-    <script src="public/assets/js/vendor/bootstrap.bundle.min.js"></script>
-    <script src="public/assets/js/plugins/slick.js"></script>
-    <script src="public/assets/js/plugins/jquery.syotimer.min.js"></script>
-    <script src="public/assets/js/plugins/wow.js"></script>
-    <script src="public/assets/js/plugins/jquery-ui.js"></script>
-    <script src="public/assets/js/plugins/perfect-scrollbar.js"></script>
-    <script src="public/assets/js/plugins/magnific-popup.js"></script>
-    <script src="public/assets/js/plugins/select2.min.js"></script>
-    <script src="public/assets/js/plugins/waypoints.js"></script>
-    <script src="public/assets/js/plugins/counterup.js"></script>
-    <script src="public/assets/js/plugins/jquery.countdown.min.js"></script>
-    <script src="public/assets/js/plugins/images-loaded.js"></script>
-    <script src="public/assets/js/plugins/isotope.js"></script>
-    <script src="public/assets/js/plugins/scrollup.js"></script>
-    <script src="public/assets/js/plugins/jquery.vticker-min.js"></script>
-    <script src="public/assets/js/plugins/jquery.theia.sticky.js"></script>
-    <script src="public/assets/js/plugins/jquery.elevatezoom.js"></script>
-    <!-- Template  JS -->
-    <script src="public/assets/js/maind134.js?v=3.4"></script>
-    <script src="public/assets/js/shopd134.js?v=3.4"></script>
 </body>
-
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-frontend/shop-grid-left.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Jul 2023 10:10:46 GMT -->
-
 </html>

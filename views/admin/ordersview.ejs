@@ -127,26 +127,31 @@
                     <tbody>
                         <% let grandTotal = 0; %>
                         <% for(let order of orders.product) { %>
-                            <tr <% if (order.productStatus === 'Cancelled') { %>style="text-decoration: line-through;"<% } %>>
+                            <tr <% if (order.productStatus === 'Cancelled' || order.productStatus === 'Returned') { %>style="text-decoration: line-through; opacity: 0.75;"<% } %>>
                                 <td>
                                     <a class="itemside" href="#">
                                         <div class="left"></div>
                                         <div class="info">
-                                            <%=order.productId.Bookname%>
+                                            <%= order.productId ? order.productId.Bookname : 'Book' %>
+                                            <% if (order.productStatus === 'Cancelled') { %>
+                                                <span class="badge bg-danger ms-2" style="text-decoration: none;">Cancelled</span>
+                                            <% } else if (order.productStatus === 'Returned') { %>
+                                                <span class="badge bg-secondary ms-2" style="text-decoration: none;">Returned</span>
+                                            <% } %>
                                         </div>
                                     </a>
                                 </td>
                                 <td>
-                                    $ <%= order.productId.saleprice %>
+                                    &#8377; <%= order.price || (order.productId ? order.productId.saleprice : 0) %>
                                 </td>
                                 <td>
                                     <%= order.quantity %>
                                 </td>
                                 <td class="text-end">
-                                    $<%= (order.quantity * order.productId.saleprice).toFixed(2) %>
+                                    &#8377;<%= (order.quantity * (order.price || (order.productId ? order.productId.saleprice : 0))).toFixed(2) %>
                                 </td>
                             </tr>
-                            <% grandTotal += order.quantity * order.productId.saleprice; %>
+                            <% grandTotal += order.quantity * (order.price || (order.productId ? order.productId.saleprice : 0)); %>
                         <% } %>
                         <% if(orderData) { %>
                             <tr>
@@ -155,7 +160,7 @@
                                         <dl class="dlist">
                                             <h5>
                                                 <dt style="font-weight: bold; color: #333;">Grand total:
-                                                    $<%= orderData.totalAmount %>
+                                                    &#8377;<%= orderData.totalAmount %>
                                                 </dt>
                                             </h5>
                                             <dd></dd>

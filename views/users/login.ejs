@@ -1,415 +1,391 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- 959154758023-tu1liisoua39ocfh2dbtqvevuoe1kl8t.apps.googleusercontent.com -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <meta name="google-signin-client_id" content="959154758023-oho8hi88gopv8i5cfepvnh4f2dpdd0po.apps.googleusercontent.com">
-    <title>BOOKSAW</title>
+    <title>Sign In | BOOKSAW</title>
+    <meta name="description" content="Sign in to your BOOKSAW account to access your books, orders and wishlist.">
     <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
+    <meta name="google-signin-client_id" content="959154758023-oho8hi88gopv8i5cfepvnh4f2dpdd0po.apps.googleusercontent.com">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
-      *{
+    :root {
+        --canvas:    #f5f0e8;
+        --bg:        #faf8f4;
+        --fg:        #2d2820;
+        --highlight: #b8542a;
+        --hi-light:  #d4673a;
+        --muted-fg:  #7a6f60;
+        --border:    #ddd8ce;
+        --secondary: #edeae2;
+        --card:      #ffffff;
+        --danger:    #b91c1c;
+        --success:   #166534;
+        --shadow-md: 0 8px 32px rgba(45,40,32,0.11);
+        --r-sm: 8px; --r-md: 14px; --r-lg: 20px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+        font-family: 'IBM Plex Sans', sans-serif;
+        background: var(--canvas);
+        color: var(--fg);
         margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Poppins', sans-serif;
-      }
-      body {
-    min-height: 100vh;
-    width: 100%;
-    background-image: url('/public/2148827214.jpg');
-    background-size: cover; /* or contain, or specify specific dimensions */
-    background-position: center; /* Center the background image */
-    background-repeat: no-repeat; /* Prevent the background image from repeating */
-    background-size: 100% 100%; /* or any specific dimensions */
-
-}
-
-      .container{
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%,-50%);
-        max-width: 430px;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        letter-spacing: 0;
+    }
+    .auth-card {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow-md);
         width: 100%;
-        background: #fff;
-        border-radius: 7px;
-        box-shadow: 0 5px 10px rgba(0,0,0,0.3);
-      }
-      .container .registration{
-        display: none;
-      }
-      #check:checked ~ .registration{
-        display: block;
-      }
-      #check:checked ~ .login{
-        display: none;
-      }
-      #check{
-        display: none;
-      }
-      .container .form{
-        padding: 2rem;
-      }
-      .form header{
-        font-size: 2rem;
-        font-weight: 500;
-        text-align: center;
-        margin-bottom: 1.5rem;
-      }
-       .form input{
-         height: 60px;
-         width: 100%;
-         padding: 0 15px;
-         font-size: 17px;
-         margin-bottom: 1.3rem;
-         border: 1px solid #ddd;
-         border-radius: 6px;
-         outline: none;
-       }
-       .form input:focus{
-         box-shadow: 0 1px 0 rgba(0,0,0,0.2);
-       }
-      .form a{
-        font-size: 12px;
-        color: #088178;
-        text-decoration: none;
-      }
-      .form a:hover{
-        text-decoration: underline;
-      }
-      .form input.button{
-        color: #fff;
-        background: #000000;
+        max-width: 460px;
+        overflow: hidden;
+        position: relative;
+    }
+    .auth-card-top {
+        background: var(--fg);
+        padding: 32px 36px 28px;
+        position: relative;
+        overflow: hidden;
+    }
+    .auth-card-top::before {
+        content: '';
+        position: absolute;
+        top: -40%;
+        right: -15%;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: rgba(184,84,42,0.12);
+        pointer-events: none;
+    }
+    .auth-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+    .auth-logo img { height: 28px; filter: brightness(0) invert(1); opacity: 0.9; }
+    .auth-logo-text {
+        font-family: 'Libre Baskerville', serif;
         font-size: 1.2rem;
-        font-weight: 500;
-        letter-spacing: 1px;
-        margin-top: 1.7rem;
+        font-weight: 700;
+        color: rgba(255,255,255,0.9);
+        letter-spacing: 0.5px;
+    }
+    .auth-title {
+        font-family: 'Libre Baskerville', serif;
+        font-size: 1.65rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 6px;
+    }
+    .auth-subtitle {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.5);
+        line-height: 1.5;
+    }
+    .auth-body { padding: 32px 36px 36px; }
+    .form-group { margin-bottom: 20px; }
+    .form-label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: var(--muted-fg);
+        margin-bottom: 7px;
+    }
+    .form-input {
+        display: block;
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--r-sm);
+        background: var(--card);
+        color: var(--fg);
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 0.95rem;
+        transition: border-color 0.18s, box-shadow 0.18s;
+        outline: none;
+    }
+    .form-input:focus {
+        border-color: var(--highlight);
+        box-shadow: 0 0 0 3px rgba(184,84,42,0.10);
+    }
+    .form-hint {
+        font-size: 0.72rem;
+        color: var(--muted-fg);
+        margin-top: 5px;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .btn-submit {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 13px 20px;
+        background: var(--fg);
+        color: #fff;
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        border: none;
+        border-radius: var(--r-sm);
         cursor: pointer;
-        transition: 0.4s;
-      }
-      .form input.button:hover{
-        background: #353636;
-      }
-      .signup{
-        font-size: 17px;
+        transition: background 0.2s ease;
+        margin-top: 8px;
+    }
+    .btn-submit:hover { background: var(--highlight); }
+    .auth-footer {
         text-align: center;
-      }
-      .signup label{
-        color: #088178;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        margin-top: 24px;
+        font-size: 0.85rem;
+        color: var(--muted-fg);
+    }
+    .auth-footer a { color: var(--highlight); font-weight: 600; text-decoration: none; }
+    .auth-footer a:hover { text-decoration: underline; }
+    .alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 11px 14px;
+        border-radius: var(--r-sm);
+        font-size: 0.83rem;
+        font-weight: 500;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+    .alert i { flex-shrink: 0; margin-top: 1px; }
+    .alert-danger { background: rgba(185,28,28,0.07); border: 1px solid rgba(185,28,28,0.25); color: var(--danger); }
+    .alert-success { background: rgba(22,101,52,0.07); border: 1px solid rgba(22,101,52,0.25); color: var(--success); }
+    .alert-warning { background: rgba(184,84,42,0.07); border: 1px solid rgba(184,84,42,0.25); color: var(--highlight); }
+    .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+    .divider-text { font-size: 0.75rem; color: var(--muted-fg); font-weight: 500; white-space: nowrap; }
+    .google-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        padding: 11px 20px;
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: var(--r-sm);
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--fg);
         cursor: pointer;
-      }
-      .signup label:hover{
+        transition: border-color 0.2s, background 0.2s;
+        text-decoration: none;
+    }
+    .google-btn:hover { border-color: var(--highlight); background: var(--secondary); }
+    .google-btn img { width: 18px; height: 18px; }
+    .otp-inputs { display: flex; gap: 10px; justify-content: center; margin: 8px 0; }
+    .otp-box {
+        width: 52px; height: 58px;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        border: 1.5px solid var(--border);
+        border-radius: var(--r-sm);
+        background: var(--card);
+        color: var(--fg);
+        outline: none;
+        transition: border-color 0.18s, box-shadow 0.18s;
+    }
+    .otp-box:focus { border-color: var(--highlight); box-shadow: 0 0 0 3px rgba(184,84,42,0.10); }
+    .timer-text { text-align: center; font-size: 0.82rem; color: var(--muted-fg); margin-top: 12px; }
+    .timer-text span { color: var(--highlight); font-weight: 700; }
+    .btn-resend {
+        background: none;
+        border: none;
+        color: var(--highlight);
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 0;
         text-decoration: underline;
-      }
-      .login header,
-.login input,
-.login a {
-    font-family: 'Your Desired Font', Helvetica Neue Bold; /* Change 'Your Desired Font' to the desired font name */
-}
-
-      
-       </style>
-       <style>
-        .google-sign-in-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #fff;
-  border: 1px solid #dadce0;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
-  color: #3c4043;
-  cursor: pointer;
-  font-family: "Google Sans", Arial, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  height: 40px;
-  padding: 0 16px;
-  transition: background-color 0.218s, border-color 0.218s, box-shadow 0.218s;
-}
-
-.google-sign-in-button:hover {
-  background-color: #f6f9fe;
-  border-color: #d2e3fc;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1), 0 1px 3px 1px rgba(66, 133, 244, 0.3);
-}
-
-.google-sign-in-button:active {
-  background-color: #e8f0fe;
-  border-color: #c6dafc;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1), 0 1px 3px 1px rgba(66, 133, 244, 0.3);
-}
-
-.google-logo {
-  height: 18px;
-  width: 18px;
-  margin-right: 8px;
-}
-
-.google-sign-in-text {
-  font-weight: 500;
-}
-       </style>
+    }
+    .btn-resend:disabled { color: var(--muted-fg); cursor: not-allowed; text-decoration: none; }
+    .password-field { position: relative; }
+    .password-toggle {
+        position: absolute;
+        right: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--muted-fg);
+        cursor: pointer;
+        padding: 0;
+        font-size: 0.9rem;
+    }
+    .password-toggle:hover { color: var(--highlight); }
+    .strength-bar { height: 3px; border-radius: 3px; margin-top: 6px; background: var(--border); overflow: hidden; }
+    .strength-fill { height: 100%; border-radius: 3px; transition: width 0.3s, background 0.3s; width: 0; }
+    .error-msg { font-size: 0.72rem; color: var(--danger); margin-top: 5px; display: none; }
+    @media (max-width: 500px) {
+        .auth-card-top, .auth-body { padding-left: 24px; padding-right: 24px; }
+        .form-row { grid-template-columns: 1fr; }
+    }
+</style>
 </head>
 <body>
-    
- <div class="container">
-    <input type="checkbox" id="check">
-    <div class="login form">
-      <header>Login</header>
-      <form action="/verifyLogin" id="form" method="post">
-        
-       
-        <input type="email" id="email" placeholder="Enter your email" name="email" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" required title="Please Check your Email Address">
-        <input type="password" id="password" placeholder="Enter your password" name="password" pattern=".{8,}" required title="Please Check your Password">
-        <a class="forget" href="/forgotPass">Forgot password?</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/signup">New user? Register here</a>
-        <!-- <div class="g-signin2" data-onsuccess="onSignIn" onclick="signInWithGoogle()"></div> -->
-        <br><br>
-        <div style="display: flex; justify-content: center; align-items: center;">
-          <button type="button" id="signInButton" class="google-sign-in-button" onclick="userSignIn">
-              <img src="https://cdn-icons-png.flaticon.com/512/300/300221.png" alt="Google logo" class="google-logo">
-              <span class="google-sign-in-text">Sign in with Google</span>
-          </button>
-      </div>
-          
-           <h3 class="text-center text-danger" id="loginErrorMessage"><%=locals.errmessage ? errmessage : ''%></h3>
-        <h3 class="text-center text-success" id="loginSuccessMessage"><%=locals.successMessage ? successMessage : ''%></h3>
-        <h3 class="text-center text-success" id="bannedMessage"><%=locals.bannedMessage ? bannedMessage : ''%></h3>
-        <input type="submit" class="button" value="Login">
-      </form>
+<div class="auth-card">
+    <div class="auth-card-top">
+        <div class="auth-logo">
+            <img src="/public/spellbook.png" alt="BOOKSAW">
+            <span class="auth-logo-text">BOOKSAW</span>
+        </div>
+        <h1 class="auth-title">Welcome back.</h1>
+        <p class="auth-subtitle">Sign in to continue to your reading journey.</p>
+    </div>
+    <div class="auth-body">
 
- </div>
- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
- 
+        <% if (locals.bannedMessage && bannedMessage) { %>
+            <div class="alert alert-danger" id="bannedAlertBox">
+                <i class="fas fa-ban"></i>
+                <span><%= bannedMessage %></span>
+            </div>
+        <% } %>
+        <% if (locals.errmessage && errmessage) { %>
+            <div class="alert alert-danger" id="errorAlertBox">
+                <i class="fas fa-circle-exclamation"></i>
+                <span><%= errmessage %></span>
+            </div>
+        <% } %>
+        <% if (locals.successMessage && successMessage) { %>
+            <div class="alert alert-success" id="successAlertBox">
+                <i class="fas fa-circle-check"></i>
+                <span><%= successMessage %></span>
+            </div>
+        <% } %>
 
- <script>
-  
-  setInterval(()=>{
-    document.getElementById('loginErrorMessage').innerText = "";
-    document.getElementById('loginSuccessMessage').innerText = "";
-  
-  },100)
+        <span id="bannedMessage" style="display:none"><%= locals.bannedMessage ? bannedMessage : '' %></span>
+        <span id="loginErrorMessage" style="display:none"><%= locals.errmessage ? errmessage : '' %></span>
+        <span id="loginSuccessMessage" style="display:none"><%= locals.successMessage ? successMessage : '' %></span>
+
+        <form action="/verifyLogin" id="loginForm" method="post">
+            <div class="form-group">
+                <label class="form-label" for="email">Email address</label>
+                <input class="form-input" type="email" id="email" name="email"
+                    placeholder="you@example.com"
+                    pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <div class="password-field">
+                    <input class="form-input" type="password" id="password" name="password"
+                        placeholder="Enter your password" style="padding-right:40px" required>
+                    <button type="button" class="password-toggle" onclick="togglePwd('password','toggleIcon1')">
+                        <i class="fas fa-eye" id="toggleIcon1"></i>
+                    </button>
+                </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:0.82rem">
+                <a href="/forgotPass" style="color:var(--highlight);font-weight:600;text-decoration:none">Forgot password?</a>
+                <a href="/signup" style="color:var(--muted-fg);text-decoration:none">New here? <span style="color:var(--highlight);font-weight:600">Register</span></a>
+            </div>
+            <button type="submit" class="btn-submit" id="login-submit-btn">
+                <i class="fas fa-arrow-right-to-bracket"></i> Sign In
+            </button>
+        </form>
+
+        <div class="divider">
+            <div class="divider-line"></div>
+            <span class="divider-text">or continue with</span>
+            <div class="divider-line"></div>
+        </div>
+
+        <button type="button" id="signInButton" class="google-btn">
+            <img src="https://cdn-icons-png.flaticon.com/512/300/300221.png" alt="Google">
+            Sign in with Google
+        </button>
+    </div>
+</div>
 
 
-  // Check if the success message exists, then display SweetAlert
-  const successMessage = document.getElementById('loginSuccessMessage').innerText;
-  const errMessage = document.getElementById('loginErrorMessage').innerText;
-  const bannedMessage = document.getElementById('bannedMessage').innerText;
-
-
-  if (errMessage.trim() !== '') {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: errMessage,
-      confirmButtonColor: "#000",
-    });
-  }
-
-  if (successMessage.trim() !== '') {
-    Swal.fire({
-      icon: "success",
-      title: "Registration Successful!",
-      text: successMessage,
-      confirmButtonColor: "#000",
-    });
-  }
-
-  // 🚫 Banned account
-  if (bannedMessage.trim() !== '') {
-    Swal.fire({
-      icon: "warning",
-      title: "Account Disabled 🚫",
-      text: bannedMessage,
-      confirmButtonColor: "#000",
-    });
-  }
-  setInterval(()=>{
-    document.getElementById('loginErrorMessage').innerText = ""
-    // document.getElementById('loginSuccessMessage').innerText = ""
-  },3000)
-
-  
-</script>
-<script src="https://apis.google.com/js/platform.js" async defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <!-- <script>
-      function onSignIn(googleUser) {
-  console.log('Email: ' + profile.getEmail());
-}
-    </script> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
-   
 <script>
-  function onSignIn(googleUser) {
-      // Retrieve user profile information
-      var profile = googleUser.getBasicProfile();
-
-      // Retrieve email
-      var email = profile.getEmail();
-
-      // Send email and password to the backend
-      signInWithGoogle(email);
-  }
-
-  function signInWithGoogle(email) {
-    // Fetch URL
-    var url = '/googleAuth';
-
-    // Request body
-    var data = {
-        email: email
-    };
-
-    // Fetch options
-    var options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    };
-
-    // Make the Fetch request
-    fetch(url, options)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-        })
-        .catch(error => {
-            console.error('There was a problem with your fetch operation:', error);
-        });
-}
-
-</script>
-    <script>  
-      function displayToastrOnLoad() {
-        toastr.success('<img src="/public/cru.gif" alt="Crying Emoji" style="width: 35px; height: 35px;">', 'Please Login or Signup ', {
-                closeButton: true,  
-                progressBar: true,
-                positionClass: 'toast-top-right',  
-                timeOut: 5000,  
-                extendedTimeOut: 2000,  
-                preventDuplicates: true,  
-            })
-      }
-      window.onload = displayToastrOnLoad;
-  </script>  
-  
-
-
-
-    <script>
-      function callFetchToSendEmailToBackend(user){
-        console.log("..l", user);
-        console.log("..l", typeof(user));
-    
-        let options = {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ user })
-        };
-    
-        fetch('/googleAuth', options)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            return response.json();
-          })
-          .then(data => {
-            
-            if (data.message) {
-              // Display an alert with the message from the backend
-              // alert(data.message);
-              window.location.href='/home'
-            }
-          })
-          .catch(error => {
-            console.error('There was a problem with your fetch operation:', error);
-          });
-      }
-    </script>
-
-
-
-
-
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-analytics.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-  
-
-
-    import { getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-      apiKey: "AIzaSyDiTZn_zLvCy3A5NjTSmGWOu4QXSmuehII",
-      authDomain: "rich-discovery-417406.firebaseapp.com",
-      projectId: "rich-discovery-417406",
-      storageBucket: "rich-discovery-417406.appspot.com",
-      messagingSenderId: "457503730213",
-      appId: "1:457503730213:web:cc258de1522962480e2dcc",
-      measurementId: "G-HGCRCDB82G"
-    };
-  
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider()
-    const analytics = getAnalytics(app);
-    const signInButton = document.getElementById("signInButton")
-
-
-    const userSignIn = async()=>{
-      signInWithPopup(auth,provider)
-      .then((result)=>{
-        const user =result.user
-        console.log(user);
-        callFetchToSendEmailToBackend(user)
-      }).catch((error)=>{
-        const errorCode = error.code;
-        const errorMessage = error.message
-      })
+    function togglePwd(id, iconId) {
+        const inp = document.getElementById(id);
+        const ico = document.getElementById(iconId);
+        if (inp.type === 'password') { inp.type = 'text'; ico.className = 'fas fa-eye-slash'; }
+        else { inp.type = 'password'; ico.className = 'fas fa-eye'; }
     }
 
-onAuthStateChanged(auth,(user)=>{
-  if(user){
-  }else{
+    const bannedEl = document.getElementById('bannedMessage');
+    const errEl = document.getElementById('loginErrorMessage');
+    const successEl = document.getElementById('loginSuccessMessage');
+    const bMsg = bannedEl ? bannedEl.innerText.trim() : '';
+    const eMsg = errEl ? errEl.innerText.trim() : '';
+    const sMsg = successEl ? successEl.innerText.trim() : '';
 
-  }
-})
+    if (bMsg) {
+        Swal.fire({ icon:'error', title:'Account Blocked', text: bMsg, confirmButtonText:'I Understand', confirmButtonColor:'#b8542a' });
+    } else if (eMsg) {
+        Swal.fire({ icon:'error', title:'Sign In Failed', text: eMsg, confirmButtonColor:'#2d2820' });
+    } else if (sMsg) {
+        Swal.fire({ icon:'success', title:'Welcome!', text: sMsg, confirmButtonColor:'#2d2820' });
+    }
 
-
-
-signInButton.addEventListener('click',userSignIn);
-
-
-    
-  </script>
-
+    function callFetchToSendEmailToBackend(user){
+        fetch('/googleAuth', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ user }) })
+          .then(r=>r.json())
+          .then(data=>{
+            if(data && data.banned){
+              Swal.fire({ icon:'error', title:'Account Blocked', text: data.message||'Your account has been blocked.', confirmButtonText:'I Understand', confirmButtonColor:'#b8542a' });
+              return;
+            }
+            if(data && (data.message||data.success)) window.location.href = '/home';
+          })
+          .catch(err=>console.error(err));
+    }
+</script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+    const firebaseConfig = {
+        apiKey:"AIzaSyDiTZn_zLvCy3A5NjTSmGWOu4QXSmuehII",
+        authDomain:"rich-discovery-417406.firebaseapp.com",
+        projectId:"rich-discovery-417406",
+        storageBucket:"rich-discovery-417406.appspot.com",
+        messagingSenderId:"457503730213",
+        appId:"1:457503730213:web:cc258de1522962480e2dcc",
+        measurementId:"G-HGCRCDB82G"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    const btn = document.getElementById("signInButton");
+    btn.addEventListener('click', async()=>{
+        try {
+            const result = await signInWithPopup(auth, provider);
+            callFetchToSendEmailToBackend(result.user);
+        } catch(e) { console.error(e); }
+    });
+</script>
 </body>
 </html>
- 
-
-

@@ -1,1321 +1,807 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en">
-
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-frontend/page-account.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Jul 2023 10:11:15 GMT -->
-
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>BOOKSAW</title>
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="">
+    <title>My Account — BOOKSAW</title>
+    <meta name="description" content="Manage your BOOKSAW profile, orders, wallet, and addresses.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
-    <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
-    <!-- Template CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/public/assets/css/maind134.css?v=3.4">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-
-    <style>
-        #email:hover,
-        #password:hover {
-            border-color: #6c757d;
-            /* Change border color on hover */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            /* Add box shadow on hover */
-            transform: scale(1.02);
-            /* Scale up the input field on hover */
-
-        }
-
-        .copy-btn {
-  background-color: #007bff;
-  border-color: #007bff;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+<style>
+/* ── BOOKSAW ACCOUNT — WARM LITERARY SYSTEM ──────────────── */
+:root{
+  --canvas:#f5f0e8; --bg:#faf8f4; --fg:#2d2820;
+  --hi:#b8542a; --hi2:#d4673a; --muted:#7a6f60;
+  --border:#ddd8ce; --sec:#edeae2; --card:#fff;
+  --green:#2d6a4f; --red:#b91c1c;
+  --r-sm:8px; --r-md:14px; --r-lg:20px;
+  --sh-sm:0 2px 8px rgba(45,40,32,.06);
+  --sh-md:0 8px 24px rgba(45,40,32,.09);
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--canvas);color:var(--fg)}
 
-.copy-btn:hover {
-  background-color: #0069d9;
-  border-color: #0062cc;
+/* ── BREADCRUMB */
+.bk-crumb{background:var(--bg);border-bottom:1px solid var(--border);padding:14px 0}
+.bk-crumb-inner{max-width:1200px;margin:0 auto;padding:0 40px;display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--muted)}
+.bk-crumb-inner a{color:var(--muted);text-decoration:none;transition:color .2s}
+.bk-crumb-inner a:hover{color:var(--hi)}
+.bk-crumb-sep{color:var(--border);font-size:.68rem}
+.bk-crumb-cur{color:var(--fg);font-weight:600}
+
+/* ── LAYOUT */
+.bk-account{max-width:1200px;margin:0 auto;padding:36px 40px 80px;display:grid;grid-template-columns:240px 1fr;gap:28px;align-items:start}
+
+/* ── HERO CARD */
+.bk-hero{background:var(--fg);border-radius:var(--r-lg);padding:28px;margin-bottom:28px;grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.bk-hero-left{display:flex;align-items:center;gap:18px}
+.bk-avatar{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:'Libre Baskerville',serif;font-size:1.5rem;font-weight:700;color:#fff;flex-shrink:0}
+.bk-hero-name{font-family:'Libre Baskerville',serif;font-size:1.25rem;font-weight:700;color:#fff;margin-bottom:4px}
+.bk-hero-email{font-size:.82rem;color:rgba(255,255,255,.5)}
+.bk-hero-stats{display:flex;gap:12px;flex-wrap:wrap}
+.bk-stat{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 20px;text-align:center;min-width:90px;cursor:default;transition:background .2s}
+.bk-stat:hover{background:rgba(255,255,255,.12)}
+.bk-stat-n{display:block;font-family:'Libre Baskerville',serif;font-size:1.2rem;font-weight:700;color:#fff}
+.bk-stat-l{display:block;font-size:.68rem;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:2px}
+
+/* ── SIDEBAR NAV */
+.bk-sidebar{position:sticky;top:90px}
+.bk-sidebar-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.bk-nav-item{display:block;width:100%;text-align:left;border:none;background:none;cursor:pointer;display:flex;align-items:center;gap:11px;padding:12px 18px;font-family:'IBM Plex Sans',sans-serif;font-size:.875rem;font-weight:500;color:var(--muted);text-decoration:none;transition:background .15s,color .15s;border-radius:0;position:relative}
+.bk-nav-item:hover{background:rgba(184,84,42,.06);color:var(--fg)}
+.bk-nav-item.active{background:rgba(184,84,42,.08);color:var(--hi);font-weight:600}
+.bk-nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--hi);border-radius:0 2px 2px 0}
+.bk-nav-item i{width:17px;text-align:center;font-size:.82rem;color:var(--muted);transition:color .15s;flex-shrink:0}
+.bk-nav-item:hover i,.bk-nav-item.active i{color:var(--hi)}
+.bk-nav-divider{height:1px;background:var(--border);margin:6px 0}
+.bk-nav-logout{color:var(--red) !important}
+.bk-nav-logout i{color:var(--red) !important}
+.bk-nav-logout:hover{background:rgba(185,28,28,.06) !important}
+
+/* ── MAIN PANELS */
+.bk-main{}
+.bk-panel{display:none}
+.bk-panel.active{display:block}
+
+.bk-panel-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:20px}
+.bk-panel-head{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bk-panel-title{font-family:'Libre Baskerville',serif;font-size:1.05rem;font-weight:700;color:var(--fg);display:flex;align-items:center;gap:10px}
+.bk-panel-title i{font-size:.9rem;color:var(--hi)}
+.bk-panel-body{padding:24px}
+
+/* ── FORM ELEMENTS */
+.bk-field-group{margin-bottom:18px}
+.bk-label{display:block;font-size:.78rem;font-weight:600;letter-spacing:.4px;color:var(--muted);margin-bottom:6px;text-transform:uppercase}
+.bk-input{width:100%;background:var(--canvas);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px 14px;font-family:'IBM Plex Sans',sans-serif;font-size:.88rem;color:var(--fg);outline:none;transition:border-color .2s,box-shadow .2s}
+.bk-input:focus{border-color:var(--hi);box-shadow:0 0 0 3px rgba(184,84,42,.08)}
+.bk-input[readonly]{background:var(--sec);color:var(--muted);cursor:not-allowed}
+.bk-input::placeholder{color:var(--muted)}
+
+/* ── BUTTONS */
+.bk-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;font-family:'IBM Plex Sans',sans-serif;font-size:.84rem;font-weight:600;border-radius:var(--r-sm);text-decoration:none;cursor:pointer;transition:all .18s;border:1.5px solid transparent;white-space:nowrap}
+.bk-btn-dark{background:var(--fg);color:#fff;border-color:var(--fg)}
+.bk-btn-dark:hover{background:var(--hi);border-color:var(--hi)}
+.bk-btn-outline{background:none;color:var(--fg);border-color:var(--border)}
+.bk-btn-outline:hover{border-color:var(--hi);color:var(--hi)}
+.bk-btn-danger{background:none;color:var(--red);border-color:rgba(185,28,28,.25)}
+.bk-btn-danger:hover{background:rgba(185,28,28,.06);border-color:var(--red)}
+.bk-btn-sm{padding:6px 14px;font-size:.78rem}
+.bk-btn-full{width:100%;justify-content:center}
+
+/* ── GRID HELPERS */
+.bk-row{display:grid;gap:16px}
+.bk-row-2{grid-template-columns:repeat(2,1fr)}
+.bk-row-3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:640px){.bk-row-2,.bk-row-3{grid-template-columns:1fr}}
+
+/* ── INFO DISPLAY ROW */
+.bk-info-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+
+/* ── REFERRAL BOX */
+.bk-referral{background:var(--canvas);border:1.5px solid var(--border);border-radius:var(--r-md);padding:22px;margin-top:20px}
+.bk-referral-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.bk-referral-title{font-family:'Libre Baskerville',serif;font-size:.95rem;font-weight:700;color:var(--fg)}
+.bk-referral-sub{font-size:.82rem;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.bk-referral-code-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bk-code-box{display:flex;align-items:center;gap:10px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:9px 16px}
+.bk-code-text{font-family:'IBM Plex Sans',sans-serif;font-size:1rem;font-weight:700;letter-spacing:1.5px;color:var(--fg)}
+.bk-apply-row{display:flex;gap:10px;margin-top:14px;max-width:360px}
+.bk-apply-row .bk-input{flex:1}
+
+/* ── ORDERS TABLE */
+.bk-table-wrap{overflow-x:auto;border-radius:var(--r-md);border:1px solid var(--border)}
+.bk-table{width:100%;border-collapse:collapse;font-size:.84rem}
+.bk-table th{background:var(--sec);color:var(--muted);font-weight:600;font-size:.73rem;letter-spacing:.8px;text-transform:uppercase;padding:11px 14px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+.bk-table td{padding:13px 14px;border-bottom:1px solid var(--border);color:var(--fg);vertical-align:middle}
+.bk-table tbody tr:last-child td{border-bottom:none}
+.bk-table tbody tr:hover{background:rgba(245,240,232,.5)}
+.bk-oid{font-family:'IBM Plex Sans',sans-serif;font-weight:700;font-size:.82rem;color:var(--fg)}
+
+/* Status pills */
+.bk-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:.71rem;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+.bk-pill::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+.bk-pill-pend{background:rgba(180,135,20,.1);color:#b48714}
+.bk-pill-ship{background:rgba(37,99,235,.1);color:#2563eb}
+.bk-pill-del{background:rgba(22,163,74,.1);color:#16a34a}
+.bk-pill-can{background:rgba(185,28,28,.1);color:#b91c1c}
+.bk-pill-ret{background:rgba(107,114,128,.1);color:#6b7280}
+.bk-pill-recv{background:rgba(22,163,74,.1);color:#16a34a}
+.bk-pill-fail{background:rgba(185,28,28,.1);color:#b91c1c}
+.bk-pill-ref{background:rgba(37,99,235,.1);color:#2563eb}
+.bk-pill-pend-pay{background:rgba(180,135,20,.1);color:#b48714}
+
+/* Pagination */
+.bk-pagination{display:flex;align-items:center;gap:6px;margin-top:20px;justify-content:center}
+.bk-page-btn{min-width:36px;height:36px;border-radius:7px;border:1.5px solid var(--border);background:var(--bg);color:var(--fg);font-family:'IBM Plex Sans',sans-serif;font-size:.82rem;font-weight:500;display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer;padding:0 10px;transition:all .18s}
+.bk-page-btn:hover{border-color:var(--hi);color:var(--hi)}
+.bk-page-btn.active{background:var(--fg);color:#fff;border-color:var(--fg)}
+.bk-page-btn.disabled{opacity:.4;pointer-events:none}
+
+/* ── ADDRESS CARDS */
+.bk-address-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.bk-address-card{background:var(--canvas);border:1.5px solid var(--border);border-radius:var(--r-md);padding:18px;transition:border-color .2s,box-shadow .2s;position:relative}
+.bk-address-card:hover{border-color:var(--hi);box-shadow:0 4px 16px rgba(184,84,42,.08)}
+.bk-address-num{font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--hi);margin-bottom:8px;display:block}
+.bk-address-name{font-family:'Libre Baskerville',serif;font-size:.92rem;font-weight:700;color:var(--fg);margin-bottom:4px}
+.bk-address-phone{font-size:.8rem;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.bk-address-text{font-size:.82rem;color:var(--fg);line-height:1.6}
+.bk-address-actions{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+
+/* Inline address form */
+.bk-addr-form{background:var(--canvas);border:1.5px solid var(--border);border-radius:var(--r-md);padding:22px;margin-bottom:24px;display:none}
+.bk-addr-form-title{font-family:'Libre Baskerville',serif;font-size:.95rem;font-weight:700;color:var(--fg);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+
+/* ── WALLET */
+.bk-wallet-card{background:var(--fg);border-radius:var(--r-lg);padding:28px;margin-bottom:20px}
+.bk-wallet-label{font-size:.72rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px}
+.bk-wallet-amount{font-family:'Libre Baskerville',serif;font-size:2.5rem;font-weight:700;color:#fff;margin-bottom:4px}
+.bk-wallet-sub{font-size:.8rem;color:rgba(255,255,255,.45)}
+.bk-wallet-topup{background:var(--canvas);border:1.5px solid var(--border);border-radius:var(--r-md);padding:20px}
+.bk-wallet-topup-title{font-family:'Libre Baskerville',serif;font-size:.92rem;font-weight:700;color:var(--fg);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+/* Transaction list */
+.bk-tx-list{border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;max-height:360px;overflow-y:auto}
+.bk-tx-item{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border);font-size:.84rem;gap:12px}
+.bk-tx-item:last-child{border-bottom:none}
+.bk-tx-item:hover{background:rgba(245,240,232,.5)}
+.bk-tx-date{color:var(--muted);font-size:.78rem;min-width:80px}
+.bk-tx-desc{flex:1;color:var(--fg)}
+.bk-tx-amt{font-weight:700;white-space:nowrap}
+.bk-tx-credit{color:var(--green)}
+.bk-tx-debit{color:var(--red)}
+.bk-tx-type{display:inline-flex;align-items:center;font-size:.66rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:2px 8px;border-radius:999px}
+.bk-tx-type.credit{background:rgba(22,163,74,.1);color:#16a34a}
+.bk-tx-type.debit{background:rgba(185,28,28,.1);color:#b91c1c}
+
+/* ── COUPONS */
+.bk-coupon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.bk-coupon-card{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-md);overflow:hidden;position:relative}
+.bk-coupon-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--hi)}
+.bk-coupon-top{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.bk-coupon-discount{font-family:'Libre Baskerville',serif;font-size:1.5rem;font-weight:700;color:var(--hi)}
+.bk-coupon-discount span{font-size:.75rem;color:var(--muted);margin-left:3px}
+.bk-coupon-expiry{font-size:.72rem;color:var(--muted);text-align:right}
+.bk-coupon-body{padding:12px 18px}
+.bk-coupon-name{font-weight:700;font-size:.9rem;color:var(--fg);margin-bottom:4px}
+.bk-coupon-desc{font-size:.78rem;color:var(--muted);margin-bottom:12px}
+.bk-coupon-code-row{display:flex;align-items:center;justify-content:space-between;background:var(--canvas);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 12px}
+.bk-coupon-code{font-family:'IBM Plex Sans',sans-serif;font-weight:700;font-size:.9rem;letter-spacing:1.5px;color:var(--fg)}
+
+/* ── EMPTY STATES */
+.bk-empty{text-align:center;padding:60px 20px}
+.bk-empty-icon{font-size:2.8rem;opacity:.25;margin-bottom:14px}
+.bk-empty-title{font-family:'Libre Baskerville',serif;font-size:1.1rem;color:var(--fg);margin-bottom:6px}
+.bk-empty-sub{font-size:.84rem;color:var(--muted);margin-bottom:20px}
+
+/* ── SECTION DIVIDER */
+.bk-section-title{font-family:'Libre Baskerville',serif;font-size:.92rem;font-weight:700;color:var(--fg);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.bk-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── RESPONSIVE */
+@media(max-width:900px){
+  .bk-account{grid-template-columns:1fr;gap:20px;padding:24px 20px 60px}
+  .bk-sidebar{position:static}
+  .bk-sidebar-card{display:grid;grid-template-columns:repeat(3,1fr)}
+  .bk-nav-item::before{display:none}
+  .bk-hero{flex-direction:column;align-items:flex-start}
+  .bk-hero-stats{width:100%;justify-content:flex-start}
 }
-
-.copy-btn.copied {
-  background-color: #28a745;
-  border-color: #28a745;
-}   .coupon-container {
-  border: none;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+@media(max-width:600px){
+  .bk-crumb-inner{padding:0 16px}
+  .bk-sidebar-card{grid-template-columns:repeat(2,1fr)}
+  .bk-hero-stats .bk-stat{flex:1}
+  .bk-info-row{grid-template-columns:1fr}
 }
-
-.card-header.bg-gradient-primary {
-  background-color: #7e7d7d;
-}
-
-.coupon-card {
-  flex: 0 0 auto;
-  max-width: 400px;
-}
-
-.coupon-card-inner {
-  border: none;
-  border-radius: 1rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease;
-}
-
-.coupon-card-inner:hover {
-  transform: translateY(-5px);
-}
-
-.coupon-title {
-  font-weight: 700;
-  color: #333;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.coupon-code {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: #007bff;
-  letter-spacing: 1px;
-}
-
-.copy-btn {
-  background-color: #007bff;
-  border-color: #007bff;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.copy-btn:hover {
-  background-color: #0069d9;
-  border-color: #0062cc;
-}
-
-.copy-btn.copied {
-  background-color: #28a745;
-  border-color: #28a745;
-}
-        
-    </style>
-
-    <style>
-        .transaction-history {
-    font-family: Arial, sans-serif;
-}
-
-.transaction-history h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.transaction-history table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.transaction-history th, .transaction-history td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-}
-
-.transaction-history th {
-    background-color: #f2f2f2;
-    color: #333;
-}
-
-.transaction-history tbody tr:hover {
-    background-color: #f9f9f9;
-}
-
-.transaction-history tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-.transaction-history tbody td:last-child {
-    text-transform: capitalize;
-}
-
-    </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+</style>
 </head>
 
 <body>
-    <%-include('../partials/userHeader')-%>
+<%
+  const safeName       = (typeof name !== 'undefined' && name) ? name : 'Reader';
+  const safeEmail      = (typeof email !== 'undefined' && email) ? email : '';
+  const safeOrders     = (typeof orders !== 'undefined' && Array.isArray(orders)) ? orders : [];
+  const safeAddresses  = (typeof addresses !== 'undefined' && Array.isArray(addresses)) ? addresses : [];
+  const safeWallet     = (typeof wallet !== 'undefined' && wallet) ? wallet : { balance: 0, history: [] };
+  const safeCoupons    = (typeof coupons !== 'undefined' && Array.isArray(coupons)) ? coupons : [];
+  const safeUserData   = (typeof userData !== 'undefined' && userData) ? userData : {};
+  const safePage       = (typeof page !== 'undefined') ? page : 1;
+  const safeTotalPages = (typeof totalPages !== 'undefined') ? totalPages : 1;
+%>
 
-        <div class="mobile-header-active mobile-header-wrapper-style">
-            <div class="mobile-header-wrapper-inner">
-                <div class="mobile-header-top">
-                    <div class="mobile-header-logo">
-                    </div>
-                    <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
-                        <button class="close-style search-close">
-                            <i class="icon-top"></i>
-                            <i class="icon-bottom"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="mobile-header-content-area">
-                    <div class="mobile-search search-style-3 mobile-header-border">
-                        <form action="#">
-                            <input type="text" placeholder="Search for items…">
-                            <button type="submit"><i class="fi-rs-search"></i></button>
-                        </form>
-                    </div>
-                    <div class="mobile-menu-wrap mobile-header-border">
-                        <div class="main-categori-wrap mobile-header-border">
-                            <a class="categori-button-active-2" href="#">
-                                <span class="fi-rs-apps"></span> Browse Categories
-                            </a>
-                            <div class="categori-dropdown-wrap categori-dropdown-active-small">
-                                <ul>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-dress"></i>Women's
-                                            Clothing</a>
-                                    </li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-tshirt"></i>Men's
-                                            Clothing</a>
-                                    </li>
-                                    <li> <a href="shop-grid-right.html"><i class="evara-font-smartphone"></i>
-                                            Cellphones</a>
-                                    </li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-desktop"></i>Computer &
-                                            Office</a></li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-cpu"></i>Consumer
-                                            Electronics</a></li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-home"></i>Home & Garden</a>
-                                    </li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-high-heels"></i>Shoes</a>
-                                    </li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-teddy-bear"></i>Mother &
-                                            Kids</a></li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-kite"></i>Outdoor fun</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- mobile menu start -->
-                        <nav>
-                            <ul class="mobile-menu">
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="/home">Home</a>
-                                    <ul class="dropdown">
-                                        <li><a href="index.html">Home 1</a></li>
-                                        <li><a href="index-2.html">Home 2</a></li>
-                                        <li><a href="index-3.html">Home 3</a></li>
-                                        <li><a href="index-4.html">Home 4</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="shop-grid-right.html">shop</a>
-                                    <ul class="dropdown">
-                                        <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
-                                        <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>
-                                        <li><a href="shop-list-right.html">Shop List – Right Sidebar</a></li>
-                                        <li><a href="shop-list-left.html">Shop List – Left Sidebar</a></li>
-                                        <li><a href="shop-fullwidth.html">Shop - Wide</a></li>
-                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                                href="#">Single Product</a>
-                                            <ul class="dropdown">
-                                                <li><a href="shop-product-right.html">Product – Right Sidebar</a></li>
-                                                <li><a href="shop-product-left.html">Product – Left Sidebar</a></li>
-                                                <li><a href="shop-product-full.html">Product – No sidebar</a></li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="shop-filter.html">Shop – Filter</a></li>
-                                        <li><a href="shop-wishlist.html">Shop – Wishlist</a></li>
-                                        <li><a href="shop-cart.html">Shop – Cart</a></li>
-                                        <li><a href="shop-checkout.html">Shop – Checkout</a></li>
-                                        <li><a href="shop-compare.html">Shop – Compare</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Mega
-                                        menu</a>
+<%- include('../partials/userHeader') %>
 
-                                </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="blog-category-fullwidth.html">Blog</a>
-                                    <ul class="dropdown">
-                                        <li><a href="blog-category-grid.html">Blog Category Grid</a></li>
-                                        <li><a href="blog-category-list.html">Blog Category List</a></li>
-                                        <li><a href="blog-category-big.html">Blog Category Big</a></li>
-                                        <li><a href="blog-category-fullwidth.html">Blog Category Wide</a></li>
-                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                                href="#">Single Product Layout</a>
-                                            <ul class="dropdown">
-                                                <li><a href="blog-post-left.html">Left Sidebar</a></li>
-                                                <li><a href="blog-post-right.html">Right Sidebar</a></li>
-                                                <li><a href="blog-post-fullwidth.html">No Sidebar</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="#">Pages</a>
-                                    <ul class="dropdown">
-                                        <li><a href="page-about.html">About Us</a></li>
-                                        <li><a href="page-contact.html">Contact</a></li>
-                                        <li><a href="page-account.html">My Account</a></li>
-                                        <li><a href="page-login-register.html">login/register</a></li>
-                                        <li><a href="page-purchase-guide.html">Purchase Guide</a></li>
-                                        <li><a href="page-privacy-policy.html">Privacy Policy</a></li>
-                                        <li><a href="page-terms.html">Terms of Service</a></li>
-                                        <li><a href="page-404.html">404 Page</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="#">Language</a>
-                                    <ul class="dropdown">
-                                        <li><a href="#">English</a></li>
-                                        <li><a href="#">French</a></li>
-                                        <li><a href="#">German</a></li>
-                                        <li><a href="#">Spanish</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </nav>
-                        <!-- mobile menu end -->
-                    </div>
-                    <div class="mobile-header-info-wrap mobile-header-border">
-                        <div class="single-mobile-header-info mt-30">
-                            <a href="page-contact.html"> Our location </a>
-                        </div>
-                        <div class="single-mobile-header-info">
-                            <a href="page-login-register.html">Log In / Sign Up </a>
-                        </div>
-                        <div class="single-mobile-header-info">
-                            <a href="#">(+01) - 2345 - 6789 </a>
-                        </div>
-                    </div>
-                    <div class="mobile-social-icon">
-                        <h5 class="mb-15 text-grey-4">Follow Us</h5>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
-                    </div>
-                </div>
-            </div>
+<!-- Breadcrumb -->
+<div class="bk-crumb">
+  <div class="bk-crumb-inner">
+    <a href="/home">Home</a>
+    <span class="bk-crumb-sep"><i class="fas fa-chevron-right" style="font-size:.65rem"></i></span>
+    <span class="bk-crumb-cur">My Account</span>
+  </div>
+</div>
+
+<div class="bk-account">
+
+  <!-- ── HERO ───────────────────────── -->
+  <div class="bk-hero">
+    <div class="bk-hero-left">
+      <div class="bk-avatar"><%= safeName.charAt(0).toUpperCase() %></div>
+      <div>
+        <div class="bk-hero-name"><%= safeName %></div>
+        <div class="bk-hero-email"><%= safeEmail %></div>
+      </div>
+    </div>
+    <div class="bk-hero-stats">
+      <div class="bk-stat"><span class="bk-stat-n"><%= safeOrders.length %></span><span class="bk-stat-l">Orders</span></div>
+      <div class="bk-stat"><span class="bk-stat-n">&#8377;<%= (safeWallet && typeof safeWallet.balance === 'number') ? safeWallet.balance.toFixed(0) : '0' %></span><span class="bk-stat-l">Wallet</span></div>
+      <div class="bk-stat"><span class="bk-stat-n"><%= safeAddresses.length %></span><span class="bk-stat-l">Addresses</span></div>
+      <div class="bk-stat"><span class="bk-stat-n"><%= safeCoupons.length %></span><span class="bk-stat-l">Coupons</span></div>
+    </div>
+  </div>
+
+  <!-- ── SIDEBAR ────────────────────── -->
+  <aside class="bk-sidebar">
+    <div class="bk-sidebar-card">
+      <button class="bk-nav-item active" onclick="showTab('dashboard',this)" id="tab-btn-dashboard">
+        <i class="fas fa-th-large"></i> Dashboard
+      </button>
+      <button class="bk-nav-item" onclick="showTab('orders',this)" id="tab-btn-orders">
+        <i class="fas fa-shopping-bag"></i> My Orders
+      </button>
+      <button class="bk-nav-item" onclick="showTab('address',this)" id="tab-btn-address">
+        <i class="fas fa-map-marker-alt"></i> Addresses
+      </button>
+      <button class="bk-nav-item" onclick="showTab('wallet',this)" id="tab-btn-wallet">
+        <i class="fas fa-wallet"></i> Wallet
+      </button>
+      <button class="bk-nav-item" onclick="showTab('coupons',this)" id="tab-btn-coupons">
+        <i class="fas fa-tags"></i> Coupons
+      </button>
+      <button class="bk-nav-item" onclick="showTab('settings',this)" id="tab-btn-settings">
+        <i class="fas fa-user-cog"></i> Settings
+      </button>
+      <div class="bk-nav-divider"></div>
+      <a href="/logout" class="bk-nav-item bk-nav-logout">
+        <i class="fas fa-arrow-right-from-bracket"></i> Sign Out
+      </a>
+    </div>
+  </aside>
+
+  <!-- ── MAIN PANELS ────────────────── -->
+  <div class="bk-main">
+
+    <!-- ─── 1. DASHBOARD ─── -->
+    <div class="bk-panel active" id="panel-dashboard">
+      <div class="bk-panel-card">
+        <div class="bk-panel-head">
+          <div class="bk-panel-title"><i class="fas fa-th-large"></i> Welcome back, <%= safeName %>!</div>
         </div>
-        <main class="main">
-            <div class="page-header breadcrumb-wrap">
-                <div class="container">
-                    <div class="breadcrumb">
-                        <a href="/" rel="nofollow">Home</a>
-                        <span></span> Account
-                    </div>
-                </div>
+        <div class="bk-panel-body">
+          <p style="font-size:.88rem;color:var(--muted);margin-bottom:22px;line-height:1.6">
+            From your personal BOOKSAW account hub, track active shipments, manage saved addresses, top up your wallet, and view reader discounts.
+          </p>
+
+          <div class="bk-info-row">
+            <div class="bk-field-group">
+              <label class="bk-label">Account Name</label>
+              <input type="text" class="bk-input" value="<%= safeName %>" readonly>
             </div>
-            <section class="pt-150 pb-150">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12 label">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="dashboard-menu">
-                                        <ul class="nav flex-column" role="tablist">
-                                            <li class="nav-item">
-                                                <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab"
-                                                    href="#dashboard" role="tab" aria-controls="dashboard"
-                                                    aria-selected="false"><i
-                                                        class="fi-rs-settings-sliders mr-10"></i>Dashboard</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders"
-                                                    role="tab" aria-controls="orders" aria-selected="false"><i
-                                                        class="fi-rs-shopping-bag mr-10"></i>Orders</a>
-                                            </li>
-                                            <!-- <li class="nav-item"> -->
-                                            <!-- <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab" aria-controls="track-orders" aria-selected="false"><i class="fi-rs-shopping-cart-check mr-10"></i>Track Your Order</a> -->
-                                            <!-- </li> -->
-                                            <li class="nav-item">
-                                                <a class="nav-link" id="address-tab" data-bs-toggle="tab"
-                                                    href="#address" role="tab" aria-controls="address"
-                                                    aria-selected="true"><i class="fi-rs-marker mr-10"></i>My
-                                                    Address</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab"
-                                                    href="#account-detail" role="tab" aria-controls="account-detail"
-                                                    aria-selected="true"><i class="fi-rs-user mr-10"></i>Account
-                                                    details</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" id="Coupons" data-bs-toggle="tab" href="#coupon" role="tab" aria-controls="address"
-                                                aria-selected="true">
-                                                    <i class="fa-solid fa-tag"></i> &nbsp;&nbsp;&nbsp;Coupons</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" id="Coupons" data-bs-toggle="tab" href="#wallet" role="tab" aria-controls="wallet"
-                                                aria-selected="true">
-                                                <i class="fa-solid fa-wallet"></i> &nbsp;&nbsp;&nbsp;Wallet</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="tab-content dashboard-content">
-                                        <div class="tab-pane fade active show" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
-                                            <div class="card">
-                                              <div class="card-header">
-                                                <h5 class="mb-0">Hello <%=name%>!</h5>
-                                              </div>
-                                              <div class="card-body">
-                                                <p>From your account dashboard, you can easily check &amp; view your <a href="#">recent orders</a>, manage your <a href="#">shipping and billing addresses</a>, <a href="#">edit your password and account details</a>, and use your referral code.</p>
-                                                <div class="form-group">
-                                                  <label for="email">Username:</label>
-                                                  <input type="email" id="email" value="<%= name %>" readonly style="background-color: #f8f9fa; border: 1px solid #ced4da; border-radius: 5px; padding: 12px; margin-bottom: 15px; width: 100%; box-sizing: border-box; font-size: 16px; color: #495057;">
-                                                </div>
-                                                <div class="form-group">
-                                                  <label for="password">Email:</label>
-                                                  <input type="email" id="password" value="<%= email %>" readonly style="background-color: #f8f9fa; border: 1px solid #ced4da; border-radius: 5px; padding: 12px; width: 100%; box-sizing: border-box; font-size: 16px; color: #495057;">
-                                                </div>
-                                                <div class="form-group">
-                                                  <label for="referralCode">Your Referral Code:</label>
-                                                  <input type="text" id="referralCode" value="<%=userData.referralCode%>" readonly class="form-control" style="background-color: #f8f9fa; border: 1px solid #ced4da; border-radius: 5px; padding: 12px; width: 100%; box-sizing: border-box; font-size: 16px; color: #495057; cursor:pointer;" onclick="copyToClipboard('<%=userData.referralCode%>')">
-                                                </div>
-                                                <% if(!userData.alreadyReffered) { %>
-
-                                                <div class="form-group">
-                                                  <label for="inputReferralCode">Enter Another Referral Code:</label>
-                                                  <div class="input-group">
-                                                    <div class="input-group" id="referralInputContainer">
-                                                        <input type="text" class="form-control" id="inputReferralCode" placeholder="Enter Referral Code" style="background-color: #f8f9fa; border: 1px solid #ced4da; border-radius: 5px; padding: 12px; width: 100px; box-sizing: border-box; font-size: 16px; color: #495057;">
-                                                        <button class="btn btn-primary" id="applyReferralBtn" onclick="applyReferralCode()">Apply</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                                    <% } %>
-
-                                                    
-                                              </div>
-                                            </div>
-                                          </div>
-                                          
-                                          <script>
-                                            function copyToClipboard(text) {
-                                              navigator.clipboard.writeText(text);
-                                              toastr.success("Referral code copied to clipboard!");
-                                            }
-                                          
-                                            function applyReferralCode() {
-                                            const inputReferralCode = document.getElementById("inputReferralCode").value;
-                                            
-
-                                        // Make a fetch request to the backend
-                                        fetch('/applyReferral', {
-                                            method: 'POST',
-                                            headers: {
-                                            'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify({ referralCode: inputReferralCode })
-                                        })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            if (data.success) {
-                                            // Referral code applied successfully
-                                            console.log('Referral code applied:', inputReferralCode);
-                                            toastr.success('Referral code applied successfully!');
-                                            } else {
-                                            // Error applying referral code
-                                            console.error('Error applying referral code:', data.error);
-                                            toastr.error('You cannot use your own code: ');
-                                            }
-                                        })
-                                        .catch(error => {
-                                            // Error making the fetch request
-                                            console.error('Error applying referral code:', error);
-                                            toastr.error('Error applying referral code: ' + error.message);
-                                        });
-                                        }
-                                          </script>
-
-
-                                        
-                                        <div class="tab-pane fade" id="orders" role="tabpanel"
-                                            aria-labelledby="orders-tab">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h5 class="mb-0">Your Orders</h5>
-                                                </div>
-
-                                                <div class="card-body">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-striped table-hover"
-                                                            style="margin: 0;">
-                                                            <% if(orders && orders.length> 0 ){ %>
-
-                                                                <thead class="table-dark">
-                                                                    <tr>
-                                                                        <th style="padding: 10px;">Order</th>
-                                                                        <th style="padding: 10px;">Payment Method</th>
-                                                                        <th style="padding: 10px;">Order Status</th>
-                                                                        <th style="padding: 10px;">Payment Status</th>
-                                                                        <th style="padding: 10px;">Date</th>
-                                                                        <th style="padding: 10px;">Total</th>
-                                                                        <th style="padding: 10px;">Details</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <% orders.forEach(order=> { %>
-                                                                        <tr>
-                                                                            <td style="padding: 10px;">
-                                                                                <%= order.orderId %>
-                                                                            </td>
-                                                                            <td style="padding: 10px;">
-                                                                                <p>
-                                                                                    <%= order.paymentMethod %>
-                                                                                </p>
-                                                                            </td>
-                                                                            <td style="padding: 10px;"> 
-                                                                                    <% if (order.orderStatus === 'Cancelled'&& order.paymentStatus !== 'Failed') { %>
-                                                                                        <span class="badge bg-danger">
-                                                                                            <%= order.orderStatus %>
-                                                                                        </span>
-                                                                                    <% } else { %>
-                                                                                        <span class="badge bg-info"></span>
-                                                                                            <% if (order.orderStatus === 'OrderPlaced') { %>
-                                                                                                <%= order.orderStatus %>
-                                                                                            <% }else{ %>
-                                                                                                <%= order.orderStatus %>
-                                                                                                     <%}%>                                                                               </span>
-                                                                                    <% } %>
-                                                                            </td>
-                                                                            
-                                                                                <td style="padding: 10px;">
-                                                                                    <span class="badge <%= order.paymentStatus === 'Received' ? 'bg-success text-dark' : (order.paymentStatus === 'Failed' ? 'bg-danger text-light' : 'bg-warning text-dark') %>">
-                                                                                        <%= order.paymentStatus %>
-                                                                                    </span>
-                                                                                    
-                                                                                    
-                                                                                </td>
-                                                                                
-                                                                                
-                                                                            <td style="padding: 10px;">
-                                                                                <%= order.orderDate.toLocaleString() %>
-                                                                            </td>
-                                                                            <td style="padding: 10px;">
-                                                                                $<%= order.totalAmount %>
-                                                                            </td>
-                                                                            <!-- <td style="padding: 10px;">
-                                                                                <% if
-                                                                                    (order.orderStatus==='Order Placed'
-                                                                                    && order.paymentStatus==='Received'||order.paymentStatus=== 'Pending'&& order.orderStatus!=='Cancelled') {
-                                                                                    %>
-                                                                                    <a class="btn btn-warning btn-sm cancel-order"
-                                                                                        href="/orderCancel?id=<%=order._id%>"
-                                                                                        data-order-id="<%= order._id %>"><i
-                                                                                            class="fas fa-times"></i>
-                                                                                        Cancel</a>
-                                                                                    <% } else if
-                                                                                        (order.orderStatus==='Delivered'
-                                                                                        ) { %>
-                                                                                        <a class="btn btn-primary btn-sm return-order"
-                                                                                            href="/orderReturn?id=<%=order._id%>"
-                                                                                            data-order-id="<%= order._id %>"><i
-                                                                                                class="fas fa-undo"></i>
-                                                                                            Return</a>
-                                                                                        <% } %>
-                                                                            </td> -->
-                                                                            <td style="padding: 10px;"><a
-                                                                                    href="/loadOrderDetails?id=<%=order._id%>"
-                                                                                    class="btn btn-primary btn-sm view-order"
-                                                                                    data-order-id="<%= order._id %>"><i
-                                                                                        class="fas fa-eye"></i> View</a>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <% }); %>
-                                                                            <% } else { %>
-                                                                                <tr>
-                                                                                    <td colspan="8">
-                                                                                        <h3 style="font-size: 28px; font-weight: bold; color: #000000; text-transform: uppercase; border-bottom: 2px solid #007bff; padding-bottom: 5px;">No orders found</h3>
-                                                                                    </td>
-                                                                                </tr>
-                                                                                <% } %>
-                                                                            </tbody>
-                                                                        </table>
-                                                                        <div class="pagination-container">
-                                                                            <% if (currentPage > 1) { %>
-                                                                                <a href="/loadProfile?page=<%= currentPage - 1 %>" class="btn btn-primary btn-sm">Previous</a>
-                                                                            <% } %>
-                                                                        
-                                                                            <% for (let i = 1; i <= totalPages; i++) { %>
-                                                                                <a href="/loadProfile?page=<%= i %>" class="btn btn-primary btn-sm <%= currentPage === i ? 'active' : '' %>"><%= i %></a>
-                                                                            <% } %>
-                                                                        
-                                                                            <% if (currentPage < totalPages) { %>
-                                                                                <a href="/loadProfile?page=<%= currentPage + 1 %>" class="btn btn-primary btn-sm">Next</a>
-                                                                            <% } %>
-                                                                        </div>
-                                                    </div>
-                                                </div>
-
-
-                                            </div>
-                                        </div>
-
-
-
-                                        <!-- <div class="tab-pane fade" id="track-orders" role="tabpanel"
-                                        aria-labelledby="track-orders-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5 class="mb-0">Orders tracking</h5>
-                                            </div>
-                                            <div class="card-body contact-from-area">
-                                                <p>To track your order please enter your OrderID in the box below and
-                                                    press "Track" button. This was given to you on your receipt and in
-                                                    the confirmation email you should have received.</p>
-                                                <div class="row">
-                                                    <div class="col-lg-8">
-                                                        <form class="contact-form-style mt-30 mb-50" action="#"
-                                                            method="post">
-                                                            <div class="input-style mb-20">
-                                                                <label>Order ID</label>
-                                                                <input name="order-id"
-                                                                    placeholder="Found in your order confirmation email"
-                                                                    type="text" class="square">
-                                                            </div>
-                                                            <div class="input-style mb-20">
-                                                                <label>Billing email</label>
-                                                                <input name="billing-email"
-                                                                    placeholder="Email you used during checkout"
-                                                                    type="email" class="square">
-                                                            </div>
-                                                            <button class="submit submit-auto-width"
-                                                                type="submit">Track</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> -->
-
-
-                                        <div class="tab-pane fade" id="address" role="tabpanel"
-                                            aria-labelledby="address-tab">
-                                            <div class="row">
-
-
-                                                <div class="col-lg-6">
-                                                    <div class="card mb-4 mb-lg-0">
-                                                        <div class="card-header">
-                                                            <h5 class="mb-0">My Address</h5>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <% if (addresses && addresses.length> 0) { %>
-                                                                <% addresses.forEach((address, index)=> { %>
-                                                                    <div id="address_<%= address._id %>">
-                                                                        <address>
-                                                                            Name: <%= address.name %> <br>
-                                                                                Housename: <%= address.houseName %><br>
-                                                                                    City: <%= address.city %>,<br>
-                                                                                        State: <%= address.state %>.
-                                                                                            <br>
-                                                                                            Pincode: <%= address.pinCode
-                                                                                                %>
-                                                                        </address>
-                                                                        <a
-                                                                            onclick="removeAddress('<%= address._id %>')">
-                                                                            <i class="fa-solid fa-trash fa-xl"></i></a>
-                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                                        <a href="/loadEditAddress1?id=<%= address._id %>"
-                                                                            class="edit-address"
-                                                                            style="color: green;">Edit</a> </a>
-                                                                        <hr>
-                                                                    </div>
-                                                                    <% }); %>
-                                                                        <% } else { %>
-                                                                            <p>No address found.</p>
-                                                                            <% } %>
-                                                                                <a href="#"
-                                                                                    class="btn btn-primary btn-lg"
-                                                                                    id="toggleAddressForm">Add
-                                                                                    Address</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="col-lg-6" id="addressFormContainer" style="display: none;">
-                                                    <div class="card mb-4 mb-lg-0">
-                                                        <div class="card-header">
-                                                            <h5 class="mb-0">Add New Address</h5>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <form id="addressForm" action="/addAddress" method="post">
-                                                                <div class="mb-3">
-                                                                    <label for="inputAddress"
-                                                                        class="form-label">Name</label>
-                                                                    <input type="text"
-                                                                        class="form-control form-control-lg" name="name"
-                                                                        id="inputAddress" required>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="inputCity"
-                                                                        class="form-label">Mobile</label>
-                                                                    <input type="tel" pattern="[0-9]{10}"
-                                                                        class="form-control form-control-lg"
-                                                                        name="mobile" id="inputCity" required>
-                                                                    <small>Please enter a 10-digit mobile
-                                                                        number.</small>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="inputState" class="form-label">House
-                                                                        Name</label>
-                                                                    <input type="text"
-                                                                        class="form-control form-control-lg"
-                                                                        name="houseName" id="inputState" required>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="inputZip"
-                                                                        class="form-label">City</label>
-                                                                    <input type="text"
-                                                                        class="form-control form-control-lg" name="city"
-                                                                        id="inputZip" required>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="inputState"
-                                                                        class="form-label">State</label>
-                                                                    <input type="text"
-                                                                        class="form-control form-control-lg"
-                                                                        name="state" id="inputState" required>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="inputZip"
-                                                                        class="form-label">Pincode</label>
-                                                                    <input type="text"
-                                                                        class="form-control form-control-lg"
-                                                                        name="pinCode" id="inputZip" required
-                                                                        pattern="[0-9]{6}">
-                                                                    <small>Please enter a 6-digit pin code.</small>
-                                                                </div>
-                                                                <button type="submit"
-                                                                    class="btn btn-primary btn-lg">Save Address</button>
-                                                            </form>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
-                                        </div>
-                                        <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
-                                            <div class="card" style="border: 1px solid #dee2e6; border-radius: 0.25rem;">
-                                                <div class="card-header" style="background-color: #f8f9fa; border-bottom: 1px solid #dee2e6;">
-                                                    <h5 style="margin-bottom: 0;">Account Details</h5>
-                                                    <p style="font-size: 14px; color: #6c757d;">change password</p>
-                                                </div>
-                                                <div class="card-body">
-                                                    <a href="/profileEdit" style="text-decoration: none; color: #007bff; font-size: 16px;">CHANGE YOUR PASSWORD</a>
-                                                </div>
-                                                <div style="padding: 20px;">
-                                                    <form action="#" method="post">
-                                                        <div class="mb-3">
-                                                            <label for="newUsername" class="form-label" style="font-size: 16px; color: #495057;">New Username</label>
-                                                            <input type="text" class="form-control" id="newUsername" name="newUsername" required style="border: 1px solid #ced4da; border-radius: 5px; padding: 12px; font-size: 16px;" pattern="^[a-zA-Z]+$">
-                                                        </div>
-                                                    
-                                                        <div class="mb-3">
-                                                            <label for="currentPassword" class="form-label" style="font-size: 16px; color: #495057;">Current Password</label>
-                                                            <input type="password" class="form-control" id="currentPassword" name="currentPassword" required style="border: 1px solid #ced4da; border-radius: 5px; padding: 12px; font-size: 16px;">
-                                                        </div>
-                                                    
-                                                        <button type="button" onclick="updateUsername()" class="btn btn-primary" style="background-color: #007bff; border: none; border-radius: 5px; padding: 12px 24px; font-size: 16px;">Update Username</button>
-                                                    </form>
-                                                    
-                                                    
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-
-                                        <div class="tab-pane fade" id="coupon" role="tabpanel"
-                                        aria-labelledby="account-detail-tab">
-                                        <% if (coupons) { %>
-                                            <div class="card coupon-container">
-                                              <div class="card-header bg-gradient-primary text-white">
-                                                <h5>Available Coupons</h5>
-                                              </div>
-                                              <div class="card-body">
-                                                <% for (let i = 0; i < coupons.length; i++) { %>
-                                                <div class="coupon-card d-inline-flex mb-3">
-                                                  <div class="card coupon-card-inner">
-                                                    <div class="card-body">
-                                                      <div class="d-flex justify-content-between align-items-center">
-                                                        <span class="coupon-code"><%= coupons[i].couponName %></span>
-                                                        <div class="coupon-code-container">
-                                                          <h6 class="mb-0 coupon-title"><%= coupons[i].couponCode %></h6>
-                                                          <button id="copyButton<%= i %>" class="btn btn-sm btn-primary copy-btn ml-2" onclick="copyCoupon('<%= coupons[i].couponCode %>', this)" title="Copy Coupon Code">
-                                                            <i class="fas fa-copy"></i> <span>Copy</span>
-                                                          </button>
-                                                        </div>
-                                                      </div>
-                                                      <p class="mb-0"><strong>Expiry Date:</strong> <%= coupons[i].expirationDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) %></p>
-                                                      <p class="mb-0">Use this coupon code to get <%= coupons[i].discountAmount %>% off on your next purchase.</p>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                                <% } %>
-                                              </div>
-                                            </div>
-                                            <% } %>
-                                        
-                                        
-
-
-                                          
-                                    </div>
-
-                                    <% if(wallet){ %>
-                                        <div class="tab-pane fade" id="wallet" role="tabpanel" aria-labelledby="account-detail-tab" style="padding: 20px;
-                                        width: 100%; display: grid; grid-template-columns: 1fr 2fr;">
-                                            <div class="card coupon-container" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); width: 250px;">
-                                                <div class="card-header bg-gradient-primary text-white" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
-                                                    <h5 style="margin-bottom: 0; font-size: 24px;">Wallet</h5>
-                                                </div>
-                                                <div class="card-body" style="max-width: 300px;"> <!-- Adjust the max-width -->
-                                                    <div class="wallet-info" style="padding-bottom: 15px;">
-                                                        <h6 style="margin-bottom: 0; font-size: 18px;">Available Balance:</h6>
-                                                        <p id="balanceAmount" style="margin-top: 5px; font-size: 24px; font-weight: bold;">$<%= wallet.balance.toFixed(2) %></p>
-                                                    </div>
-                                                    <!-- Add Funds Form -->
-                                                    <div class="add-funds-form" style="margin-top: 20px;">
-                                                        <form id="addFundsForm" method="post">
-                                                            <div class="form-group">
-                                                                <label for="amount" style="margin-bottom: 5px; font-size: 18px;">Amount:</label>
-                                                                <input type="number" class="form-control" id="amountInput" name="amount" style="border-radius: 20px; font-size: 16px; padding: 10px; border: 1px solid #ced4da;" placeholder="Enter amount">
-                                                            </div>
-                                                            <button style="background-color: #000000;" type="button" onclick="submitForm()" class="btn btn-primary" style="border-radius: 20px; padding: 10px 30px; font-size: 18px;">Pay</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <%}%>
-                                            <% if (wallet) { %>
-                                                <div class="transaction-history" style="max-height: 400px; overflow-y: auto;">
-                                                    <h2 style="position: sticky; top: 0; background-color: #ffffff; z-index: 1; color: #007bff; font-size: 24px; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 20px;">Transaction History</h2>
-                                                    <table style="width: 100%;">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Transaction ID</th>
-                                                                <th>Date</th>
-                                                                <th>Amount</th>
-                                                                <th>Status</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <% for (let i = wallet.history.length - 1; i >= 0; i--) { %>
-                                                                <tr>
-                                                                    <td>#<%= Math.random().toString(36).substr(2, 8).toUpperCase() %></td>
-                                                                    <td><%= wallet.history[i].createdAt.toLocaleString() %></td>
-                                                                    <td style="color: <%= wallet.history[i].type === 'credit' ? '#28a745' : '#dc3545' %>"><%= wallet.history[i].type === 'credit' ? '+ $' : '- $' %><%= wallet.history[i].amount %></td>
-                                                                     <td style="color: <%= wallet.history[i].type === 'credit' ? '#28a745' : '#dc3545' %>"><%= wallet.history[i].type %></td>
-                                                                    
-                                                                </tr>
-                                                                <!-- Add more rows for each transaction -->
-                                                            <% } %>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                
-                                            <% } %>
-                                            
-                                            
-                                
-                                      
-                                </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-        <footer class="main">
-            <section class="newsletter p-30 text-white wow fadeIn animated">
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col-lg-7 mb-md-3 mb-lg-0">
-                            <div class="row align-items-center">
-                                <div class="col flex-horizontal-center">
-                                    <!-- <img class="icon-email" src="/public/assets/imgs/theme/icons/icon-email.svg" alt=""> -->
-                                    <!-- <h4 class="font-size-20 mb-0 ml-3">Sign up to Newsletter</h4> -->
-                                </div>
-                                <div class="col my-4 my-md-0 des">
-                                    <!-- <h5 class="font-size-15 ml-4 mb-0">...and receive <strong>$25 coupon for first -->
-                                            <!-- shopping.</strong></h5> -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-5">
-                            <!-- Subscribe Form -->
-                            <form class="form-subcriber d-flex wow fadeIn animated">
-                                <!-- <input type="email" class="form-control bg-white font-small" -->
-                                    <!-- placeholder="Enter your email"> -->
-                                <!-- <button class="btn bg-dark text-white" type="submit">Subscribe</button> -->
-                            </form>
-                            <!-- End Subscribe Form -->
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section class="section-padding footer-mid">
-                <div class="container pt-15 pb-20">
-                    <div class="row">
-                        <div class="col-lg-4 col-md-6">
-                            <div class="widget-about font-md mb-md-5 mb-lg-0">
-                                <div class="logo logo-width-1 wow fadeIn animated">
-                                    <a href="index.html"><img src="/public/main-logo (1).png" alt="logo"></a>
-                                </div>
-                                <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
-                                <p class="wow fadeIn animated">
-                                    <strong>Address: </strong>562 Wellington Road, Street 32, San Francisco
-                                </p>
-                                <p class="wow fadeIn animated">
-                                    <strong>Phone: </strong>+01 2222 365 /(+91) 01 2345 6789
-                                </p>
-                                <p class="wow fadeIn animated">
-                                    <strong>Hours: </strong>10:00 - 18:00, Mon - Sat
-                                </p>
-                                <h5 class="mb-10 mt-30 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
-                                <div class="mobile-social-icon wow fadeIn animated mb-sm-5 mb-md-0">
-                                    <a href="#"><img src="/public/assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                                    <a href="#"><img src="/public/assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                                    <a href="#"><img src="/public/assets/imgs/theme/icons/icon-instagram.svg"
-                                            alt=""></a>
-                                    <a href="#"><img src="/public/assets/imgs/theme/icons/icon-pinterest.svg"
-                                            alt=""></a>
-                                    <a href="#"><img src="/public/assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-2 col-md-3">
-                            <h5 class="widget-title wow fadeIn animated">About</h5>
-                            <ul class="footer-list wow fadeIn animated mb-sm-5 mb-md-0">
-                                <li><a href="#">About Us</a></li>
-                                <li><a href="#">Delivery Information</a></li>
-                                <li><a href="#">Privacy Policy</a></li>
-                                <li><a href="#">Terms &amp; Conditions</a></li>
-                                <li><a href="#">Contact Us</a></li>
-                                <li><a href="#">Support Center</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-2  col-md-3">
-                            <h5 class="widget-title wow fadeIn animated">My Account</h5>
-                            <ul class="footer-list wow fadeIn animated">
-                                <li><a href="#">Sign In</a></li>
-                                <li><a href="#">View Cart</a></li>
-                                <li><a href="#">My Wishlist</a></li>
-                                <li><a href="#">Track My Order</a></li>
-                                <li><a href="#">Help</a></li>
-                                <li><a href="#">Order</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-4">
-                            <h5 class="widget-title wow fadeIn animated">Install App</h5>
-                            <div class="row">
-                                <div class="col-md-8 col-lg-12">
-                                    <p class="wow fadeIn animated">From App Store or Google Play</p>
-                                    <div class="download-app wow fadeIn animated">
-                                        <a href="#" class="hover-up mb-sm-4 mb-lg-0"><img class="active"
-                                                src="/public/assets/imgs/theme/app-store.jpg" alt=""></a>
-                                        <a href="#" class="hover-up"><img
-                                                src="/public/assets/imgs/theme/google-play.jpg" alt=""></a>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-lg-12 mt-md-3 mt-lg-0">
-                                    <p class="mb-20 wow fadeIn animated">Secured Payment Gateways</p>
-                                    <img class="wow fadeIn animated" src="/public/assets/imgs/theme/payment-method.png"
-                                        alt="">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-           
-        </footer>
-        <!-- Preloader Start -->
-        <div id="preloader-active">
-            <div class="preloader d-flex align-items-center justify-content-center">
-                <div class="preloader-inner position-relative">
-                    <div class="text-center">
-                        <h5 class="mb-5">Now Loading</h5>
-                        <div class="loader">
-                            <div class="bar bar1"></div>
-                            <div class="bar bar2"></div>
-                            <div class="bar bar3"></div>
-                        </div>
-                    </div>
-                </div>
+            <div class="bk-field-group">
+              <label class="bk-label">Email Address</label>
+              <input type="email" class="bk-input" value="<%= safeEmail %>" readonly>
             </div>
+          </div>
+
+          <!-- Referral -->
+          <div class="bk-referral">
+            <div class="bk-referral-head">
+              <i class="fas fa-gift" style="color:var(--hi);font-size:1rem"></i>
+              <span class="bk-referral-title">Invite Friends &amp; Earn Rewards</span>
+            </div>
+            <p class="bk-referral-sub">Share your referral code with fellow book lovers. They get discount perks and you earn wallet cashback!</p>
+            <div class="bk-referral-code-row">
+              <div class="bk-code-box">
+                <span class="bk-code-text" id="myReferralCode"><%= safeUserData.referralCode || 'BOOKSAW100' %></span>
+                <button class="bk-btn bk-btn-dark bk-btn-sm" onclick="copyReferralCode('<%= safeUserData.referralCode || 'BOOKSAW100' %>')">
+                  <i class="fas fa-copy"></i> Copy
+                </button>
+              </div>
+            </div>
+            <% if (!safeUserData.alreadyReffered) { %>
+              <div class="bk-apply-row">
+                <input type="text" class="bk-input" id="inputReferralCode" placeholder="Have a friend's code?">
+                <button class="bk-btn bk-btn-dark" onclick="applyReferralCode()">Apply</button>
+              </div>
+            <% } %>
+          </div>
         </div>
+      </div>
+    </div>
 
+    <!-- ─── 2. ORDERS ─── -->
+    <div class="bk-panel" id="panel-orders">
+      <div class="bk-panel-card">
+        <div class="bk-panel-head">
+          <div class="bk-panel-title"><i class="fas fa-box-open"></i> Order History</div>
+          <a href="/loadShop" class="bk-btn bk-btn-outline bk-btn-sm"><i class="fas fa-shop"></i> Browse Shop</a>
+        </div>
+        <div class="bk-panel-body" style="padding:0">
+          <% if (safeOrders && safeOrders.length > 0) { %>
+            <div class="bk-table-wrap">
+              <table class="bk-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Payment</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% safeOrders.forEach(order => { %>
+                    <tr>
+                      <td><span class="bk-oid">#<%= order.orderId %></span></td>
+                      <td style="font-size:.82rem;color:var(--muted)"><%= order.paymentMethod %></td>
+                      <td>
+                        <%
+                          let sPill = 'bk-pill-pend';
+                          if(order.orderStatus==='Cancelled') sPill='bk-pill-can';
+                          else if(order.orderStatus==='Returned') sPill='bk-pill-ret';
+                          else if(order.orderStatus==='Delivered') sPill='bk-pill-del';
+                          else if(order.orderStatus==='Shipped') sPill='bk-pill-ship';
+                        %>
+                        <span class="bk-pill <%= sPill %>"><%= order.orderStatus %></span>
+                      </td>
+                      <td>
+                        <%
+                          let pPill = 'bk-pill-pend-pay';
+                          if(order.paymentStatus==='Received') pPill='bk-pill-recv';
+                          else if(order.paymentStatus==='Failed') pPill='bk-pill-fail';
+                          else if(order.paymentStatus==='Refund') pPill='bk-pill-ref';
+                        %>
+                        <span class="bk-pill <%= pPill %>"><%= order.paymentStatus %></span>
+                      </td>
+                      <td style="font-size:.8rem;color:var(--muted);white-space:nowrap">
+                        <%= order.orderDate ? new Date(order.orderDate).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : 'N/A' %>
+                      </td>
+                      <td style="font-weight:700">&#8377;<%= order.totalAmount %></td>
+                      <td>
+                        <% if(order.orderStatus!=='Cancelled' && order.orderStatus!=='Returned' && order.orderStatus!=='Delivered') { %>
+                          <a class="bk-btn bk-btn-danger bk-btn-sm cancel-order" href="/orderCancel?id=<%= order._id %>" data-order-id="<%= order._id %>">
+                            <i class="fas fa-times"></i> Cancel
+                          </a>
+                        <% } else if(order.orderStatus==='Delivered') { %>
+                          <a class="bk-btn bk-btn-outline bk-btn-sm return-order" href="/orderReturn?id=<%= order._id %>" data-order-id="<%= order._id %>">
+                            <i class="fas fa-undo"></i> Return
+                          </a>
+                        <% } else { %>
+                          <span style="font-size:.78rem;color:var(--muted)">—</span>
+                        <% } %>
+                      </td>
+                      <td>
+                        <a href="/loadOrderDetails?id=<%= order._id %>" class="bk-btn bk-btn-outline bk-btn-sm">
+                          <i class="fas fa-eye"></i> View
+                        </a>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
-            integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-            <script>
-                document.addEventListener('DOMContentLoaded', () => {
-                    const cancelButtons = document.querySelectorAll('.cancel-order');
-                    const returnButtons = document.querySelectorAll('.return-order');
-            
-                    cancelButtons.forEach(button => {
-                        button.addEventListener('click', (event) => {
-                            event.preventDefault();
-                            const orderId = button.getAttribute('data-order-id');
-                            Swal.fire({
-                                title: 'Are you sure?',
-                                text: 'You are about to cancel this order.',
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonText: 'Yes, cancel it!',
-                                cancelButtonText: 'No, keep it'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href = `/orderCancel?id=${orderId}`;
-                                }
-                            });
-                        });
-                    });
-            
-                    returnButtons.forEach(button => {
-                        button.addEventListener('click', (event) => {
-                            event.preventDefault();
-                            const orderId = button.getAttribute('data-order-id');
-                            Swal.fire({
-                                title: 'Are you sure?',
-                                text: 'You are about to return this order.',
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonText: 'Yes, return it!',
-                                cancelButtonText: 'No, keep it'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.location.href = `/orderReturn?id=${orderId}`;
-                                }
-                            });
-                        });
-                    });
-                });
-            </script>
+            <% if (safeTotalPages > 1) { %>
+              <div class="bk-pagination" style="padding:16px">
+                <% if(safePage > 1) { %><a href="/loadProfile?page=<%= safePage-1 %>" class="bk-page-btn"><i class="fas fa-chevron-left" style="font-size:.75rem"></i></a><% } else { %><span class="bk-page-btn disabled"><i class="fas fa-chevron-left" style="font-size:.75rem"></i></span><% } %>
+                <% for(let p=1;p<=safeTotalPages;p++) { %>
+                  <a href="/loadProfile?page=<%= p %>" class="bk-page-btn <%= safePage===p?'active':'' %>"><%= p %></a>
+                <% } %>
+                <% if(safePage < safeTotalPages) { %><a href="/loadProfile?page=<%= safePage+1 %>" class="bk-page-btn"><i class="fas fa-chevron-right" style="font-size:.75rem"></i></a><% } else { %><span class="bk-page-btn disabled"><i class="fas fa-chevron-right" style="font-size:.75rem"></i></span><% } %>
+              </div>
+            <% } %>
+          <% } else { %>
+            <div class="bk-empty">
+              <div class="bk-empty-icon">📦</div>
+              <div class="bk-empty-title">No orders yet</div>
+              <p class="bk-empty-sub">You haven't placed any book orders yet.</p>
+              <a href="/loadShop" class="bk-btn bk-btn-dark"><i class="fas fa-compass"></i> Explore Books</a>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
 
-        <script>
+    <!-- ─── 3. ADDRESSES ─── -->
+    <div class="bk-panel" id="panel-address">
+      <div class="bk-panel-card">
+        <div class="bk-panel-head">
+          <div class="bk-panel-title"><i class="fas fa-map-marker-alt"></i> Saved Addresses</div>
+          <button class="bk-btn bk-btn-dark bk-btn-sm" id="toggleAddressForm">
+            <i class="fas fa-plus"></i> Add Address
+          </button>
+        </div>
+        <div class="bk-panel-body">
 
+          <!-- Inline add form -->
+          <div class="bk-addr-form" id="addressFormContainer">
+            <div class="bk-addr-form-title"><i class="fas fa-map-pin" style="color:var(--hi)"></i> New Delivery Address</div>
+            <form id="addressForm" action="/addAddress" method="post">
+              <div class="bk-row bk-row-2" style="margin-bottom:14px">
+                <div class="bk-field-group" style="margin:0">
+                  <label class="bk-label">Recipient Name</label>
+                  <input type="text" class="bk-input" name="name" id="inputAddress" required placeholder="Full Name">
+                </div>
+                <div class="bk-field-group" style="margin:0">
+                  <label class="bk-label">Mobile Number</label>
+                  <input type="tel" pattern="[0-9]{10}" class="bk-input" name="mobile" id="inputCity" required placeholder="10-digit number">
+                </div>
+              </div>
+              <div class="bk-field-group">
+                <label class="bk-label">House / Building / Street</label>
+                <input type="text" class="bk-input" name="houseName" id="inputHouse" required placeholder="Flat, House no., Apartment">
+              </div>
+              <div class="bk-row bk-row-3" style="margin-bottom:18px">
+                <div class="bk-field-group" style="margin:0">
+                  <label class="bk-label">City / Town</label>
+                  <input type="text" class="bk-input" name="city" id="inputCityName" required placeholder="City">
+                </div>
+                <div class="bk-field-group" style="margin:0">
+                  <label class="bk-label">State</label>
+                  <input type="text" class="bk-input" name="state" id="inputState" required placeholder="State">
+                </div>
+                <div class="bk-field-group" style="margin:0">
+                  <label class="bk-label">PIN Code</label>
+                  <input type="text" pattern="[0-9]{6}" class="bk-input" name="pinCode" id="inputZip" required placeholder="6-digit PIN">
+                </div>
+              </div>
+              <div style="display:flex;gap:10px">
+                <button type="submit" class="bk-btn bk-btn-dark"><i class="fas fa-check"></i> Save Address</button>
+                <button type="button" class="bk-btn bk-btn-outline" id="cancelAddressBtn">Cancel</button>
+              </div>
+            </form>
+          </div>
 
+          <!-- Address cards -->
+          <% if (safeAddresses && safeAddresses.length > 0) { %>
+            <div class="bk-address-grid">
+              <% safeAddresses.forEach((address, index) => { %>
+                <div class="bk-address-card" id="address_<%= address._id %>">
+                  <span class="bk-address-num">Address #<%= index+1 %></span>
+                  <div class="bk-address-name"><%= address.name %></div>
+                  <div class="bk-address-phone"><i class="fas fa-phone-alt" style="font-size:.72rem"></i> <%= address.mobile %></div>
+                  <div class="bk-address-text">
+                    <%= address.houseName %><br>
+                    <%= address.city %>, <%= address.state %><br>
+                    <strong>PIN <%= address.pinCode %></strong>
+                  </div>
+                  <div class="bk-address-actions">
+                    <a href="/loadEditAddress1?id=<%= address._id %>" class="bk-btn bk-btn-outline bk-btn-sm">
+                      <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <button class="bk-btn bk-btn-danger bk-btn-sm" onclick="removeAddress('<%= address._id %>')">
+                      <i class="fas fa-trash"></i> Delete
+                    </button>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } else { %>
+            <div class="bk-empty">
+              <div class="bk-empty-icon">📍</div>
+              <div class="bk-empty-title">No addresses saved</div>
+              <p class="bk-empty-sub">Save delivery locations for faster checkout.</p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
 
+    <!-- ─── 4. WALLET ─── -->
+    <div class="bk-panel" id="panel-wallet">
+      <div class="bk-panel-card">
+        <div class="bk-panel-head">
+          <div class="bk-panel-title"><i class="fas fa-wallet"></i> Digital Wallet</div>
+        </div>
+        <div class="bk-panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+            <div>
+              <!-- Balance card -->
+              <div class="bk-wallet-card">
+                <div class="bk-wallet-label">BOOKSAW Pay Balance</div>
+                <div class="bk-wallet-amount">&#8377;<%= (safeWallet && typeof safeWallet.balance === 'number') ? safeWallet.balance.toFixed(2) : '0.00' %></div>
+                <div class="bk-wallet-sub">Available for instant checkout</div>
+              </div>
+              <!-- Top-up -->
+              <div class="bk-wallet-topup">
+                <div class="bk-wallet-topup-title"><i class="fas fa-plus-circle" style="color:var(--hi)"></i> Top Up Balance</div>
+                <form onsubmit="event.preventDefault(); submitForm();">
+                  <div class="bk-field-group">
+                    <label class="bk-label">Amount (&#8377;)</label>
+                    <input type="number" min="1" step="any" class="bk-input" id="amountInput" placeholder="e.g. 500" required>
+                  </div>
+                  <button type="button" onclick="submitForm()" class="bk-btn bk-btn-dark bk-btn-full">
+                    <i class="fas fa-bolt"></i> Add via Razorpay
+                  </button>
+                </form>
+              </div>
+            </div>
 
-            document.addEventListener("DOMContentLoaded", function () {
-                const addressFormContainer = document.getElementById("addressFormContainer");
-                const toggleAddressForm = document.getElementById("toggleAddressForm");
+            <!-- Transaction history -->
+            <div>
+              <div class="bk-section-title" style="margin-bottom:12px"><i class="fas fa-clock" style="color:var(--hi);font-size:.85rem"></i> Transaction History</div>
+              <% if (safeWallet && safeWallet.history && safeWallet.history.length > 0) { %>
+                <div class="bk-tx-list">
+                  <% for(let i = safeWallet.history.length - 1; i >= 0; i--) { %>
+                    <div class="bk-tx-item">
+                      <span class="bk-tx-date"><%= safeWallet.history[i].createdAt ? new Date(safeWallet.history[i].createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : 'N/A' %></span>
+                      <span class="bk-tx-amt <%= safeWallet.history[i].type === 'credit' ? 'bk-tx-credit' : 'bk-tx-debit' %>">
+                        <%= safeWallet.history[i].type === 'credit' ? '+' : '−' %> &#8377;<%= safeWallet.history[i].amount %>
+                      </span>
+                      <span class="bk-tx-type <%= safeWallet.history[i].type %>"><%= safeWallet.history[i].type %></span>
+                    </div>
+                  <% } %>
+                </div>
+              <% } else { %>
+                <div class="bk-empty" style="padding:40px 20px">
+                  <div class="bk-empty-icon" style="font-size:2rem">💳</div>
+                  <div class="bk-empty-title" style="font-size:.95rem">No transactions yet</div>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-                // Remove the item from local storage when the page is loaded
-                localStorage.removeItem("isAddressFormShown");
+    <!-- ─── 5. COUPONS ─── -->
+    <div class="bk-panel" id="panel-coupons">
+      <div class="bk-panel-card">
+        <div class="bk-panel-head">
+          <div class="bk-panel-title"><i class="fas fa-tags"></i> Available Coupons</div>
+        </div>
+        <div class="bk-panel-body">
+          <% if (safeCoupons && safeCoupons.length > 0) { %>
+            <div class="bk-coupon-grid">
+              <% safeCoupons.forEach((coupon, idx) => { %>
+                <div class="bk-coupon-card">
+                  <div class="bk-coupon-top">
+                    <div class="bk-coupon-discount"><%= coupon.discountAmount %><span>% OFF</span></div>
+                    <div class="bk-coupon-expiry">
+                      Expires<br>
+                      <strong><%= coupon.expirationDate ? new Date(coupon.expirationDate).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : 'No Expiry' %></strong>
+                    </div>
+                  </div>
+                  <div class="bk-coupon-body">
+                    <div class="bk-coupon-name"><%= coupon.couponName %></div>
+                    <div class="bk-coupon-desc">Apply at checkout to enjoy <%= coupon.discountAmount %>% off your order.</div>
+                    <div class="bk-coupon-code-row">
+                      <span class="bk-coupon-code"><%= coupon.couponCode %></span>
+                      <button class="bk-btn bk-btn-dark bk-btn-sm" onclick="copyCoupon('<%= coupon.couponCode %>', this)" id="coupon-btn-<%= idx %>">
+                        <i class="fas fa-copy"></i> <span>Copy</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } else { %>
+            <div class="bk-empty">
+              <div class="bk-empty-icon">🎟️</div>
+              <div class="bk-empty-title">No coupons available</div>
+              <p class="bk-empty-sub">Stay tuned for seasonal discounts and promotional offers!</p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
 
-                // Toggle the address form visibility when clicking the "Add Address" button
-                if (toggleAddressForm) {
-                    toggleAddressForm.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        if (addressFormContainer && addressFormContainer.style.display === "none") {
-                            addressFormContainer.style.display = "block";
-                            // Store the state in local storage
-                            localStorage.setItem("isAddressFormShown", "true");
-                        } else if (addressFormContainer) {
-                            addressFormContainer.style.display = "none";
-                            // Remove the state from local storage
-                            localStorage.removeItem("isAddressFormShown");
-                        }
-                    });
-                }
-            });
-        </script>
-        <script>
-            function removeAddress(addressId) {
-                fetch('/removeAddress', {
-                    method: 'delete',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ addressId })
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            // Remove the address from the DOM
-                            const addressElement = document.getElementById('address_' + addressId);
-                            addressElement.parentNode.removeChild(addressElement);
-                            console.log('Address removed successfully');
-                        } else {
-                            console.error('Failed to remove address');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            }
-        </script>
+    <!-- ─── 6. SETTINGS ─── -->
+    <div class="bk-panel" id="panel-settings">
+      <div class="bk-panel-card">
+        <div class="bk-panel-head">
+          <div class="bk-panel-title"><i class="fas fa-user-cog"></i> Account Settings</div>
+        </div>
+        <div class="bk-panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start">
+            <div>
+              <div class="bk-section-title">Update Username</div>
+              <form onsubmit="event.preventDefault(); updateUsername();">
+                <div class="bk-field-group">
+                  <label class="bk-label">New Username</label>
+                  <input type="text" class="bk-input" id="newUsername" required placeholder="Letters only (e.g. John)" pattern="^[a-zA-Z]+$">
+                  <small style="font-size:.75rem;color:var(--muted);margin-top:4px;display:block">Username must contain only alphabets.</small>
+                </div>
+                <div class="bk-field-group">
+                  <label class="bk-label">Confirm Current Password</label>
+                  <input type="password" class="bk-input" id="currentPassword" required placeholder="Enter your current password">
+                </div>
+                <button type="submit" class="bk-btn bk-btn-dark"><i class="fas fa-check"></i> Save Username</button>
+              </form>
+            </div>
+            <div>
+              <div class="bk-section-title">Security</div>
+              <p style="font-size:.84rem;color:var(--muted);margin-bottom:16px;line-height:1.6">Keep your account safe by updating your password regularly.</p>
+              <a href="/profileEdit" class="bk-btn bk-btn-outline bk-btn-full"><i class="fas fa-key"></i> Change Password</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
+  </div><!-- /bk-main -->
+</div><!-- /bk-account -->
 
-        <script>
-            const profileEdit = async (event) => {
-                event.preventDefault(); // Prevent form submission
-                const nameInput = document.getElementById("name");
+<%- include('../partials/userFooter') %>
 
-                // Validate Name field to disallow spaces or numbers
-                if (/[\s\d]/.test(nameInput.value)) {
-                    toastr.error("Name should not contain spaces or numbers.");
-                    nameInput.focus();
-                    return;
-                }
-
-                const formData = new FormData(document.getElementById('profileEditForm')); // Get form data
-                const body = Object.fromEntries(formData); // Convert form data to object
-
-                try {
-                    const response = await fetch('/profileEdit', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(body)
-                    });
-                    console.log(response)
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    const data = await response.json();
-
-                    if (!data.success) {
-                        toastr.error(data.message);
-                    } else {
-                        toastr.success(data.message);
-                        setTimeout(() => {
-                            window.location.reload()
-
-                        }, 1500)
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            };
-
-            const profileEditForm = document.getElementById('profileEditForm');
-            if (profileEditForm) {
-                profileEditForm.addEventListener('submit', profileEdit);
-            }
-        </script>
-
-
-
-
-
-
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="/public/assets/js/vendor/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
-  function copyCoupon(text, button) {
-  navigator.clipboard.writeText(text)
-    .then(() => {
-      const buttonText = button.querySelector('span');
-      buttonText.textContent = 'Copied';
-      button.classList.add('copied');
-      setTimeout(() => {
-        buttonText.textContent = 'Copy';
-        button.classList.remove('copied');
-      }, 2000);
-    })
-    .catch((err) => {
-      console.error('Failed to copy coupon code: ', err);
+/* ── TAB SWITCHING ────────────────────────── */
+function showTab(id, btn) {
+  document.querySelectorAll('.bk-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.bk-nav-item').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById('panel-' + id);
+  if (panel) panel.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// Open from URL hash (#orders etc.)
+document.addEventListener('DOMContentLoaded', () => {
+  const hash = window.location.hash.replace('#','');
+  const valid = ['dashboard','orders','address','wallet','coupons','settings'];
+  if (hash && valid.includes(hash)) {
+    const btn = document.getElementById('tab-btn-' + hash);
+    showTab(hash, btn);
+  }
+
+  // Address form toggle
+  const toggleBtn = document.getElementById('toggleAddressForm');
+  const formCont  = document.getElementById('addressFormContainer');
+  const cancelBtn = document.getElementById('cancelAddressBtn');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      formCont.style.display = formCont.style.display === 'block' ? 'none' : 'block';
+      if (formCont.style.display === 'block') formCont.scrollIntoView({ behavior: 'smooth' });
     });
+  }
+  if (cancelBtn) cancelBtn.addEventListener('click', () => { formCont.style.display = 'none'; });
+
+  // Cancel order
+  document.querySelectorAll('.cancel-order').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const id = btn.getAttribute('data-order-id');
+      Swal.fire({ title:'Cancel Order?', text:'This cannot be undone.', icon:'warning',
+        showCancelButton:true, confirmButtonColor:'#b91c1c', cancelButtonColor:'#7a6f60',
+        confirmButtonText:'Yes, cancel', cancelButtonText:'Keep it'
+      }).then(r => { if(r.isConfirmed) window.location.href = '/orderCancel?id='+id; });
+    });
+  });
+
+  // Return order
+  document.querySelectorAll('.return-order').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const id = btn.getAttribute('data-order-id');
+      Swal.fire({ title:'Return Order?', text:'Request a return for this delivered order?', icon:'question',
+        showCancelButton:true, confirmButtonColor:'#2d2820', cancelButtonColor:'#7a6f60',
+        confirmButtonText:'Yes, return', cancelButtonText:'No'
+      }).then(r => { if(r.isConfirmed) window.location.href = '/orderReturn?id='+id; });
+    });
+  });
+});
+
+/* ── REFERRAL ─────────────────────────────── */
+function copyReferralCode(text) {
+  navigator.clipboard.writeText(text).then(() => toastr.success('Referral code copied!'));
 }
-</script>
-
-
-
-
-
-
-        <script>
-            const addressFormElem = document.getElementById("addressForm");
-            if (addressFormElem) {
-                addressFormElem.addEventListener("submit", function (event) {
-                // Prevent form submission
-                event.preventDefault();
-
-                // Validate Name field to disallow spaces
-                const nameInput = document.getElementById("inputAddress");
-                if (/\s/.test(nameInput.value)) {
-                    toastr.error("Name should not contain spaces.");
-                    nameInput.focus();
-                    return;
-                }
-
-                // Validate State, City, and House Name fields to disallow numbers
-                const stateInput = document.getElementById("inputState");
-                const cityInput = document.getElementById("inputZip");
-                const houseNameInput = document.getElementById("inputZip");
-
-                if (/\d/.test(stateInput.value) || /\d/.test(cityInput.value) || /\d/.test(houseNameInput.value)) {
-                    toastr.error("State, City, and House Name should not contain numbers.");
-                    stateInput.focus();
-                    return;
-                }
-
-                // If all validations pass, submit the form
-                this.submit();
-                });
-            }
-        </script>   
- <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-<script>
-    function submitForm() {
-    const amount = parseFloat(document.getElementById('amountInput').value);
-    if (!amount || amount <= 0) {
-        alert("Enter a valid amount");
-        return;
-    }
-
-    // First, create the Razorpay order on the backend
-    fetch('/addToWallet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount })
-    })
-    .then(res => res.json())
-    .then(orderData => {
-        const options = {
-            key: 'rzp_test_bdVGrcCwlFiIwl', // replace with your key
-            amount: orderData.order.amount, // in paise
-            currency: orderData.order.currency,
-            name: 'Your App Name',
-            description: 'Add Funds to Wallet',
-            order_id: orderData.order.id, // Razorpay order_id from backend
-            handler: function(response) {
-                // These are the values you need to send to backend to verify
-                const dataToSend = {
-                    amount: amount,
-                    razorpay_payment_id: response.razorpay_payment_id,
-                    razorpay_order_id: response.razorpay_order_id,
-                    razorpay_signature: response.razorpay_signature
-                };
-
-                // Now call your backend again to confirm payment & update wallet
-                fetch('/addToWallet', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dataToSend)
-                })
-                .then(res => res.json())
-                .then(result => {
-                    if(result.success){
-                        alert("Wallet updated successfully!");
-                        location.reload();
-                    } else {
-                        alert(result.message || "Payment verification failed");
-                    }
-                });
-            },
-            prefill: {
-                name: 'User Name',
-                email: 'user@example.com',
-                contact: '9999999999'
-            },
-            theme: {
-                color: '#3399cc'
-            }
-        };
-        const rzp = new Razorpay(options);
-        rzp.open();
-    })
-    .catch(err => console.error(err));
+function applyReferralCode() {
+  const code = document.getElementById('inputReferralCode').value.trim();
+  if (!code) { toastr.warning('Please enter a referral code.'); return; }
+  fetch('/applyReferral', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({referralCode:code}) })
+    .then(r => r.json()).then(d => {
+      if (d.success) { toastr.success('Referral code applied!'); setTimeout(() => location.reload(), 1200); }
+      else toastr.error(d.error || 'Invalid referral code');
+    }).catch(e => toastr.error('Error: ' + e.message));
 }
-</script>
-<script>
-    function updateUsername() {
-        const newUsername = document.getElementById('newUsername').value;
-        const currentPassword = document.getElementById('currentPassword').value;
 
-        // Regex pattern to check for alphabetical characters only
-        const pattern = /^[a-zA-Z]+$/;
+/* ── COUPON COPY ──────────────────────────── */
+function copyCoupon(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const sp = btn.querySelector('span');
+    if (sp) sp.textContent = 'Copied!';
+    btn.classList.add('btn-success');
+    setTimeout(() => { if(sp) sp.textContent = 'Copy'; btn.classList.remove('btn-success'); }, 2000);
+  });
+}
 
-        // Check if newUsername contains only alphabets
-        if (!pattern.test(newUsername)) {
-            toastr.error('Username should contain only alphabets');
-            return; // Stop further execution
-        }
-
-        fetch('/editUsername', {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ newUsername, currentPassword }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message === 'Username updated successfully') {
-                toastr.success(data.message);
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            } else {
-                toastr.error(data.message || 'An error occurred');
-            }
-        })
-        .catch(error => {
-            toastr.error('An error occurred');
-        });
+/* ── REMOVE ADDRESS ───────────────────────── */
+function removeAddress(addressId) {
+  Swal.fire({ title:'Delete Address?', text:'Are you sure?', icon:'warning',
+    showCancelButton:true, confirmButtonColor:'#b91c1c', cancelButtonColor:'#7a6f60',
+    confirmButtonText:'Yes, delete'
+  }).then(r => {
+    if (r.isConfirmed) {
+      fetch('/removeAddress', { method:'DELETE', headers:{'Content-Type':'application/json'}, body:JSON.stringify({addressId}) })
+        .then(res => {
+          if (res.ok) { const el = document.getElementById('address_'+addressId); if(el) el.remove(); toastr.success('Address deleted.'); }
+          else toastr.error('Failed to remove address.');
+        }).catch(e => toastr.error('Error: '+e.message));
     }
+  });
+}
+
+/* ── WALLET TOP-UP ────────────────────────── */
+function submitForm() {
+  const amt = parseFloat(document.getElementById('amountInput').value);
+  if (!amt || amt <= 0) { toastr.warning('Enter a valid amount.'); return; }
+  fetch('/addToWallet', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({amount:amt}) })
+    .then(r => r.json()).then(data => {
+      if (!data || !data.order) { toastr.error(data.message || 'Payment init failed'); return; }
+      const opts = {
+        key: 'rzp_test_bdVGrcCwlFiIwl', amount: data.order.amount, currency: data.order.currency,
+        name:'BOOKSAW Wallet', description:'Add Funds', order_id: data.order.id,
+        handler: function(resp) {
+          fetch('/addToWallet', { method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ amount:amt, razorpay_payment_id:resp.razorpay_payment_id, razorpay_order_id:resp.razorpay_order_id, razorpay_signature:resp.razorpay_signature })
+          }).then(r => r.json()).then(res => {
+            if(res.success) Swal.fire({icon:'success',title:'Payment Successful!',text:'Wallet updated!'}).then(() => location.reload());
+            else toastr.error(res.message || 'Verification failed');
+          });
+        },
+        theme: { color: '#2d2820' }
+      };
+      new Razorpay(opts).open();
+    }).catch(e => toastr.error('Payment error: '+e.message));
+}
+
+/* ── UPDATE USERNAME ──────────────────────── */
+function updateUsername() {
+  const u = document.getElementById('newUsername').value.trim();
+  const p = document.getElementById('currentPassword').value;
+  if (!/^[a-zA-Z]+$/.test(u)) { toastr.error('Username should contain only alphabets'); return; }
+  fetch('/editUsername', { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({newUsername:u,currentPassword:p}) })
+    .then(r => r.json()).then(d => {
+      if (d.message === 'Username updated successfully') { toastr.success(d.message); setTimeout(() => location.reload(), 1200); }
+      else toastr.error(d.message || 'Error updating username');
+    }).catch(() => toastr.error('Error updating username'));
+}
+
+/* ── TOASTR ───────────────────────────────── */
+toastr.options = { closeButton: true, progressBar: true, positionClass: 'toast-top-right', timeOut: 1400, extendedTimeOut: 400, showDuration: 150, hideDuration: 180, preventDuplicates: true, newestOnTop: true };
 </script>
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-        <script src="/public/assets/js/vendor/modernizr-3.6.0.min.js"></script>
-        <script src="/public/assets/js/vendor/jquery-3.6.0.min.js"></script>
-        <script src="/public/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
-        <script src="/public/assets/js/vendor/bootstrap.bundle.min.js"></script>
-        <script src="/public/assets/js/plugins/slick.js"></script>
-        <script src="/public/assets/js/plugins/jquery.syotimer.min.js"></script>
-        <script src="/public/assets/js/plugins/wow.js"></script>
-        <script src="/public/assets/js/plugins/jquery-ui.js"></script>
-        <script src="/public/assets/js/plugins/perfect-scrollbar.js"></script>
-        <script src="/public/assets/js/plugins/magnific-popup.js"></script>
-        <script src="/public/assets/js/plugins/select2.min.js"></script>
-        <script src="/public/assets/js/plugins/waypoints.js"></script>
-        <script src="/public/assets/js/plugins/counterup.js"></script>
-        <script src="/public/assets/js/plugins/jquery.countdown.min.js"></script>
-        <script src="/public/assets/js/plugins/images-loaded.js"></script>
-        <script src="/public/assets/js/plugins/isotope.js"></script>
-        <script src="/public/assets/js/plugins/scrollup.js"></script>
-        <script src="/public/assets/js/plugins/jquery.vticker-min.js"></script>
-        <script src="/public/assets/js/plugins/jquery.theia.sticky.js"></script>
-        <!-- Template  JS -->
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
-        <script src="/public/assets/js/maind134.js?v=3.4"></script>
 </body>
-
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-frontend/page-account.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Jul 2023 10:11:15 GMT -->
-
 </html>

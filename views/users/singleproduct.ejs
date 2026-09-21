@@ -1,1074 +1,1436 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en">
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-frontend/shop-product-right.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Jul 2023 10:09:56 GMT -->
-
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>BOOKSAW</title>
-  <meta http-equiv="x-ua-compatible" content="ie=edge" />
-  <meta name="description" content="" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta property="og:title" content="" />
-  <meta property="og:type" content="" />
-  <meta property="og:url" content="" />
-  <meta property="og:image" content="" />
-  <!-- Favicon -->
-  <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png" />
-  <!-- Template CSS -->
-  <link rel="stylesheet" href="public/assets/css/maind134.css?v=3.4" />
-  <link rel="stylesheet" href="public/assets/css/magiczoomplus.css">
+  <meta charset="utf-8">
+  <title><%= product ? product.Bookname + ' — BOOKSAW' : 'Book Details — BOOKSAW' %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
 
-  <!-- Include Magic Zoom JavaScript -->
-  <!-- <script src="path/to/magiczoom.js"></script> -->
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <!-- magic zoom cdn  -->
+  <!-- Icons & Framework CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/public/assets/css/vendors/bootstrap.min.css">
+  <link rel="stylesheet" href="/public/assets/css/maind134.css?v=3.4">
+
+  <!-- Magic Zoom Plus CSS -->
   <link rel="stylesheet" href="/public/assets/magiczoomplus/magiczoomplus.css">
-  <script src="/public/assets/magiczoomplus/magiczoomplus.js"></script>
-  <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"
-    integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
   <style>
-    .out-of-stock {
-      color: red;
+    /* ── BOOKSAW SINGLE PRODUCT — WARM LITERARY DESIGN ─────── */
+    :root {
+      --canvas:    #f5f0e8;
+      --bg:        #faf8f4;
+      --fg:        #2d2820;
+      --highlight: #b8542a;
+      --hi-hover:  #a1441e;
+      --muted:     #7a6f60;
+      --border:    #ddd8ce;
+      --card-bg:   #ffffff;
+      --secondary: #edeae2;
+      --accent-green: #15803d;
+      --shadow-sm: 0 2px 8px rgba(45,40,32,0.05);
+      --shadow-md: 0 8px 24px rgba(45,40,32,0.08);
+      --shadow-lg: 0 16px 40px rgba(45,40,32,0.12);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── BREADCRUMB ─────────────────────────────────────────── */
+    .bk-breadcrumb-wrap {
+      background: var(--canvas);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+    }
+    .bk-breadcrumb-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 48px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.84rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+    .bk-breadcrumb-inner a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.18s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bk-breadcrumb-inner a:hover {
+      color: var(--highlight);
+    }
+    .bk-breadcrumb-inner .bk-sep {
+      color: #b5ada0;
+      font-size: 0.72rem;
+    }
+    .bk-breadcrumb-inner .bk-current {
+      color: var(--fg);
+      font-weight: 600;
+    }
+
+    /* ── MAIN PRODUCT DETAIL LAYOUT ─────────────────────────── */
+    .bk-product-detail {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 48px 48px 64px;
+    }
+
+    .bk-detail-grid {
+      display: grid;
+      grid-template-columns: 480px 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+
+    /* ── LEFT COLUMN: BOOK SHOWCASE & INTERACTIVE GALLERY ──── */
+    .bk-gallery-col {
+      position: sticky;
+      top: 96px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* View Switcher Controls (Front / Back / Spine) */
+    .bk-view-switcher {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--canvas);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 8px;
+    }
+    .bk-side-tabs {
+      display: flex;
+      gap: 4px;
+    }
+    .bk-side-btn {
+      background: transparent;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+    }
+    .bk-side-btn:hover {
+      color: var(--fg);
+      background: rgba(45,40,32,0.06);
+    }
+    .bk-side-btn.active {
+      background: #ffffff;
+      color: var(--highlight);
+      box-shadow: 0 2px 6px rgba(45,40,32,0.08);
+    }
+    .bk-flip-btn {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--fg);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+    }
+    .bk-flip-btn:hover {
+      border-color: var(--highlight);
+      color: var(--highlight);
+      background: rgba(184,84,42,0.04);
+      transform: rotate(3deg);
+    }
+
+    /* Cover Stage Box */
+    .bk-main-cover-stage {
+      position: relative;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 40px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      min-height: 520px;
+      perspective: 1000px;
+    }
+
+    /* The Link and Image inside MagicZoom */
+    .bk-main-cover-stage a.MagicZoom {
+      display: inline-block !important;
+      position: relative;
+      border-radius: 4px 10px 10px 4px;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .bk-main-cover-stage img#bk-main-img {
+      max-width: 100%;
+      max-height: 440px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 4px 10px 10px 4px;
+      box-shadow: -8px 0 22px rgba(0,0,0,0.22), 0 14px 34px rgba(0,0,0,0.14);
+      display: block;
+      transition: opacity 0.2s ease, transform 0.35s ease;
+    }
+
+    /* Flip animation helper */
+    .bk-main-cover-stage.bk-flipping img#bk-main-img {
+      transform: scale(0.96) rotateY(90deg);
+      opacity: 0.3;
+    }
+
+    /* Side Nav Arrow Overlays */
+    .bk-cover-nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--border);
+      color: var(--fg);
+      box-shadow: 0 4px 14px rgba(45,40,32,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.2s ease;
+      opacity: 0.85;
+    }
+    .bk-cover-nav-arrow:hover {
+      background: #ffffff;
+      color: var(--highlight);
+      border-color: var(--highlight);
+      transform: translateY(-50%) scale(1.1);
+      opacity: 1;
+    }
+    .bk-cover-nav-prev { left: 14px; }
+    .bk-cover-nav-next { right: 14px; }
+
+    /* Top Left Status Badges */
+    .bk-badge-strip {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 8;
+    }
+    .bk-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .bk-pill-discount {
+      background: var(--highlight);
+      color: #ffffff;
+    }
+    .bk-pill-stock {
+      background: #dcfce7;
+      color: var(--accent-green);
+      border: 1px solid #bbf7d0;
+    }
+    .bk-pill-out {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    /* Lens Hint Pill (Bottom Center) */
+    .bk-lens-hint {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(45,40,32,0.78);
+      backdrop-filter: blur(4px);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 4px 14px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+      z-index: 8;
+      letter-spacing: 0.3px;
+    }
+
+    /* Thumbnails Row */
+    .bk-thumb-row {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 4px 2px;
+    }
+    .bk-thumb-item {
+      position: relative;
+      width: 76px;
+      height: 104px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 4px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.18s ease;
+    }
+    .bk-thumb-item:hover,
+    .bk-thumb-item.active {
+      border-color: var(--highlight);
+      box-shadow: 0 4px 12px rgba(184,84,42,0.18);
+      transform: translateY(-2px);
+    }
+    .bk-thumb-item img {
+      max-width: 100%;
+      max-height: 82px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    .bk-thumb-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 3px;
+      letter-spacing: 0.3px;
+    }
+    .bk-thumb-item.active .bk-thumb-label {
+      color: var(--highlight);
+    }
+
+    /* ── RIGHT COLUMN: PRODUCT INFO & BUYING CONSOLE ───────── */
+    .bk-info-col {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .bk-genre-tag {
+      display: inline-block;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--highlight);
+      background: rgba(184,84,42,0.08);
+      padding: 4px 12px;
+      border-radius: 999px;
+      width: fit-content;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .bk-genre-tag:hover {
+      background: rgba(184,84,42,0.14);
+      color: var(--hi-hover);
+    }
+
+    .bk-book-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--fg);
+      line-height: 1.25;
+      letter-spacing: -0.5px;
+    }
+
+    .bk-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.86rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+    .bk-stars {
+      color: #eab308;
+      display: inline-flex;
+      gap: 2px;
+      font-size: 0.92rem;
+    }
+    .bk-rating-text {
+      color: var(--fg);
+      font-weight: 600;
+    }
+
+    /* Price Section */
+    .bk-price-box {
+      background: var(--canvas);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 24px;
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .bk-current-price {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--highlight);
+    }
+    .bk-regular-price {
+      font-size: 1.15rem;
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+    .bk-save-badge {
+      background: #dcfce7;
+      color: var(--accent-green);
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 4px 12px;
+      border-radius: 6px;
+      border: 1px solid #bbf7d0;
+    }
+
+    /* Short Synopsis */
+    .bk-short-desc {
+      font-size: 0.96rem;
+      color: #4a4237;
+      line-height: 1.75;
+    }
+
+    /* Metadata Specification Grid */
+    .bk-quick-specs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+    }
+    .bk-spec-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .bk-spec-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      font-weight: 600;
+    }
+    .bk-spec-val {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    /* Purchase CTA Buttons */
+    .bk-action-block {
+      display: flex;
+      gap: 14px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+    .bk-btn-primary {
+      flex: 2;
+      min-width: 220px;
+      background: var(--highlight);
+      color: #ffffff !important;
+      border: none;
+      padding: 15px 28px;
+      border-radius: 8px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.98rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(184,84,42,0.25);
+      transition: all 0.18s ease;
+    }
+    .bk-btn-primary:hover:not(:disabled) {
+      background: var(--hi-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(184,84,42,0.32);
+    }
+    .bk-btn-primary:disabled {
+      background: #9c9284;
+      cursor: not-allowed;
+      box-shadow: none;
+      opacity: 0.65;
+    }
+
+    .bk-btn-secondary {
+      flex: 1;
+      min-width: 160px;
+      background: #ffffff;
+      color: var(--fg) !important;
+      border: 1.5px solid var(--border);
+      padding: 15px 22px;
+      border-radius: 8px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .bk-btn-secondary:hover {
+      border-color: var(--highlight);
+      color: var(--highlight) !important;
+      background: rgba(184,84,42,0.04);
+      transform: translateY(-2px);
+    }
+
+    /* Trust & Guarantee Perks */
+    .bk-perks-box {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      margin-top: 10px;
+    }
+    .bk-perk-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .bk-perk-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--canvas);
+      color: var(--highlight);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      flex-shrink: 0;
+    }
+    .bk-perk-text h6 {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 2px;
+    }
+    .bk-perk-text p {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.3;
+      margin: 0;
+    }
+
+    /* ── TABS SECTION ───────────────────────────────────────── */
+    .bk-tabs-section {
+      max-width: 1280px;
+      margin: 0 auto 64px;
+      padding: 0 48px;
+    }
+    .bk-tabs-wrap {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .bk-tabs-nav {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: var(--canvas);
+    }
+    .bk-tab-btn {
+      padding: 16px 30px;
+      background: none;
+      border: none;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.18s ease;
+    }
+    .bk-tab-btn:hover {
+      color: var(--highlight);
+    }
+    .bk-tab-btn.active {
+      color: var(--highlight);
+      background: #ffffff;
+      border-bottom-color: var(--highlight);
+    }
+    .bk-tab-pane {
+      display: none;
+      padding: 36px 42px;
+      font-size: 0.96rem;
+      line-height: 1.85;
+      color: #3d352b;
+    }
+    .bk-tab-pane.active {
+      display: block;
+      animation: bkTabFade 0.25s ease;
+    }
+    @keyframes bkTabFade {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .bk-tab-pane h4 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.3rem;
+      color: var(--fg);
+      margin-bottom: 16px;
+    }
+
+    /* Specs table */
+    .bk-specs-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+    .bk-specs-table tr {
+      border-bottom: 1px solid var(--border);
+    }
+    .bk-specs-table tr:last-child {
+      border-bottom: none;
+    }
+    .bk-specs-table th {
+      text-align: left;
+      padding: 13px 18px;
+      font-weight: 600;
+      font-size: 0.86rem;
+      color: var(--muted);
+      width: 240px;
+      background: var(--canvas);
+    }
+    .bk-specs-table td {
+      padding: 13px 22px;
+      font-size: 0.9rem;
+      color: var(--fg);
+    }
+
+    /* ── RELATED PRODUCTS SECTION ───────────────────────────── */
+    .bk-related-section {
+      max-width: 1280px;
+      margin: 0 auto 80px;
+      padding: 0 48px;
+    }
+    .bk-related-header {
+      margin-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    .bk-related-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--fg);
+    }
+    .bk-related-link {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--highlight);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bk-related-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Book Cards Grid (matching shop.ejs and home.ejs) */
+    .bk-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .bk-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(45,40,32,0.04);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+    .bk-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(45,40,32,0.11);
+    }
+
+    .bk-cover-wrap {
+      position: relative;
+      padding: 24px 20px 16px;
+      background: #fbf9f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 230px;
+      overflow: hidden;
+    }
+    .bk-cover-wrap img {
+      max-height: 185px;
+      max-width: 130px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 3px 7px 7px 3px;
+      box-shadow: -4px 0 10px rgba(0,0,0,0.18), 0 6px 18px rgba(0,0,0,0.12);
+      transition: transform 0.25s ease;
+    }
+    .bk-card:hover .bk-cover-wrap img {
+      transform: scale(1.04) rotate(0.5deg);
+    }
+
+    .bk-card-discount {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--highlight);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.3px;
+      z-index: 2;
+    }
+
+    .bk-cover-cta {
+      position: absolute;
+      inset: 0;
+      background: rgba(45,40,32,0.55);
+      backdrop-filter: blur(2px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      opacity: 0;
+      transition: opacity 0.22s ease;
+      z-index: 3;
+    }
+    .bk-card:hover .bk-cover-cta {
+      opacity: 1;
+    }
+    .bk-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: 7px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s, background 0.15s;
+    }
+    .bk-cta-cart {
+      background: #ffffff;
+      color: var(--fg);
+    }
+    .bk-cta-cart:hover {
+      background: var(--highlight);
+      color: #ffffff;
+      transform: scale(1.04);
+    }
+    .bk-cta-wish {
+      background: rgba(255,255,255,0.15);
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    .bk-cta-wish:hover {
+      background: rgba(255,255,255,0.3);
+      transform: scale(1.04);
+    }
+
+    .bk-card-body {
+      padding: 16px 16px 18px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: 5px;
+    }
+    .bk-card-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--fg);
+      text-decoration: none;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: color 0.15s;
+    }
+    .bk-card-title:hover {
+      color: var(--highlight);
+    }
+    .bk-card-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 8px;
+    }
+    .bk-card-price {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--highlight);
+    }
+    .bk-card-old-price {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    /* ── FOOTER SCOPING & ALIGNMENT FIX ────────────────────── */
+    footer.main {
+      background: var(--canvas) !important;
+      border-top: 1px solid var(--border) !important;
+      color: var(--fg) !important;
+      position: relative !important;
+      clear: both !important;
+      width: 100% !important;
+    }
+    footer.main .footer-mid {
+      padding-top: 48px !important;
+      padding-bottom: 36px !important;
+    }
+    footer.main a {
+      color: var(--muted) !important;
+      text-decoration: none !important;
+      transition: color 0.15s !important;
+    }
+    footer.main a:hover {
+      color: var(--highlight) !important;
+    }
+    footer.main .widget-title {
+      font-family: 'Libre Baskerville', serif !important;
+      font-size: 1rem !important;
+      font-weight: 700 !important;
+      color: var(--fg) !important;
+      margin-bottom: 16px !important;
+    }
+
+    /* ── RESPONSIVE ADAPTATIONS ────────────────────────────── */
+    @media (max-width: 1024px) {
+      .bk-product-detail { padding: 32px 24px 48px; }
+      .bk-detail-grid { grid-template-columns: 1fr; gap: 40px; }
+      .bk-gallery-col { position: static; max-width: 520px; margin: 0 auto; width: 100%; }
+      .bk-grid { grid-template-columns: repeat(3, 1fr); }
+      .bk-tabs-section { padding: 0 24px; }
+      .bk-related-section { padding: 0 24px; }
+    }
+    @media (max-width: 768px) {
+      .bk-product-detail { padding: 20px 16px 36px; }
+      .bk-breadcrumb-inner { padding: 0 16px; }
+      .bk-book-title { font-size: 1.7rem; }
+      .bk-main-cover-stage { min-height: 420px; padding: 24px 16px; }
+      .bk-main-cover-stage img#bk-main-img { max-height: 340px; }
+      .bk-perks-box { grid-template-columns: 1fr; gap: 14px; }
+      .bk-quick-specs { grid-template-columns: 1fr; }
+      .bk-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .bk-tabs-section { padding: 0 16px; }
+      .bk-related-section { padding: 0 16px; }
+      .bk-tab-pane { padding: 24px 18px; }
+      .bk-tab-btn { padding: 12px 16px; font-size: 0.85rem; }
+    }
+    @media (max-width: 480px) {
+      .bk-grid { grid-template-columns: 1fr; }
+      .bk-action-block { flex-direction: column; }
     }
   </style>
 </head>
-
 <body>
 
-  <%-include('../partials/userHeader')-%>
+  <!-- Header -->
+  <%- include('../partials/userHeader') %>
 
-    <div class="mobile-header-active mobile-header-wrapper-style">
-      <div class="mobile-header-wrapper-inner">
-        <div class="mobile-header-top">
-          <div class="mobile-header-logo">
-            <a href="index.html"><img src="/public/main-logo (1).png" alt="logo" /></a>
-          </div>
-          <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
-            <button class="close-style search-close">
-              <i class="icon-top"></i>
-              <i class="icon-bottom"></i>
+  <!-- Breadcrumbs -->
+  <nav class="bk-breadcrumb-wrap" aria-label="Breadcrumb">
+    <div class="bk-breadcrumb-inner">
+      <a href="/home"><i class="fas fa-house"></i> Home</a>
+      <span class="bk-sep"><i class="fas fa-chevron-right"></i></span>
+      <a href="/loadShop">Shop</a>
+      <% if (product && product.Categories && product.Categories.categoryName) { %>
+        <span class="bk-sep"><i class="fas fa-chevron-right"></i></span>
+        <a href="/loadShop?category=<%= encodeURIComponent(product.Categories.categoryName) %>">
+          <%= product.Categories.categoryName %>
+        </a>
+      <% } %>
+      <span class="bk-sep"><i class="fas fa-chevron-right"></i></span>
+      <span class="bk-current"><%= product ? product.Bookname : 'Book' %></span>
+    </div>
+  </nav>
+
+  <!-- Product Showcase -->
+  <main class="bk-product-detail">
+    <div class="bk-detail-grid">
+
+      <!-- Left Column: Book Showcase & Interactive Lens Zoom -->
+      <div class="bk-gallery-col">
+
+        <!-- Front / Back / Side Interactive Switcher -->
+        <% 
+          const imagesList = (product && product.Images && product.Images.length > 0) ? product.Images : ['default.jpg'];
+          const hasMultipleImages = imagesList.length > 1;
+        %>
+        <div class="bk-view-switcher">
+          <div class="bk-side-tabs">
+            <button
+              type="button"
+              class="bk-side-btn active"
+              id="btn-side-0"
+              onclick="selectBookSide(0)"
+            >
+              <i class="fas fa-book-open"></i> Front Cover
             </button>
+            <% if (hasMultipleImages) { %>
+              <button
+                type="button"
+                class="bk-side-btn"
+                id="btn-side-1"
+                onclick="selectBookSide(1)"
+              >
+                <i class="fas fa-book"></i> Back Cover
+              </button>
+            <% } %>
+            <% if (imagesList.length > 2) { %>
+              <button
+                type="button"
+                class="bk-side-btn"
+                id="btn-side-2"
+                onclick="selectBookSide(2)"
+              >
+                <i class="fas fa-layer-group"></i> Inside / Spine
+              </button>
+            <% } %>
+          </div>
+
+          <% if (hasMultipleImages) { %>
+            <button
+              type="button"
+              class="bk-flip-btn"
+              onclick="toggleFlipCover()"
+              title="Flip between front and back cover"
+            >
+              <i class="fas fa-arrows-rotate"></i> Flip
+            </button>
+          <% } %>
+        </div>
+
+        <!-- Cover Stage with MagicZoom Plus -->
+        <div class="bk-main-cover-stage" id="bk-cover-box">
+
+          <!-- Discount & Stock Status Badges -->
+          <div class="bk-badge-strip">
+            <% if (product && product.Regularprice && product.saleprice && product.Regularprice > product.saleprice) { %>
+              <span class="bk-pill-badge bk-pill-discount">
+                <i class="fas fa-bolt"></i> <%= Math.round(((product.Regularprice - product.saleprice) / product.Regularprice) * 100) %>% OFF
+              </span>
+            <% } %>
+            <% if (product && product.stock > 0) { %>
+              <span class="bk-pill-badge bk-pill-stock">
+                <i class="fas fa-circle-check"></i> In Stock
+              </span>
+            <% } else { %>
+              <span class="bk-pill-badge bk-pill-out">
+                <i class="fas fa-circle-xmark"></i> Out of Stock
+              </span>
+            <% } %>
+          </div>
+
+          <!-- Side Navigation Arrows -->
+          <% if (hasMultipleImages) { %>
+            <button
+              type="button"
+              class="bk-cover-nav-arrow bk-cover-nav-prev"
+              onclick="prevBookSide()"
+              aria-label="Previous side"
+            >
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button
+              type="button"
+              class="bk-cover-nav-arrow bk-cover-nav-next"
+              onclick="nextBookSide()"
+              aria-label="Next side"
+            >
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          <% } %>
+
+          <!-- Magic Zoom Plus Interactive Anchor -->
+          <a
+            href="/public/uploads/<%= imagesList[0] %>"
+            class="MagicZoom"
+            id="bk-book-zoom"
+            data-options="zoomMode: zoom; zoomWidth: 500; zoomHeight: 500; zoomPosition: right; zoomDistance: 24; hint: on; textHoverHint: Hover cover to inspect details; textClickHint: Click to expand;"
+          >
+            <img
+              id="bk-main-img"
+              src="/public/uploads/<%= imagesList[0] %>"
+              alt="<%= product ? product.Bookname : 'Book' %>"
+            >
+          </a>
+
+          <!-- Lens Overlay Hint -->
+          <div class="bk-lens-hint">
+            <i class="fas fa-magnifying-glass"></i> Hover to inspect print & texture
           </div>
         </div>
-        <div class="mobile-header-content-area">
-          <div class="mobile-search search-style-3 mobile-header-border">
-            <form action="#">
-              <input type="text" placeholder="Search for items…" />
-              <button type="submit"><i class="fi-rs-search"></i></button>
-            </form>
+
+        <!-- Thumbnails Gallery -->
+        <% if (hasMultipleImages) { %>
+          <div class="bk-thumb-row">
+            <% for (let i = 0; i < imagesList.length; i++) { %>
+              <div
+                class="bk-thumb-item <%= i === 0 ? 'active' : '' %>"
+                id="thumb-<%= i %>"
+                onclick="selectBookSide(<%= i %>)"
+              >
+                <img src="/public/uploads/<%= imagesList[i] %>" alt="Book View <%= i + 1 %>">
+                <span class="bk-thumb-label"><%= i === 0 ? 'Front' : (i === 1 ? 'Back' : 'View ' + (i + 1)) %></span>
+              </div>
+            <% } %>
           </div>
-          <div class="mobile-menu-wrap mobile-header-border">
-            <div class="main-categori-wrap mobile-header-border">
-              <a class="categori-button-active-2" href="#">
-                <span class="fi-rs-apps"></span> Browse Categories
+        <% } %>
+
+      </div>
+
+      <!-- Right Column: Book Details & Buying Console -->
+      <div class="bk-info-col">
+
+        <!-- Category Tag -->
+        <% if (product && product.Categories && product.Categories.categoryName) { %>
+          <a
+            href="/loadShop?category=<%= encodeURIComponent(product.Categories.categoryName) %>"
+            class="bk-genre-tag"
+          >
+            <%= product.Categories.categoryName %>
+          </a>
+        <% } %>
+
+        <!-- Book Title -->
+        <h1 class="bk-book-title"><%= product ? product.Bookname : '' %></h1>
+
+        <!-- Rating & Editions -->
+        <div class="bk-meta-row">
+          <div class="bk-stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-stroke"></i>
+          </div>
+          <span class="bk-rating-text">4.9 / 5.0</span>
+          <span>•</span>
+          <span>Verified Publisher Edition</span>
+        </div>
+
+        <!-- Price Section -->
+        <div class="bk-price-box">
+          <span class="bk-current-price">₹<%= product ? product.saleprice : 0 %></span>
+          <% if (product && product.Regularprice && product.Regularprice > product.saleprice) { %>
+            <del class="bk-regular-price">₹<%= product.Regularprice %></del>
+            <span class="bk-save-badge">
+              Save ₹<%= product.Regularprice - product.saleprice %> (<%= Math.round(((product.Regularprice - product.saleprice) / product.Regularprice) * 100) %>%)
+            </span>
+          <% } %>
+        </div>
+
+        <!-- Short Synopsis -->
+        <% if (product && product.Description) { %>
+          <p class="bk-short-desc">
+            <%= product.Description.length > 280 ? product.Description.substring(0, 280) + '...' : product.Description %>
+          </p>
+        <% } %>
+
+        <!-- Quick Specifications -->
+        <div class="bk-quick-specs">
+          <div class="bk-spec-item">
+            <span class="bk-spec-label">Format</span>
+            <span class="bk-spec-val">Standard Paperback</span>
+          </div>
+          <div class="bk-spec-item">
+            <span class="bk-spec-label">Language</span>
+            <span class="bk-spec-val">English</span>
+          </div>
+          <div class="bk-spec-item">
+            <span class="bk-spec-label">Availability</span>
+            <span class="bk-spec-val" style="color: <%= (product && product.stock > 0) ? 'var(--accent-green)' : '#dc2626' %>;">
+              <%= (product && product.stock > 0) ? product.stock + ' Copies Available' : 'Out of Stock' %>
+            </span>
+          </div>
+          <div class="bk-spec-item">
+            <span class="bk-spec-label">Condition</span>
+            <span class="bk-spec-val">Brand New (Collector's Mint)</span>
+          </div>
+        </div>
+
+        <!-- Purchase Action Buttons -->
+        <div class="bk-action-block">
+          <% if (product && product.stock > 0) { %>
+            <button
+              type="button"
+              class="bk-btn-primary"
+              onclick="addToCart('<%= product._id %>')"
+              id="add-to-cart-main-btn"
+            >
+              <i class="fas fa-bag-shopping"></i> Add to Cart
+            </button>
+          <% } else { %>
+            <button type="button" class="bk-btn-primary" disabled>
+              <i class="fas fa-ban"></i> Currently Unavailable
+            </button>
+          <% } %>
+
+          <a
+            href="/wishlist?id=<%= product ? product._id : '' %>"
+            class="bk-btn-secondary"
+            id="add-to-wishlist-main-btn"
+          >
+            <i class="far fa-heart"></i> Save to Wishlist
+          </a>
+        </div>
+
+        <!-- Trust & Value Perks -->
+        <div class="bk-perks-box">
+          <div class="bk-perk-item">
+            <div class="bk-perk-icon"><i class="fas fa-truck-fast"></i></div>
+            <div class="bk-perk-text">
+              <h6>Fast Delivery</h6>
+              <p>Dispatched in 24 hrs</p>
+            </div>
+          </div>
+          <div class="bk-perk-item">
+            <div class="bk-perk-icon"><i class="fas fa-book-open"></i></div>
+            <div class="bk-perk-text">
+              <h6>Genuine Copy</h6>
+              <p>Direct from publisher</p>
+            </div>
+          </div>
+          <div class="bk-perk-item">
+            <div class="bk-perk-icon"><i class="fas fa-rotate-left"></i></div>
+            <div class="bk-perk-text">
+              <h6>Easy Returns</h6>
+              <p>7-day policy</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Tabs Section -->
+  <section class="bk-tabs-section">
+    <div class="bk-tabs-wrap">
+      <div class="bk-tabs-nav">
+        <button class="bk-tab-btn active" onclick="switchTab('synopsis', this)">Synopsis & Overview</button>
+        <button class="bk-tab-btn" onclick="switchTab('specs', this)">Book Specifications</button>
+        <button class="bk-tab-btn" onclick="switchTab('delivery', this)">Delivery & Returns</button>
+      </div>
+
+      <!-- Tab 1: Synopsis -->
+      <div class="bk-tab-pane active" id="tab-synopsis">
+        <h4>About this Book</h4>
+        <p style="white-space: pre-line; line-height: 1.85;">
+          <%= product ? product.Description : 'No synopsis available.' %>
+        </p>
+      </div>
+
+      <!-- Tab 2: Specifications -->
+      <div class="bk-tab-pane" id="tab-specs">
+        <h4>Technical Specifications</h4>
+        <table class="bk-specs-table">
+          <tbody>
+            <tr>
+              <th>Title</th>
+              <td><%= product ? product.Bookname : 'N/A' %></td>
+            </tr>
+            <tr>
+              <th>Category</th>
+              <td><%= (product && product.Categories && product.Categories.categoryName) ? product.Categories.categoryName : 'General Literature' %></td>
+            </tr>
+            <tr>
+              <th>Binding</th>
+              <td>Paperback / Perfect Bound</td>
+            </tr>
+            <tr>
+              <th>Language</th>
+              <td>English</td>
+            </tr>
+            <tr>
+              <th>Stock Status</th>
+              <td><%= (product && product.stock > 0) ? product.stock + ' units remaining' : 'Out of stock' %></td>
+            </tr>
+            <tr>
+              <th>Publisher Edition</th>
+              <td>BookSaw Curated Literary Edition</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tab 3: Delivery -->
+      <div class="bk-tab-pane" id="tab-delivery">
+        <h4>Shipping & Return Information</h4>
+        <p style="margin-bottom: 14px;">
+          All BookSaw orders are packaged in protective eco-friendly cardboard wraps to ensure pristine corner preservation during transit.
+        </p>
+        <ul style="margin-left: 20px; line-height: 1.8;">
+          <li><strong>Standard Shipping:</strong> Delivered in 2–4 business days across India.</li>
+          <li><strong>Order Tracking:</strong> Real-time SMS and email tracking links provided upon dispatch.</li>
+          <li><strong>Hassle-free Returns:</strong> Eligible for return or exchange within 7 days of delivery if damaged or misprinted.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Books Section -->
+  <% if (relatedProducts && relatedProducts.length > 0) { %>
+    <section class="bk-related-section">
+      <div class="bk-related-header">
+        <h3 class="bk-related-title">Readers Also Enjoyed</h3>
+        <a href="/loadShop" class="bk-related-link">Explore More in Shop <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <div class="bk-grid">
+        <% for (let i = 0; i < Math.min(relatedProducts.length, 4); i++) { %>
+          <div class="bk-card">
+            <!-- Cover -->
+            <div class="bk-cover-wrap">
+              <% if (relatedProducts[i].Regularprice > relatedProducts[i].saleprice) { %>
+                <span class="bk-card-discount">
+                  -<%= Math.round(((relatedProducts[i].Regularprice - relatedProducts[i].saleprice) / relatedProducts[i].Regularprice) * 100) %>%
+                </span>
+              <% } %>
+
+              <a href="/shop-product?id=<%= relatedProducts[i]._id %>">
+                <img
+                  src="/public/uploads/<%= (relatedProducts[i].Images && relatedProducts[i].Images[0]) ? relatedProducts[i].Images[0] : 'default.jpg' %>"
+                  alt="<%= relatedProducts[i].Bookname %>"
+                  loading="lazy"
+                >
               </a>
 
+              <!-- Hover Action Strip -->
+              <div class="bk-cover-cta">
+                <button
+                  class="bk-cta-btn bk-cta-cart"
+                  onclick="addToCart('<%= relatedProducts[i]._id %>')"
+                >
+                  <i class="fas fa-bag-shopping"></i> Add to Cart
+                </button>
+                <a
+                  href="/wishlist?id=<%= relatedProducts[i]._id %>"
+                  class="bk-cta-btn bk-cta-wish"
+                >
+                  <i class="far fa-heart"></i> Wishlist
+                </a>
+              </div>
             </div>
-            <!-- mobile menu start -->
-            <nav>
-              <ul class="mobile-menu">
-                <li class="menu-item-has-children">
-                  <span class="menu-expand"></span><a href="index.html">Home</a>
-                  <ul class="dropdown">
-                    <li><a href="index.html">Home 1</a></li>
-                    <li><a href="index-2.html">Home 2</a></li>
-                    <li><a href="index-3.html">Home 3</a></li>
-                    <li><a href="index-4.html">Home 4</a></li>
-                  </ul>
-                </li>
-                <li class="menu-item-has-children">
-                  <span class="menu-expand"></span><a href="shop-grid-right.html">shop</a>
-                  <ul class="dropdown">
-                    <li>
-                      <a href="shop-grid-right.html">Shop Grid – Right Sidebar</a>
-                    </li>
-                    <li>
-                      <a href="shop-grid-left.html">Shop Grid – Left Sidebar</a>
-                    </li>
-                    <li>
-                      <a href="shop-list-right.html">Shop List – Right Sidebar</a>
-                    </li>
-                    <li>
-                      <a href="shop-cart.html-list-left.html">Shop List – Left Sidebar</a>
-                    </li>
-                    <li><a href="shop-fullwidth.html">Shop - Wide</a></li>
-                    <li class="menu-item-has-children">
-                      <span class="menu-expand"></span><a href="#">Single Product</a>
-                      <ul class="dropdown">
-                        <li>
-                          <a href="shop-product-right.html">Product – Right Sidebar</a>
-                        </li>
-                        <li>
-                          <a href="shop-product-left.html">Product – Left Sidebar</a>
-                        </li>
-                        <li>
-                          <a href="shop-product-full.html">Product – No sidebar</a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li><a href="shop-filter.html">Shop – Filter</a></li>
-                    <li><a href="shop-wishlist.html">Shop – Wishlist</a></li>
-                    <li><a href="/cart">Shop – Cart</a></li>
-                    <li><a href="shop-checkout.html">Shop – Checkout</a></li>
-                    <li><a href="shop-compare.html">Shop – Compare</a></li>
-                  </ul>
-                </li>
-                <li class="menu-item-has-children">
-                  <span class="menu-expand"></span><a href="#">Mega menu</a>
-                  <ul class="dropdown">
-                    <li class="menu-item-has-children">
-                      <span class="menu-expand"></span><a href="#">Women's Fashion</a>
-                      <ul class="dropdown">
-                        <li><a href="shop-product-right.html">Dresses</a></li>
-                        <li>
-                          <a href="shop-product-right.html">Blouses & Shirts</a>
-                        </li>
-                        <li>
-                          <a href="shop-product-right.html">Hoodies & Sweatshirts</a>
-                        </li>
-                        <li>
-                          <a href="shop-product-right.html">Women's Sets</a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="menu-item-has-children">
-                      <span class="menu-expand"></span><a href="#">Men's Fashion</a>
-                      <ul class="dropdown">
-                        <li><a href="shop-product-right.html">Jackets</a></li>
-                        <li>
-                          <a href="shop-product-right.html">Casual Faux Leather</a>
-                        </li>
-                        <li>
-                          <a href="shop-product-right.html">Genuine Leather</a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="menu-item-has-children">
-                      <span class="menu-expand"></span><a href="#">Technology</a>
-                      <ul class="dropdown">
-                        <li>
-                          <a href="shop-product-right.html">Gaming Laptops</a>
-                        </li>
-                        <li>
-                          <a href="shop-product-right.html">Ultraslim Laptops</a>
-                        </li>
-                        <li><a href="shop-product-right.html">Tablets</a></li>
-                        <li>
-                          <a href="shop-product-right.html">Laptop Accessories</a>
-                        </li>
-                        <li>
-                          <a href="shop-product-right.html">Tablet Accessories</a>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-                <li class="menu-item-has-children">
-                  <span class="menu-expand"></span><a href="blog-category-fullwidth.html">Blog</a>
-                  <ul class="dropdown">
-                    <li>
-                      <a href="blog-category-grid.html">Blog Category Grid</a>
-                    </li>
-                    <li>
-                      <a href="blog-category-list.html">Blog Category List</a>
-                    </li>
-                    <li>
-                      <a href="blog-category-big.html">Blog Category Big</a>
-                    </li>
-                    <li>
-                      <a href="blog-category-fullwidth.html">Blog Category Wide</a>
-                    </li>
-                    <li class="menu-item-has-children">
-                      <span class="menu-expand"></span><a href="#">Single Product Layout</a>
-                      <ul class="dropdown">
-                        <li><a href="blog-post-left.html">Left Sidebar</a></li>
-                        <li>
-                          <a href="blog-post-right.html">Right Sidebar</a>
-                        </li>
-                        <li>
-                          <a href="blog-post-fullwidth.html">No Sidebar</a>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-                <li class="menu-item-has-children">
-                  <span class="menu-expand"></span><a href="#">Pages</a>
-                  <ul class="dropdown">
-                    <li><a href="page-about.html">About Us</a></li>
-                    <li><a href="page-contact.html">Contact</a></li>
-                    <li><a href="page-account.html">My Account</a></li>
-                    <li>
-                      <a href="page-login-register.html">login/register</a>
-                    </li>
-                    <li>
-                      <a href="page-purchase-guide.html">Purchase Guide</a>
-                    </li>
-                    <li>
-                      <a href="page-privacy-policy.html">Privacy Policy</a>
-                    </li>
-                    <li><a href="page-terms.html">Terms of Service</a></li>
-                    <li><a href="page-404.html">404 Page</a></li>
-                  </ul>
-                </li>
-                <li class="menu-item-has-children">
-                  <span class="menu-expand"></span><a href="#">Language</a>
-                  <ul class="dropdown">
-                    <li><a href="#">English</a></li>
-                    <li><a href="#">French</a></li>
-                    <li><a href="#">German</a></li>
-                    <li><a href="#">Spanish</a></li>
-                  </ul>
-                </li>
-              </ul>
-            </nav>
-            <!-- mobile menu end -->
-          </div>
-          <div class="mobile-header-info-wrap mobile-header-border">
-            <div class="single-mobile-header-info mt-30">
-              <a href="page-contact.html"> Our location </a>
-            </div>
-            <div class="single-mobile-header-info">
-              <a href="page-login-register.html">Log In / Sign Up </a>
-            </div>
-            <div class="single-mobile-header-info">
-              <a href="#">(+01) - 2345 - 6789 </a>
+
+            <!-- Info -->
+            <div class="bk-card-body">
+              <a href="/shop-product?id=<%= relatedProducts[i]._id %>" class="bk-card-title">
+                <%= relatedProducts[i].Bookname %>
+              </a>
+              <div class="bk-card-price-row">
+                <span class="bk-card-price">₹<%= relatedProducts[i].saleprice %></span>
+                <% if (relatedProducts[i].Regularprice > relatedProducts[i].saleprice) { %>
+                  <del class="bk-card-old-price">₹<%= relatedProducts[i].Regularprice %></del>
+                <% } %>
+              </div>
             </div>
           </div>
-          <div class="mobile-social-icon">
-            <h5 class="mb-15 text-grey-4">Follow Us</h5>
-            <a href="https://www.instagram.com/franceisjoe/"><img
-                src="public/assets/imgs/theme/icons/icon-instagram.svg" alt="" /></a>
-          </div>
-        </div>
+        <% } %>
       </div>
-    </div>
-    <main class="main">
-      <div class="page-header breadcrumb-wrap">
-
-        <% if(product){ %>
-          <div class="container">
-            <div class="breadcrumb">
-              <a href="/" rel="nofollow">Home</a>
-              <span></span>
-              <%=product.Bookname%>
-            </div>
-          </div>
-      </div>
-      <section class="mt-50 mb-50">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-12">
-
-              <div class="product-detail accordion-detail">
-                <div class="row mb-50">
-                  <div class="col-md-6 col-sm-12 col-xs-12">
-                    <div class="detail-gallery">
-                      <span class="zoom-icon"><i class="fi-rs-search"></i></span>
-                      <!-- MAIN SLIDES -->
-                      <div class="product-image-slider" style="background-color: white">
-                        <% for(let i=0 ; i < product.Images.length ; i++) { %>
-                          <figure class="border-radius-10 ml-70">
-                            <a href="/public/uploads/<%=product.Images[i]%>" class="MagicZoom"
-                              data-options="zoomWidth: 550">
-                              <img src="/public/uploads/<%=product.Images[i]%>" style="height: 659px;"
-                                id="uploadedPhoto"></a>
-                          </figure>
-                          <% } %>
-                      </div>
-                      <!-- THUMBNAILS -->
-                      <div class="slider-nav-thumbnails pl-15 pr-15">
-                        <% for(let i=0 ; i < product.Images.length ; i++) { %>
-
-                          <div>
-                            <img src="/public/uploads/<%=product.Images[i]%>" alt="product image" margin-right:100px />
-                          </div>
-                          <% } %>
-                      </div>
-                    </div>
-                    <!-- End Gallery -->
-                    <div class="social-icons single-share">
-                      <ul class="text-grey-5 d-inline-block">
-                        <li><strong class="mr-10">Share this:</strong></li>
-                        <li class="social-facebook">
-                        </li>
-                        <li class="social-twitter">
-                        </li>
-                        <li class="social-instagram">
-                          <a href="javascript:void(0);" onclick="shareProductOnWhatsApp()"><i
-                              class="fa-brands fa-whatsapp" style="margin-right: 10px;"></i></a>
-                          <a href="https://www.instagram.com/franceisjoe/"><img
-                              src="public/assets/imgs/theme/icons/icon-instagram.svg" alt="" /></a>
-                        </li>
-                        <li class="social-linkedin">
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div class="col-md-6 col-sm-12 col-xs-12">
-                    <div class="detail-info">
-                      <h2 class="title-detail">
-                        <%=product.Bookname%>
-                      </h2>
-                      <div class="product-detail-rating">
-                        <div class="pro-details-brand">
-                          <span>
-                            Categories:
-                            <a href="shop-grid-right.html">
-                              <%=product.Categories.categoryName%>
-                            </a></span>
-
-                        </div>
-
-
-
-
-
-                        <script>
-                          function shareProductOnWhatsApp() {
-                            // Get the uploaded photo
-                            const photo = document.getElementById('uploadedPhoto').src;
-
-                            // Get the current page URL
-                            const pageURL = window.location.href;
-
-                            // Define the message to share
-                            const message = `${pageURL}`;
-
-                            // URL to open WhatsApp with the predefined message and photo
-                            const whatsappURL = `https://wa.me/?text=${encodeURIComponent(message)}%0A&image=${encodeURIComponent(photo)}`;
-
-                            // Open the URL in a new window
-                            window.open(whatsappURL, '_blank');
-                          }
-
-                          // Handle photo upload
-                          document.getElementById('photoInput').addEventListener('change', function () {
-                            const file = this.files[0];
-
-                            if (file) {
-                              const reader = new FileReader();
-
-                              reader.addEventListener('load', function () {
-                                // Set the uploaded photo as the source of the img element
-                                document.getElementById('uploadedPhoto').src = this.result;
-                              });
-
-                              reader.readAsDataURL(file);
-                            }
-                          });
-                        </script>
-                        <!-- <div class="product-rate-cover text-end">
-                        <div class="product-rate d-inline-block">
-                          <div class="product-rating" style="width: 90%"></div>
-                        </div>
-                        <span class="font-small ml-5 text-muted">
-                          (25 reviews)</span>
-                      </div> -->
-                      </div>
-
-                      <div class="clearfix product-price-cover">
-                        <div class="product-price primary-color float-left">
-                          <ins><span class="text-brand">$<%=product.saleprice%></span></ins>
-                          <ins><span class="old-price font-md ml-15">$<%=product.Regularprice%></span></ins>
-                          <!-- <span class="save-price font-md color3 ml-15">25% Off</span> -->
-                        </div>
-                      </div>
-                      <div class="bt-1 border-color-1 mt-15 mb-15"></div>
-                      <div class="short-desc mb-30">
-                        <p>
-                          <%=product.Description%>
-                        </p>
-                      </div>
-                      <div class="product_sort_info font-xs mb-30">
-                        <ul>
-                          <li class="mb-10">
-                            <i class="fi-rs-crown mr-5"></i> 1 Year AL Jazeera
-                            Brand Warranty
-                          </li>
-                          <li class="mb-10">
-                            <i class="fi-rs-refresh mr-5"></i> 30 Day Return
-                            Policy
-                          </li>
-                          <li>
-                            <i class="fi-rs-credit-card mr-5"></i> Cash on
-                            Delivery available
-                          </li>
-                        </ul>
-                      </div>
-                      <% if (product.stock> 0) { %>
-                        <a class="button button-add-to-cart" style="color: rgb(255, 255, 255);"
-                          onclick="addToCart('<%= product._id %>')">
-                          Add to cart <i class="fa-solid fa-cart-shopping fa-shake"></i>
-                        </a>
-                        <!-- <a  href="/loadCheckOut1?id=<%=product.id%>" class="button button-add-to-cart" style="color: rgb(255, 255, 255);" >
-                        Buy Now
-                    </a> -->
-                        <% } else { %>
-                          <div
-                            style="background-color: rgb(130, 15, 15); border: none; border-radius: 5px; padding: 10px 20px; display: inline-block; cursor: not-allowed;">
-                            <h3 style="color: white; margin: 0;"><strong>Currently Unavailable</strong></h3>
-                          </div>
-                          <% } %>
-                            <a href="/wishlist?id=<%=product._id%>" class="button button-add-to-cart"
-                              style="color: rgb(255, 255, 255);"><i class="fa-solid fa-heart"></i></a>
-
-                    </div>
-
-
-                    <ul class="product-meta font-xs color-grey mt-50">
-                      <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
-                      <li class="mb-5">
-                      </li>
-                      <li>
-                        Available Stock:
-                        <span class="<%= product.stock > 0 ? 'text-success' : 'text-danger' %> ml-2">
-                          <% if (product.stock> 0) { %>
-                            <%= product.stock %>
-                              <% } else { %>
-                                <strong><span style="color: red;">Out of Stock</span></strong>
-                                <% } %>
-                        </span>
-
-
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-
-              <div class="tab-style3">
-                <ul class="nav nav-tabs text-uppercase">
-                  <li class="nav-item">
-                    <a class="nav-link active" id="Description-tab" data-bs-toggle="tab"
-                      href="#Description">Description</a>
-                  </li>
-                  <!-- <li class="nav-item">
-                  <a class="nav-link" id="Additional-info-tab" data-bs-toggle="tab" href="#Additional-info">Additional
-                    info</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" id="Reviews-tab" data-bs-toggle="tab" href="#Reviews">Reviews (3)</a>
-                </li> -->
-                </ul>
-                <div class="tab-content shop_info_tab entry-main-content">
-                  <div class="tab-pane fade show active" id="Description">
-                    <div class="">
-                      <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci dolorem vitae fugiat,
-                        consequuntur quia nostrum! Hic sint amet pariatur recusandae, cum iste corporis natus aut ad
-                        autem molestiae eaque vel.
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto quaerat quam tempora rerum
-                        beatae, aliquid assumenda tenetur laudantium maiores doloribus suscipit ut quia est consectetur
-                        maxime dicta facere cumque nulla!
-                      </p>
-
-                      <hr class="wp-block-separator is-style-dots" />
-                      <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam magnam, architecto vel magni sit
-                        fugit optio quia cumque tempore officia corrupti earum temporibus, odio dolorum aperiam! Iste
-                        laborum neque molestiae?
-                      </p>
-                      <h4 class="mt-30">Packaging & Delivery</h4>
-                      <hr class="wp-block-separator is-style-wide" />
-                      <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur ad repellendus qui
-                        quibusdam cum non. Optio officia, architecto eligendi consequatur illo iusto ipsa natus ad
-                        aperiam dolorum corrupti id consequuntur!
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam labore itaque ab dolorum
-                        necessitatibus quos, modi suscipit, quidem excepturi aut ducimus vel ad, saepe libero laudantium
-                        atque sapiente esse? Voluptatibus.
-                      </p>
-                    </div>
-                  </div>
-                  <div class="tab-pane fade" id="Additional-info">
-                    <table class="font-md">
-                      <tbody>
-                        <tr class="stand-up">
-                          <th>Stand Up</th>
-                          <td>
-                            <p>35″L x 24″W x 37-45″H(front to back wheel)</p>
-                          </td>
-                        </tr>
-                        <tr class="folded-wo-wheels">
-                          <th>Folded (w/o wheels)</th>
-                          <td>
-                            <p>32.5″L x 18.5″W x 16.5″H</p>
-                          </td>
-                        </tr>
-                        <tr class="folded-w-wheels">
-                          <th>Folded (w/ wheels)</th>
-                          <td>
-                            <p>32.5″L x 24″W x 18.5″H</p>
-                          </td>
-                        </tr>
-                        <tr class="door-pass-through">
-                          <th>Door Pass Through</th>
-                          <td>
-                            <p>24</p>
-                          </td>
-                        </tr>
-                        <tr class="frame">
-                          <th>Frame</th>
-                          <td>
-                            <p>Aluminum</p>
-                          </td>
-                        </tr>
-                        <tr class="weight-wo-wheels">
-                          <th>Weight (w/o wheels)</th>
-                          <td>
-                            <p>20 LBS</p>
-                          </td>
-                        </tr>
-                        <tr class="weight-capacity">
-                          <th>Weight Capacity</th>
-                          <td>
-                            <p>60 LBS</p>
-                          </td>
-                        </tr>
-                        <tr class="width">
-                          <th>Width</th>
-                          <td>
-                            <p>24″</p>
-                          </td>
-                        </tr>
-                        <tr class="handle-height-ground-to-handle">
-                          <th>Handle height (ground to handle)</th>
-                          <td>
-                            <p>37-45″</p>
-                          </td>
-                        </tr>
-                        <tr class="wheels">
-                          <th>Wheels</th>
-                          <td>
-                            <p>12″ air / wide track slick tread</p>
-                          </td>
-                        </tr>
-                        <tr class="seat-back-height">
-                          <th>Seat back height</th>
-                          <td>
-                            <p>21.5″</p>
-                          </td>
-                        </tr>
-                        <tr class="head-room-inside-canopy">
-                          <th>Head room (inside canopy)</th>
-                          <td>
-                            <p>25″</p>
-                          </td>
-                        </tr>
-                        <tr class="pa_color">
-                          <th>Color</th>
-                          <td>
-                            <p>Black, Blue, Red, White</p>
-                          </td>
-                        </tr>
-                        <tr class="pa_size">
-                          <th>Size</th>
-                          <td>
-                            <p>M, S</p>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="tab-pane fade" id="Reviews">
-                    <!--Comments-->
-                    <div class="comments-area">
-                      <div class="row">
-                        <div class="col-lg-8">
-                          <h4 class="mb-30">Customer questions & answers</h4>
-                          <div class="comment-list">
-                            <div class="single-comment justify-content-between d-flex">
-                              <div class="user justify-content-between d-flex">
-                                <div class="thumb text-center">
-                                  <img src="public/assets/imgs/page/avatar-6.jpg" alt="" />
-                                  <h6><a href="#">Jacky Chan</a></h6>
-                                  <p class="font-xxs">Since 2012</p>
-                                </div>
-                                <div class="desc">
-                                  <div class="product-rate d-inline-block">
-                                    <div class="product-rating" style="width: 90%"></div>
-                                  </div>
-                                  <p>
-                                    Thank you very fast shipping from Poland
-                                    only 3days.
-                                  </p>
-                                  <div class="d-flex justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                      <p class="font-xs mr-30">
-                                        December 4, 2020 at 3:12 pm
-                                      </p>
-                                      <a href="#" class="text-brand btn-reply">Reply
-                                        <i class="fi-rs-arrow-right"></i>
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!--single-comment -->
-                            <div class="single-comment justify-content-between d-flex">
-                              <div class="user justify-content-between d-flex">
-                                <div class="thumb text-center">
-                                  <img src="public/assets/imgs/page/avatar-7.jpg" alt="" />
-                                  <h6><a href="#">Ana Rosie</a></h6>
-                                  <p class="font-xxs">Since 2008</p>
-                                </div>
-                                <div class="desc">
-                                  <div class="product-rate d-inline-block">
-                                    <div class="product-rating" style="width: 90%"></div>
-                                  </div>
-                                  <p>Great low price and works well.</p>
-                                  <div class="d-flex justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                      <p class="font-xs mr-30">
-                                        December 4, 2020 at 3:12 pm
-                                      </p>
-                                      <a href="#" class="text-brand btn-reply">Reply
-                                        <i class="fi-rs-arrow-right"></i>
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!--single-comment -->
-                            <div class="single-comment justify-content-between d-flex">
-                              <div class="user justify-content-between d-flex">
-                                <div class="thumb text-center">
-                                  <img src="public/assets/imgs/page/avatar-8.jpg" alt="" />
-                                  <h6><a href="#">Steven Keny</a></h6>
-                                  <p class="font-xxs">Since 2010</p>
-                                </div>
-                                <div class="desc">
-                                  <div class="product-rate d-inline-block">
-                                    <div class="product-rating" style="width: 90%"></div>
-                                  </div>
-                                  <p>
-                                    Authentic and Beautiful, Love these way
-                                    more than ever expected They are Great
-                                    earphones
-                                  </p>
-                                  <div class="d-flex justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                      <p class="font-xs mr-30">
-                                        December 4, 2020 at 3:12 pm
-                                      </p>
-                                      <a href="#" class="text-brand btn-reply">Reply
-                                        <i class="fi-rs-arrow-right"></i>
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!--single-comment -->
-                          </div>
-                        </div>
-                        <div class="col-lg-4">
-                          <h4 class="mb-30">Customer reviews</h4>
-                          <div class="d-flex mb-30">
-                            <div class="product-rate d-inline-block mr-15">
-                              <div class="product-rating" style="width: 90%"></div>
-                            </div>
-                            <h6>4.8 out of 5</h6>
-                          </div>
-                          <div class="progress">
-                            <span>5 star</span>
-                            <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50"
-                              aria-valuemin="0" aria-valuemax="100">
-                              50%
-                            </div>
-                          </div>
-                          <div class="progress">
-                            <span>4 star</span>
-                            <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25"
-                              aria-valuemin="0" aria-valuemax="100">
-                              25%
-                            </div>
-                          </div>
-                          <div class="progress">
-                            <span>3 star</span>
-                            <div class="progress-bar" role="progressbar" style="width: 45%" aria-valuenow="45"
-                              aria-valuemin="0" aria-valuemax="100">
-                              45%
-                            </div>
-                          </div>
-                          <div class="progress">
-                            <span>2 star</span>
-                            <div class="progress-bar" role="progressbar" style="width: 65%" aria-valuenow="65"
-                              aria-valuemin="0" aria-valuemax="100">
-                              65%
-                            </div>
-                          </div>
-                          <div class="progress mb-30">
-                            <span>1 star</span>
-                            <div class="progress-bar" role="progressbar" style="width: 85%" aria-valuenow="85"
-                              aria-valuemin="0" aria-valuemax="100">
-                              85%
-                            </div>
-                          </div>
-                          <a href="#" class="font-xs text-muted">How are ratings calculated?</a>
-                        </div>
-                      </div>
-                    </div>
-                    <!--comment form-->
-                    <div class="comment-form">
-                      <h4 class="mb-15">Add a review</h4>
-                      <div class="product-rate d-inline-block mb-30"></div>
-                      <div class="row">
-                        <div class="col-lg-8 col-md-12">
-                          <form class="form-contact comment_form" action="#" id="commentForm">
-                            <div class="row">
-                              <div class="col-12">
-                                <div class="form-group">
-                                  <textarea class="form-control w-100" name="comment" id="comment" cols="30" rows="9"
-                                    placeholder="Write Comment"></textarea>
-                                </div>
-                              </div>
-                              <div class="col-sm-6">
-                                <div class="form-group">
-                                  <input class="form-control" name="name" id="name" type="text" placeholder="Name" />
-                                </div>
-                              </div>
-                              <div class="col-sm-6">
-                                <div class="form-group">
-                                  <input class="form-control" name="email" id="email" type="email"
-                                    placeholder="Email" />
-                                </div>
-                              </div>
-                              <div class="col-12">
-                                <div class="form-group">
-                                  <input class="form-control" name="website" id="website" type="text"
-                                    placeholder="Website" />
-                                </div>
-                              </div>
-                            </div>
-                            <div class="form-group">
-                              <button type="submit" class="button button-contactForm">
-                                Submit Review
-                              </button>
-                            </div>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row mt-60">
-                <div class="col-12">
-                  <h3 class="section-title style-1 mb-30">
-                    Related products
-                  </h3>
-                </div>
-
-                <div class="col-lg-12 col-md-12">
-                  <div class="tab-content wow fadeIn animated" id="myTabContent-1">
-                    <div class="tab-pane fade show active" id="tab-one-1" role="tabpanel" aria-labelledby="tab-one-1">
-                      <div class="carausel-4-columns-cover arrow-center position-relative">
-                        <div class="slider-arrow slider-arrow-2 carausel-4-columns-arrow"
-                          id="carausel-4-columns-arrows"></div>
-                        <div class="carausel-4-columns carausel-arrow-center" id="carausel-4-columns">
-                          <% if (relatedProducts) { %>
-                            <% for(let i=0 ; i < relatedProducts.length ; i++) { %>
-                              <div class="col-lg-3 col-md-4 col-12 col-sm-6">
-                                <div class="product-cart-wrap small hover-up"
-                                  style=" border: 1px   solid rgb(169, 192, 175); ">
-                                  <div class="product-img-action-wrap">
-                                    <div class="product-img product-img-zoom">
-                                      <a href="/shop-product?id=<%=relatedProducts[i]._id%>" tabindex="0">
-                                        <img class="default-img" src="/public/uploads/<%=relatedProducts[i].Images[0]%>"
-                                          alt="" />
-                                        <img class="hover-img" src="/public/uploads/<%=relatedProducts[i].Images[1] %>"
-                                          alt="" />
-                                      </a>
-                                    </div>
-                                    <div class="product-action-1">
-                                      <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                        href="/wishlist?id=<%= relatedProducts[i]._id %>"><i
-                                          class="fi-rs-heart"></i></a>
-                                      <i class="fi-rs-heart"></i></a>
-
-                                    </div>
-                                    <div class="product-badges product-badges-position product-badges-mrg">
-                                      <span class="hot">Hot</span>
-                                    </div>
-                                  </div>
-                                  <div class="product-content-wrap">
-                                    <h2>
-                                      <a href="/shop-product?id=<%=relatedProducts[i]._id%>" tabindex="0">
-                                        <%=relatedProducts[i].Bookname%>
-                                      </a>
-                                    </h2>
-                                    <div class="rating-result" title="90%">
-                                      <span> </span>
-                                    </div>
-                                    <div class="product-price">
-                                      <span>
-                                        <%= relatedProducts[i].saleprice %>
-                                      </span>
-                                      <span class="old-price">$<%=relatedProducts[i].Regularprice %></span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <% } %>
-                                <% }; %>
-
-
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- ............................................ -->
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-    <footer class="main">
-      <section class="newsletter p-30 text-white wow fadeIn animated">
-        <div class="container">
-          <div class="row align-items-center">
-            <div class="col-lg-7 mb-md-3 mb-lg-0">
-              <div class="row align-items-center">
-                <div class="col flex-horizontal-center">
-                  <!-- <img class="icon-email" src="public/assets/imgs/theme/icons/icon-email.svg" alt="" /> -->
-                  <!-- <h4 class="font-size-20 mb-0 ml-3">Sign up to Newsletter</h4> -->
-                </div>
-                <div class="col my-4 my-md-0 des">
-                  <h5 class="font-size-15 ml-4 mb-0">
-                    <!-- ...and receive -->
-                    <!-- <strong>$25 coupon for first shopping.</strong> -->
-                  </h5>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-5">
-              <!-- Subscribe Form -->
-              <form class="form-subcriber d-flex wow fadeIn animated">
-                <!-- <input type="email" class="form-control bg-white font-small" placeholder="Enter your email" /> -->
-                <!-- <button class="btn bg-dark text-white" type="submit"> -->
-                <!-- Subscribe -->
-                <!-- </button> -->
-              </form>
-              <!-- End Subscribe Form -->
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="section-padding footer-mid">
-        <div class="container pt-15 pb-20">
-          <div class="row">
-            <div class="col-lg-4 col-md-6">
-              <div class="widget-about font-md mb-md-5 mb-lg-0">
-                <div class="logo logo-width-1 wow fadeIn animated">
-                  <a href="index.html"><img src="/public/main-logo (1).png" alt="logo" /></a>
-                </div>
-                <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">
-                  Contact
-                </h5>
-                <p class="wow fadeIn animated">
-                  <strong>Address: </strong>562 Wellington Road, Street 32, San
-                  Francisco
-                </p>
-                <p class="wow fadeIn animated">
-                  <strong>Phone: </strong>+01 2222 365 /(+91) 01 2345 6789
-                </p>
-                <p class="wow fadeIn animated">
-                  <strong>Hours: </strong>10:00 - 18:00, Mon - Sat
-                </p>
-                <h5 class="mb-10 mt-30 fw-600 text-grey-4 wow fadeIn animated">
-                  Follow Us
-                </h5>
-                <div class="mobile-social-icon wow fadeIn animated mb-sm-5 mb-md-0">
-                  <a href="https://www.instagram.com/franceisjoe/"><img
-                      src="public/assets/imgs/theme/icons/icon-instagram.svg" alt="" /></a>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-2 col-md-3">
-              <h5 class="widget-title wow fadeIn animated">About</h5>
-              <ul class="footer-list wow fadeIn animated mb-sm-5 mb-md-0">
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Delivery Information</a></li>
-                <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Terms &amp; Conditions</a></li>
-                <li><a href="#">Contact Us</a></li>
-                <li><a href="#">Support Center</a></li>
-              </ul>
-            </div>
-            <div class="col-lg-2 col-md-3">
-              <h5 class="widget-title wow fadeIn animated">My Account</h5>
-              <ul class="footer-list wow fadeIn animated">
-                <li><a href="#">Sign In</a></li>
-                <li><a href="#">View Cart</a></li>
-                <li><a href="#">My Wishlist</a></li>
-                <li><a href="#">Track My Order</a></li>
-                <li><a href="#">Help</a></li>
-                <li><a href="#">Order</a></li>
-              </ul>
-            </div>
-            <div class="col-lg-4">
-              <h5 class="widget-title wow fadeIn animated">Install App</h5>
-              <div class="row">
-                <div class="col-md-8 col-lg-12">
-                  <p class="wow fadeIn animated">
-                    From App Store or Google Play
-                  </p>
-                  <div class="download-app wow fadeIn animated">
-                    <a href="#" class="hover-up mb-sm-4 mb-lg-0"><img class="active"
-                        src="public/assets/imgs/theme/app-store.jpg" alt="" /></a>
-                    <a href="#" class="hover-up"><img src="public/assets/imgs/theme/google-play.jpg" alt="" /></a>
-                  </div>
-                </div>
-                <div class="col-md-4 col-lg-12 mt-md-3 mt-lg-0">
-                  <p class="mb-20 wow fadeIn animated">
-                    Secured Payment Gateways
-                  </p>
-                  <img class="wow fadeIn animated" src="public/assets/imgs/theme/payment-method.png" alt="" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-    </footer>
-    <!-- Preloader Start -->
-    <div id="preloader-active">
-      <div class="preloader d-flex align-items-center justify-content-center">
-        <div class="preloader-inner position-relative">
-          <div class="text-center">
-            <h5 class="mb-5">Now Loading</h5>
-            <div class="loader">
-              <div class="bar bar1"></div>
-              <div class="bar bar2"></div>
-              <div class="bar bar3"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Vendor JS-->
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // Initialize Magic Zoom on the product image
-        new MagicZoom('product-image');
-      });
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
-      integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
-      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-      // Assuming this function is called on the frontend (browser)
-
-      async function addToCart(productId) {
-        try {
-
-          // --- 1. Fetch Request ---
-          const response = await fetch(`/addToCart?id=${productId}`, {
-            method: 'GET',
-          });
-
-          // --- 2. Check for Non-OK Status Codes ---
-          if (!response.ok) {
-
-            // Check specifically for the status code that means "Not Logged In"
-            if (response.status === 401) {
-              // If the server mistakenly returns 500 for a simple unauthenticated request,
-              // show the login error and stop.
-              toastr.warning('You have to login for this.');
-              return; // Stop function execution
-            }
-
-            // For all other non-OK status codes (e.g., 404, 400, or a real 500 server error)
-            // throw an error to be caught below.
-            throw new Error(`Server returned status: ${response.status}`);
-          }
-
-          // --- 3. Process Successful Response (200 OK) ---
-          const data = await response.json();
-
-          if (data.success) {
-            toastr.success('Product added to cart');
-
-            // Update the cart count in the UI
-            const cartCountSpan = document.getElementById('cart-count');
-            if (cartCountSpan) {
-              cartCountSpan.textContent = parseInt(cartCountSpan.textContent || 0) + 1;
-            }
-            const cartCountMobileSpan = document.getElementById('cart-count-mobile');
-            if (cartCountMobileSpan) {
-              cartCountMobileSpan.textContent = parseInt(cartCountMobileSpan.textContent || 0) + 1;
-            }
-          } else {
-            // Product out of stock or other logic error reported by the server in the payload
-            toastr.error(data.error || 'Could not add product to cart.');
-          }
-
-        } catch (error) {
-          // This catches:
-          // 1. Genuine network failures (e.g., server offline, CORS issues).
-          // 2. The error thrown in step 2 (for non-500 status codes).
-
-          // We assume any remaining error in this block is related to stock or the request itself.
-          toastr.error('Stock limit exceeded or unexpected error.');
-          console.error('Error during cart operation:', error);
-        }
-      }
-    </script>
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="/public/assets/js/vendor/modernizr-3.6.0.min.js"></script>
-    <script src="public/assets/js/vendor/jquery-3.6.0.min.js"></script>
-    <script src="public/assets/js/vendor/modernizr-3.6.0.min.js"></script>
-    <script src="public/assets/js/vendor/jquery-3.6.0.min.js"></script>
-    <script src="public/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
-    <script src="public/assets/js/vendor/bootstrap.bundle.min.js"></script>
-    <script src="public/assets/js/plugins/slick.js"></script>
-    <script src="public/assets/js/plugins/jquery.syotimer.min.js"></script>
-    <script src="public/assets/js/plugins/wow.js"></script>
-    <script src="public/assets/js/plugins/jquery-ui.js"></script>
-    <script src="public/assets/js/plugins/perfect-scrollbar.js"></script>
-    <script src="public/assets/js/plugins/magnific-popup.js"></script>
-    <script src="public/assets/js/plugins/select2.min.js"></script>
-    <script src="public/assets/js/plugins/waypoints.js"></script>
-    <script src="public/assets/js/plugins/counterup.js"></script>
-    <script src="public/assets/js/plugins/jquery.countdown.min.js"></script>
-    <script src="public/assets/js/plugins/images-loaded.js"></script>
-    <script src="public/assets/js/plugins/isotope.js"></script>
-    <script src="public/assets/js/plugins/scrollup.js"></script>
-    <script src="public/assets/js/plugins/jquery.vticker-min.js"></script>
-    <script src="public/assets/js/plugins/jquery.theia.sticky.js"></script>
-    <script src="public/assets/js/plugins/jquery.elevatezoom.js"></script>
-    <!-- Template  JS -->
-    <script src="public/assets/js/maind134.js?v=3.4"></script>
-    <script src="public/assets/js/shopd134.js?v=3.4"></script>
-</body>
-<% } else { %>
-  <h1 style="color: #ff0000; background-color: #f0f0f0; text-align: center; width: 100%; padding: 20px 0;">Invalid _id
-  </h1>
+    </section>
   <% } %>
 
+  <!-- Footer -->
+  <%- include('../partials/userFooter') %>
 
-    <!-- Mirrored from wp.alithemes.com/html/evara/evara-frontend/shop-product-right.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Jul 2023 10:10:05 GMT -->
+  <!-- Magic Zoom Plus JS -->
+  <script src="/public/assets/magiczoomplus/magiczoomplus.js"></script>
 
+  <!-- Interactive Logic -->
+  <script>
+    // Book Images Array
+    const bookImages = <%- JSON.stringify(imagesList.map(img => '/public/uploads/' + img)) %>;
+    let currentSideIndex = 0;
+
+    // Switch Book Side (Front / Back / View N)
+    function selectBookSide(index) {
+      if (index < 0 || index >= bookImages.length) return;
+      currentSideIndex = index;
+      const targetSrc = bookImages[index];
+
+      const box = document.getElementById('bk-cover-box');
+      if (box) {
+        box.classList.add('bk-flipping');
+        setTimeout(() => box.classList.remove('bk-flipping'), 280);
+      }
+
+      // Update MagicZoom Plus
+      if (window.MagicZoom && typeof MagicZoom.update === 'function') {
+        MagicZoom.update('bk-book-zoom', targetSrc, targetSrc);
+      } else {
+        const img = document.getElementById('bk-main-img');
+        const zoomLink = document.getElementById('bk-book-zoom');
+        if (img) img.src = targetSrc;
+        if (zoomLink) zoomLink.href = targetSrc;
+      }
+
+      // Update active side buttons
+      document.querySelectorAll('.bk-side-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', i === index);
+      });
+
+      // Update active thumbnail
+      document.querySelectorAll('.bk-thumb-item').forEach((item, i) => {
+        item.classList.toggle('active', i === index);
+      });
+    }
+
+    // Toggle Flip between Front (0) and Back (1)
+    function toggleFlipCover() {
+      const nextIndex = currentSideIndex === 0 ? 1 : 0;
+      selectBookSide(nextIndex);
+    }
+
+    // Arrow navigation
+    function nextBookSide() {
+      const nextIndex = (currentSideIndex + 1) % bookImages.length;
+      selectBookSide(nextIndex);
+    }
+    function prevBookSide() {
+      const prevIndex = (currentSideIndex - 1 + bookImages.length) % bookImages.length;
+      selectBookSide(prevIndex);
+    }
+
+    // Tabs Switcher
+    function switchTab(tabId, el) {
+      document.querySelectorAll('.bk-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.bk-tab-pane').forEach(pane => pane.classList.remove('active'));
+      if (el) el.classList.add('active');
+      const target = document.getElementById('tab-' + tabId);
+      if (target) target.classList.add('active');
+    }
+
+    // Real-Time Add to Cart with live badge increment
+    async function addToCart(productId, evt) {
+      const btn = (evt && evt.target) ? evt.target.closest('button') : (window.event && window.event.target ? window.event.target.closest('button') : null);
+      const origHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+      }
+
+      try {
+        const res = await fetch('/addToCart?id=' + productId, { method: 'GET' });
+        if (res.status === 401) {
+          toastr.warning('Please log in to add books to your cart.');
+          if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
+          return;
+        }
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          toastr.error(errData.error || 'Could not add to cart.');
+          if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
+          return;
+        }
+        const data = await res.json();
+        if (data.success) {
+          const isNew = window.updateCartBadge ? window.updateCartBadge(productId, data) : true;
+          toastr.success(isNew ? 'Added to cart!' : 'Cart updated!');
+          if (btn) {
+            btn.innerHTML = '<i class="fas fa-check"></i> ' + (isNew ? 'Added' : 'Updated');
+            setTimeout(() => {
+              btn.disabled = false;
+              btn.innerHTML = origHtml;
+            }, 1400);
+          }
+        } else {
+          toastr.error(data.error || 'Could not add to cart.');
+          if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
+        }
+      } catch (err) {
+        toastr.error('Stock limit exceeded or error occurred.');
+        if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
+      }
+    }
+
+    // Initialize MagicZoom if not auto-started
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.MagicZoom && typeof MagicZoom.start === 'function') {
+        MagicZoom.start('bk-book-zoom');
+      }
+    });
+  </script>
+</body>
 </html>

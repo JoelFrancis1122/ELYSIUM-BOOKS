@@ -210,7 +210,7 @@
                                             <h5 class="product-name"><a href="#l"><%=wishlistData.product[i].productId.Bookname%></a></h5>
                                             </p>
                                         </td>
-                                        <td class="price" data-title="Price"><span>$<%=wishlistData.product[i].productId.saleprice%> </span></td>
+                                        <td class="price" data-title="Price"><span>₹<%=wishlistData.product[i].productId.saleprice%> </span></td>
                                         <td class="text-center" data-title="Stock">
                                             <% if (wishlistData.product[i].productId.stock === 0) { %>
                                                 <span class="text-danger font-weight-bold">Out of stock</span>
@@ -387,37 +387,47 @@ function removeFromWishlist(productId) {
     </script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
       <script>
-          async function addToCart(productId) {
+          async function addToCart(productId, evt) {
+              const btn = (evt && evt.target) ? evt.target.closest('button, a') : (window.event && window.event.target ? window.event.target.closest('button, a') : null);
+              const origHtml = btn ? btn.innerHTML : '';
+              if (btn) {
+                  btn.disabled = true;
+                  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+              }
+
               try {
                   const response = await fetch(`/addToCart?id=${productId}`, {
                       method: 'GET',
                   });
-      
+
+                  if (response.status === 401) {
+                      toastr.warning('Please log in to add items to your cart.');
+                      if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
+                      return;
+                  }
+
                   if (!response.ok) {
                       throw new Error('Network response was not ok');
                   }
-      
+
                   const data = await response.json();
                   if (data.success) {
-                      // Product added to cart successfully
-                      toastr.success('Product added to cart');
-      
-                      // Update the cart count in the UI
-                      const cartCountSpan = document.getElementById('cart-count');
-                      if (cartCountSpan) {
-                          cartCountSpan.textContent = parseInt(cartCountSpan.textContent || 0) + 1;
-                      }
-                      const cartCountMobileSpan = document.getElementById('cart-count-mobile');
-                      if (cartCountMobileSpan) {
-                          cartCountMobileSpan.textContent = parseInt(cartCountMobileSpan.textContent || 0) + 1;
+                      const isNew = window.updateCartBadge ? window.updateCartBadge(productId, data) : true;
+                      toastr.success(isNew ? 'Product added to cart' : 'Cart quantity updated');
+                      if (btn) {
+                          btn.innerHTML = '<i class="fas fa-check"></i> ' + (isNew ? 'Added' : 'Updated');
+                          setTimeout(() => {
+                              btn.disabled = false;
+                              btn.innerHTML = origHtml;
+                          }, 1400);
                       }
                   } else {
-                      // Product out of stock or other error
-                      toastr.error(data.error);
+                      toastr.error(data.error || 'Could not add product to cart');
+                      if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
                   }
               } catch (error) {
-                  // Error occurred during fetch operation
                   toastr.error('Error adding product to cart');
+                  if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
                   console.error('Error adding product to cart:', error);
               }
           }

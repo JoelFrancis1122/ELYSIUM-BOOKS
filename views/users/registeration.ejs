@@ -1,258 +1,387 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>BOOKSAW</title>
-  <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | BOOKSAW</title>
+    <meta name="description" content="Create your BOOKSAW account and start discovering books.">
+    <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+    :root {
+        --canvas:    #f5f0e8;
+        --bg:        #faf8f4;
+        --fg:        #2d2820;
+        --highlight: #b8542a;
+        --hi-light:  #d4673a;
+        --muted-fg:  #7a6f60;
+        --border:    #ddd8ce;
+        --secondary: #edeae2;
+        --card:      #ffffff;
+        --danger:    #b91c1c;
+        --success:   #166534;
+        --shadow-md: 0 8px 32px rgba(45,40,32,0.11);
+        --r-sm: 8px; --r-md: 14px; --r-lg: 20px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+        font-family: 'IBM Plex Sans', sans-serif;
+        background: var(--canvas);
+        color: var(--fg);
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        letter-spacing: 0;
+    }
+    .auth-card {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow-md);
+        width: 100%;
+        max-width: 460px;
+        overflow: hidden;
+        position: relative;
+    }
+    .auth-card-top {
+        background: var(--fg);
+        padding: 32px 36px 28px;
+        position: relative;
+        overflow: hidden;
+    }
+    .auth-card-top::before {
+        content: '';
+        position: absolute;
+        top: -40%;
+        right: -15%;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: rgba(184,84,42,0.12);
+        pointer-events: none;
+    }
+    .auth-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+    .auth-logo img { height: 28px; filter: brightness(0) invert(1); opacity: 0.9; }
+    .auth-logo-text {
+        font-family: 'Libre Baskerville', serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: rgba(255,255,255,0.9);
+        letter-spacing: 0.5px;
+    }
+    .auth-title {
+        font-family: 'Libre Baskerville', serif;
+        font-size: 1.65rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 6px;
+    }
+    .auth-subtitle {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.5);
+        line-height: 1.5;
+    }
+    .auth-body { padding: 32px 36px 36px; }
+    .form-group { margin-bottom: 20px; }
+    .form-label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: var(--muted-fg);
+        margin-bottom: 7px;
+    }
+    .form-input {
+        display: block;
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--r-sm);
+        background: var(--card);
+        color: var(--fg);
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 0.95rem;
+        transition: border-color 0.18s, box-shadow 0.18s;
+        outline: none;
+    }
+    .form-input:focus {
+        border-color: var(--highlight);
+        box-shadow: 0 0 0 3px rgba(184,84,42,0.10);
+    }
+    .form-hint {
+        font-size: 0.72rem;
+        color: var(--muted-fg);
+        margin-top: 5px;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .btn-submit {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 13px 20px;
+        background: var(--fg);
+        color: #fff;
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        border: none;
+        border-radius: var(--r-sm);
+        cursor: pointer;
+        transition: background 0.2s ease;
+        margin-top: 8px;
+    }
+    .btn-submit:hover { background: var(--highlight); }
+    .auth-footer {
+        text-align: center;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        margin-top: 24px;
+        font-size: 0.85rem;
+        color: var(--muted-fg);
+    }
+    .auth-footer a { color: var(--highlight); font-weight: 600; text-decoration: none; }
+    .auth-footer a:hover { text-decoration: underline; }
+    .alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 11px 14px;
+        border-radius: var(--r-sm);
+        font-size: 0.83rem;
+        font-weight: 500;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+    .alert i { flex-shrink: 0; margin-top: 1px; }
+    .alert-danger { background: rgba(185,28,28,0.07); border: 1px solid rgba(185,28,28,0.25); color: var(--danger); }
+    .alert-success { background: rgba(22,101,52,0.07); border: 1px solid rgba(22,101,52,0.25); color: var(--success); }
+    .alert-warning { background: rgba(184,84,42,0.07); border: 1px solid rgba(184,84,42,0.25); color: var(--highlight); }
+    .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+    .divider-text { font-size: 0.75rem; color: var(--muted-fg); font-weight: 500; white-space: nowrap; }
+    .google-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        padding: 11px 20px;
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: var(--r-sm);
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--fg);
+        cursor: pointer;
+        transition: border-color 0.2s, background 0.2s;
+        text-decoration: none;
+    }
+    .google-btn:hover { border-color: var(--highlight); background: var(--secondary); }
+    .google-btn img { width: 18px; height: 18px; }
+    .otp-inputs { display: flex; gap: 10px; justify-content: center; margin: 8px 0; }
+    .otp-box {
+        width: 52px; height: 58px;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        border: 1.5px solid var(--border);
+        border-radius: var(--r-sm);
+        background: var(--card);
+        color: var(--fg);
+        outline: none;
+        transition: border-color 0.18s, box-shadow 0.18s;
+    }
+    .otp-box:focus { border-color: var(--highlight); box-shadow: 0 0 0 3px rgba(184,84,42,0.10); }
+    .timer-text { text-align: center; font-size: 0.82rem; color: var(--muted-fg); margin-top: 12px; }
+    .timer-text span { color: var(--highlight); font-weight: 700; }
+    .btn-resend {
+        background: none;
+        border: none;
+        color: var(--highlight);
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 0;
+        text-decoration: underline;
+    }
+    .btn-resend:disabled { color: var(--muted-fg); cursor: not-allowed; text-decoration: none; }
+    .password-field { position: relative; }
+    .password-toggle {
+        position: absolute;
+        right: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--muted-fg);
+        cursor: pointer;
+        padding: 0;
+        font-size: 0.9rem;
+    }
+    .password-toggle:hover { color: var(--highlight); }
+    .strength-bar { height: 3px; border-radius: 3px; margin-top: 6px; background: var(--border); overflow: hidden; }
+    .strength-fill { height: 100%; border-radius: 3px; transition: width 0.3s, background 0.3s; width: 0; }
+    .error-msg { font-size: 0.72rem; color: var(--danger); margin-top: 5px; display: none; }
+    @media (max-width: 500px) {
+        .auth-card-top, .auth-body { padding-left: 24px; padding-right: 24px; }
+        .form-row { grid-template-columns: 1fr; }
+    }
+
+        .auth-card { max-width: 520px; }
+    </style>
 </head>
-<style>
-  @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
-
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
-  }
-
-  body {
-    min-height: 100vh;
-    width: 100%;
-    background: #f6f9f8;
-  }
-
-  .container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 430px;
-    width: 100%;
-    background: #fff;
-    border-radius: 7px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-  }
-
-  .container .registration {
-    display: none;
-  }
-
-  #check:checked~.registration {
-    display: block;
-  }
-
-  #check:checked~.login {
-    display: none;
-  }
-
-  #check {
-    display: none;
-  }
-
-  .container .form {
-    padding: 2rem;
-  }
-
-  .form header {
-    font-size: 2rem;
-    font-weight: 500;
-    text-align: center;
-    margin-bottom: 1.5rem;
-  }
-
-  .form input {
-    height: 60px;
-    width: 100%;
-    padding: 0 15px;
-    font-size: 17px;
-    margin-bottom: 1.3rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    outline: none;
-  }
-
-  .form input:focus {
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
-  }
-
-  .form a {
-    font-size: 16px;
-    color: #088178;
-    text-decoration: none;
-  }
-
-  .form a:hover {
-    text-decoration: underline;
-  }
-
-  .form input.button {
-    color: #fff;
-    background: #088178;
-    font-size: 1.2rem;
-    font-weight: 500;
-    letter-spacing: 1px;
-    margin-top: 1.7rem;
-    cursor: pointer;
-    transition: 0.4s;
-  }
-
-  .form input.button:hover {
-    background: #088178;
-  }
-
-  .signup {
-    font-size: 17px;
-    text-align: center;
-  }
-
-  .signup label {
-    color: #088178;
-    cursor: pointer;
-  }
-
-  .signup label:hover {
-    text-decoration: underline;
-  }
-</style>
-</head>
-
 <body>
-  <div class="container">
-    <input type="checkbox" id="check" />
-    <div class="login form">
-      <header>Signup</header>
-      <form action="/verifySignup" id="form" method="post">
-        <input type="text" id="name" placeholder="Enter your name" name="name" />
-        <div class="error" id="nameError" style="color: red;"></div> <!-- Error message placeholder for name -->
-        <input type="email" id="email" name="email" placeholder="Enter your email" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" required />
-        <div class="error" id="emailError" style="color: red;"></div> <!-- Error message placeholder for email -->
-        <input type="tel" id="mobile" maxlength="10" placeholder="Enter your mobile" name="mobile" pattern="^\d{10}$" required />
-        <div class="error" id="mobileError" style="color: red;"></div> <!-- Error message placeholder for mobile -->
-        <input type="password" id="password" placeholder="Enter your password" name="password" pattern=".{8,}" required />
-        <div class="error" id="passwordError" style="color: red;"></div> <!-- Error message placeholder for password -->
-        <input type="password" id="cpassword" placeholder="Confirm password" name="cpassword" pattern=".{8,}" required />
-        <div class="error" id="cpasswordError" style="color: red;"></div> <!-- Error message placeholder for confirm password -->
-
-        <input type="submit" class="button" value="signup" onclick="return validateForm()" />
-        <h3 class="text-center text-danger" id="loginErrorMessage">
-            <%=locals.errmessage ? errmessage : '' %>
-        </h3>
-        <h3 class="text-center text-success" id="loginSuccessMessage">
-            <%=locals.successMessage ? successMessage : '' %>
-        </h3>
-    </form>
+<div class="auth-card">
+    <div class="auth-card-top">
+        <div class="auth-logo">
+            <img src="/public/spellbook.png" alt="BOOKSAW">
+            <span class="auth-logo-text">BOOKSAW</span>
+        </div>
+        <h1 class="auth-title">Create account.</h1>
+        <p class="auth-subtitle">Join thousands of readers. It's free.</p>
     </div>
-  </div>
-  <script>
-   function validateForm() {
-    var name = document.getElementById("name").value;
-    var mobile = document.getElementById("mobile").value; 
-    var password = document.getElementById("password").value;
-    var cpassword = document.getElementById("cpassword").value;
-    
-    var alphabeticWithSpacesRegex = /^[a-zA-Z]+(?: [a-zA-Z]+)*$/;
-    // Regex: Starts with 6-9, followed by 9 digits (standard 10-digit mobile)
-    var mobileRegex = /^[6-9]\d{9}$/;
-    // Regex: Check for repeating digits (like 0000000000 or 1111111111)
-    var repeatingRegex = /^(.)\1+$/;
-    
-    var isValid = true;
+    <div class="auth-body">
 
-    // Reset error messages
-    document.getElementById("nameError").innerText = "";
-    document.getElementById("mobileError").innerText = "";
-    document.getElementById("passwordError").innerText = "";
-    document.getElementById("cpasswordError").innerText = "";
+        <% if (locals.errmessage && errmessage) { %>
+            <div class="alert alert-danger"><i class="fas fa-circle-exclamation"></i><span><%= errmessage %></span></div>
+        <% } %>
+        <% if (locals.emailExists && emailExists) { %>
+            <div class="alert alert-warning"><i class="fas fa-triangle-exclamation"></i><span>This email is already registered. <a href="/login">Sign in instead</a></span></div>
+        <% } %>
 
-    // 1. Validate Name
-    if (!alphabeticWithSpacesRegex.test(name)) {
-        document.getElementById("nameError").innerText = "Invalid name format.";
-        isValid = false;
+        <span id="loginErrorMessage" style="display:none"><%= locals.errmessage ? errmessage : '' %></span>
+        <span id="loginSuccessMessage" style="display:none"><%= locals.successMessage ? successMessage : '' %></span>
+
+        <form action="/verifySignup" id="signupForm" method="post">
+            <div class="form-group">
+                <label class="form-label" for="name">Full Name</label>
+                <input class="form-input" type="text" id="name" name="name" placeholder="Your full name" required>
+                <div class="error-msg" id="nameError"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input class="form-input" type="email" id="email" name="email" placeholder="you@example.com"
+                    pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" required>
+                <div class="error-msg" id="emailError"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="mobile">Mobile Number</label>
+                <input class="form-input" type="tel" id="mobile" name="mobile" maxlength="10"
+                    placeholder="10-digit number" pattern="^\d{10}$" required>
+                <div class="error-msg" id="mobileError"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label" for="password">Password</label>
+                    <div class="password-field">
+                        <input class="form-input" type="password" id="password" name="password"
+                            placeholder="Min 8 chars" pattern=".{8,}" style="padding-right:40px" required>
+                        <button type="button" class="password-toggle" onclick="togglePwd('password','ti1')">
+                            <i class="fas fa-eye" id="ti1"></i>
+                        </button>
+                    </div>
+                    <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+                    <div class="error-msg" id="passwordError"></div>
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label" for="cpassword">Confirm Password</label>
+                    <div class="password-field">
+                        <input class="form-input" type="password" id="cpassword" name="cpassword"
+                            placeholder="Repeat password" pattern=".{8,}" style="padding-right:40px" required>
+                        <button type="button" class="password-toggle" onclick="togglePwd('cpassword','ti2')">
+                            <i class="fas fa-eye" id="ti2"></i>
+                        </button>
+                    </div>
+                    <div class="error-msg" id="cpasswordError"></div>
+                </div>
+            </div>
+            <button type="submit" class="btn-submit" id="signup-submit-btn" style="margin-top:24px">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account? <a href="/login">Sign in</a>
+        </div>
+    </div>
+</div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function togglePwd(id, iconId) {
+        const inp = document.getElementById(id);
+        const ico = document.getElementById(iconId);
+        if (inp.type === 'password') { inp.type = 'text'; ico.className = 'fas fa-eye-slash'; }
+        else { inp.type = 'password'; ico.className = 'fas fa-eye'; }
     }
 
-    // 2. Validate Mobile
-    if (!mobileRegex.test(mobile)) {
-        document.getElementById("mobileError").innerText = "Enter a valid 10-digit number starting with 6-9.";
-        isValid = false;
-    } else if (repeatingRegex.test(mobile)) {
-        document.getElementById("mobileError").innerText = "Phone number cannot be all same digits.";
-        isValid = false;
-    }
+    document.getElementById('password').addEventListener('input', function(){
+        const fill = document.getElementById('strengthFill');
+        const len = this.value.length;
+        let pct = 0, color = '#b91c1c';
+        if (len >= 8 && len < 12) { pct = 40; color = '#d97706'; }
+        else if (len >= 12 && !/(?=.*[A-Z])(?=.*[0-9])/.test(this.value)) { pct = 65; color = '#d97706'; }
+        else if (len >= 12 && /(?=.*[A-Z])(?=.*[0-9])/.test(this.value)) { pct = 100; color = '#166534'; }
+        else if (len > 0) { pct = 20; }
+        fill.style.width = pct + '%';
+        fill.style.background = color;
+    });
 
-    // 3. Validate Password mismatch
-    if (password !== cpassword) {
-        document.getElementById("passwordError").innerText = "Password mismatch";
-        document.getElementById("cpasswordError").innerText = "Password mismatch";
-        isValid = false;
-    }
+    document.getElementById('signupForm').addEventListener('submit', function(e){
+        e.preventDefault();
+        let valid = true;
+        const name = document.getElementById('name').value;
+        const mobile = document.getElementById('mobile').value;
+        const password = document.getElementById('password').value;
+        const cpassword = document.getElementById('cpassword').value;
 
-    // Clear error messages after 5 seconds
-    if (!isValid) {
-        setTimeout(() => {
-            document.querySelectorAll(".error").forEach(el => el.innerText = "");
-        }, 5000);
-    }
+        document.querySelectorAll('.error-msg').forEach(el=>{ el.style.display='none'; el.innerText=''; });
 
-    return isValid;
-}
-</script>
-
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-  <%if(locals.emailExists){%>
-    <script>
-      Swal.fire({
-        icon: 'warning',
-        title: 'Email already exists!',
-      })
-    </script>
-    <%}%>
-
-      <script>
-        window.onload = () => {
-          console.log('inside');
-
-          let res = document.getElementById("loginErrorMessage").innerText;
-          if (res) {
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Something went wrong!",
-              footer: '<a href="#">You have entered wrong OTP</a>',
-            });
-          }
-        };
-
-      </script>
-
-
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-      <script>
-
-
-      </script>
-
-
-      </script>
-
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-      <style>
-        /* Custom CSS to change the Toastr color to black */
-        .black-toast {
-          background-color: black !important;
-          color: white !important;
+        if (!/^[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(name)) {
+            const el = document.getElementById('nameError');
+            el.innerText = 'Please enter a valid name (letters only).';
+            el.style.display = 'block'; valid = false;
         }
-      </style>
-</body>
+        if (!/^[6-9]\d{9}$/.test(mobile)) {
+            const el = document.getElementById('mobileError');
+            el.innerText = 'Enter a valid 10-digit number starting with 6-9.';
+            el.style.display = 'block'; valid = false;
+        }
+        if (password !== cpassword) {
+            const el = document.getElementById('cpasswordError');
+            el.innerText = 'Passwords do not match.';
+            el.style.display = 'block'; valid = false;
+        }
+        if (valid) this.submit();
+    });
 
+    const errEl = document.getElementById('loginErrorMessage');
+    const sMsg = errEl ? errEl.innerText.trim() : '';
+    if (sMsg) Swal.fire({ icon:'error', title:'Oops...', text: sMsg, confirmButtonColor:'#2d2820' });
+</script>
+</body>
 </html>

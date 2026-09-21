@@ -30,15 +30,20 @@
               <p>Give offeres use copons</p>
             </div>
 
-            <% if (messages.success) { %>
+            <% if (locals.messages && messages.success) { %>
               <div class="alert alert-success" id="editSuccessMessage">
                 <%= messages.success %>
               </div>
-              <% } else if (messages.error) { %>
-                <div class="alert alert-danger" id="editErrorMessage">
-                  <%= messages.error %>
-                </div>
-                <% } %>
+            <% } else if (locals.messages && messages.error) { %>
+              <div class="alert alert-danger" id="editErrorMessage">
+                <%= messages.error %>
+              </div>
+            <% } %>
+            <% if (locals.errorMessage) { %>
+              <div class="alert alert-danger">
+                <%= errorMessage %>
+              </div>
+            <% } %>
           </div>
           <div class="card">
             <div class="card-body">
@@ -48,31 +53,31 @@
 
                     <div class="mb-4">
                       <label for="couponName" class="form-label">Coupon Name</label>
-                      <input type="text" placeholder="Type here" name="couponName" class="form-control" id="couponName" required pattern="^[a-zA-Z]+$" title="Coupon name should only contain letters."/>                      
+                      <input type="text" placeholder="e.g. Summer Sale 2026" name="couponName" class="form-control" id="couponName" required pattern="^[a-zA-Z0-9\s\-]+$" title="Coupon name can contain letters, numbers, spaces, and hyphens."/>                      
                       <div id="couponNameValidation" class="invalid-feedback"></div>
                     </div>
                     
                     <div class="mb-4">
                       <label for="couponCode" class="form-label">Coupon Code</label>
-                      <input type="text" placeholder="Type here" name="couponCode" class="form-control" id="couponCode" required pattern="^[a-zA-Z0-9]+$" title="Coupon code should only contain letters and numbers."/>
+                      <input type="text" placeholder="e.g. SUMMER20" name="couponCode" class="form-control" id="couponCode" required pattern="^[a-zA-Z0-9]+$" title="Coupon code should only contain letters and numbers." style="text-transform:uppercase;"/>
                       <div id="couponCodeValidation" class="invalid-feedback"></div>
                     </div>
                     <div class="mb-4">
-                      <label for="product_name" class="form-label">Minimum Purchase</label>
-                      <input type="number" placeholder="$0" name="minimumPurchase" class="form-control" min="1" required/>
+                      <label for="minimumPurchase" class="form-label">Minimum Purchase (₹)</label>
+                      <input type="number" placeholder="₹0" name="minimumPurchase" class="form-control" id="minimumPurchase" min="1" required/>
                     </div>
                     <div class="mb-4">
-                      <label for="product_name" class="form-label">Discount %</label>
-                      <input type="number" placeholder="0%" name="discountAmount" class="form-control" min="1" max="99" required/>
+                      <label for="discountAmount" class="form-label">Discount %</label>
+                      <input type="number" placeholder="0%" name="discountAmount" class="form-control" id="discountAmount" min="1" max="99" required/>
                     </div>
                     <div class="mb-4">
-                      <label for="maxDiscount" class="form-label">Max Discount Amount ($)</label>
-                      <input type="number" placeholder="$0" name="maxDiscount" class="form-control" min="0" required/>
+                      <label for="maxDiscount" class="form-label">Max Discount Amount (₹)</label>
+                      <input type="number" placeholder="₹0 (0 = no cap)" name="maxDiscount" class="form-control" id="maxDiscount" min="0" required/>
                     </div>
 
                     <div class="mb-4">
                       <label for="expiration_date" class="form-label">Expiration Date</label>
-                      <input type="date" name="expirationDate" class="form-control" id="expiration_date" required>
+                      <input type="date" name="expirationDate" class="form-control" id="expiration_date" min="<%= new Date().toISOString().split('T')[0] %>" required>
                       <% if (locals.expiredDate) { %>
                         <div id="expiredDateAlert" class="alert alert-danger" role="alert">
                             The expiration date must be greater than today.
@@ -111,16 +116,21 @@
                             <th>No</th>
                             <th>Coupon name</th>
                             <th>Coupon Code</th>
-                            <th>Min purchase</th>
-                            <th>Max Discount</th>
+                            <th>Min purchase (₹)</th>
+                            <th>Max Discount (₹)</th>
                             <th>Discount %</th>
+                            <th>Expiry Date</th>
+                            <th>Redemptions</th>
                             <th>Status</th>
                             <th>Action</th>
                             <th>Remove</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <% for(let i=0; i < couponData.length; i++) { %>
+                          <% for(let i=0; i < couponData.length; i++) { 
+                              const isPastExpiry = couponData[i].expirationDate && (new Date(couponData[i].expirationDate) < new Date());
+                              const expiryStr = couponData[i].expirationDate ? new Date(couponData[i].expirationDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A';
+                          %>
                             <tr id="coupon-row-<%= couponData[i]._id %>">
                               <td class="text-center">
                                 <div class="form-check"></div>
@@ -131,22 +141,35 @@
                               <td><b>
                                   <%= couponData[i].couponName %>
                                 </b></td>
-                              <td><b>
+                              <td><span class="badge bg-light text-dark font-monospace" style="font-size: 0.9rem; letter-spacing: 0.5px;">
                                   <%= couponData[i].couponCode %>
-                                </b></td>
+                                </span></td>
                               <td><b>
-                                  $ <%= couponData[i].minimumPurchase %>
+                                  &#8377; <%= couponData[i].minimumPurchase %>
                                 </b></td>
-                              <td><b>$ <%= couponData[i].maxDiscount || 0 %></b></td>
+                              <td><b>&#8377; <%= couponData[i].maxDiscount || 0 %></b></td>
                               <td><b>
                                   <%= couponData[i].discountAmount %>%
                                 </b></td>
+                              <td>
+                                <span><%= expiryStr %></span>
+                                <% if (isPastExpiry) { %>
+                                  <br><span class="badge rounded-pill bg-warning text-dark" style="font-size: 0.75rem;">Expired</span>
+                                <% } %>
+                              </td>
+                              <td>
+                                <span class="badge rounded-pill bg-secondary">
+                                  <%= (couponData[i].redeemedUsers ? couponData[i].redeemedUsers.length : couponData[i].timesUsed) || 0 %>
+                                </span>
+                              </td>
                               <td id="status-<%= couponData[i]._id %>">
-                                <% if (couponData[i].isActive) { %>
+                                <% if (isPastExpiry) { %>
+                                  <span class="badge rounded-pill alert-warning">Expired</span>
+                                <% } else if (couponData[i].isActive) { %>
                                   <span class="badge rounded-pill alert-success">Active</span>
-                                  <% } else { %>
-                                    <span class="badge rounded-pill alert-danger">Blocked</span>
-                                    <% } %>
+                                <% } else { %>
+                                  <span class="badge rounded-pill alert-danger">Blocked</span>
+                                <% } %>
                               </td>
                               <td id="action-<%= couponData[i]._id %>">
                                 <% if(couponData[i].isActive) { %>
@@ -624,17 +647,13 @@
 
     <!-- validateCoupon -->
     <script>
-      // Prevent spaces in coupon code input
+      // Automatically uppercase and remove spaces from coupon code input
       const couponCodeInput = document.getElementById('couponCode');
-      couponCodeInput.addEventListener('input', () => {
-        couponCodeInput.value = couponCodeInput.value.replace(/\s/g, '');
-      });
-
-      // Prevent spaces in coupon name input
-      const couponNameInput = document.getElementById('couponName');
-      couponNameInput.addEventListener('input', () => {
-        couponNameInput.value = couponNameInput.value.replace(/\s/g, '');
-      });
+      if (couponCodeInput) {
+        couponCodeInput.addEventListener('input', () => {
+          couponCodeInput.value = couponCodeInput.value.replace(/\s/g, '').toUpperCase();
+        });
+      }
     </script>
 
 </body>

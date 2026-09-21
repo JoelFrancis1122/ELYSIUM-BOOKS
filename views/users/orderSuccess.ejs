@@ -1,64 +1,839 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Success</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
-    <!-- Template CSS -->
-    <link rel="stylesheet" href="/public/assets/css/maind134.css?v=3.4">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <style>
-        /* body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            text-align: center;
-            padding: 40px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            border-radius: 8px;
-        } */
-        .success-icon {
-            color: #28a745;
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-        .success-message {
-            color: #28a745;
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-        .button {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #28a745;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            margin: 10px;
-            transition: background-color 0.3s ease;
-        }
-        .button:hover {
-            background-color: #218838;
-        }
-    </style>
-</head>
-<body>
+<html class="no-js" lang="en">
 
-        <div class="container" style="max-width: 1000px; margin: 0 auto;height:600px; padding: 20px; text-align: center; background-color: #f8f8f8; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-            <br><br><br><br><br><br>
-            <i class="fas fa-check-circle success-icon" style="color: #4CAF50; font-size: 36px;"></i>
-            <div class="success-message" style="font-size: 24px; margin-top: 10px; font-weight: bold;">Thank you for your order!</div>
-            <p style="font-size: 18px; margin-top: 10px;">Your order has been placed successfully.</p>
-            <a href="/loadShop" class="button" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Continue Shopping</a>
-            <a href="/loadProfile" class="button" style="display: inline-block; margin-top: 20px; margin-left: 10px; padding: 10px 20px; background-color: #2196F3; color: white; text-decoration: none; border-radius: 5px;">View Orders</a>
+<head>
+  <meta charset="utf-8">
+  <title>Order Confirmed — BOOKSAW</title>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="description" content="Thank you for your order at BOOKSAW">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
+
+  <!-- Google Fonts: Warm Literary Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- CSS Framework & Icons -->
+  <link rel="stylesheet" href="/public/assets/css/maind134.css?v=3.4">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    /* ============================================================
+       BOOKSAW THEME — WARM LITERARY DESIGN SYSTEM
+       Derived from Home, Shop, Cart, and Checkout
+       ============================================================ */
+    :root {
+      --canvas: #f5f0e8;
+      --bg: #faf8f4;
+      --fg: #2d2820;
+      --hi: #b8542a;
+      --muted: #7a6f60;
+      --border: #ddd8ce;
+      --sec: #edeae2;
+      --green: #16a34a;
+      --red: #b91c1c;
+      --r-sm: 8px;
+      --r-md: 14px;
+      --r-lg: 20px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--canvas);
+      color: var(--fg);
+      min-height: 100vh;
+    }
+
+    /* ── BREADCRUMB ── */
+    .bk-crumb {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+    }
+    .bk-crumb-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .8rem;
+      color: var(--muted);
+    }
+    .bk-crumb-inner a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .bk-crumb-inner a:hover {
+      color: var(--hi);
+    }
+    .bk-crumb-sep {
+      font-size: .65rem;
+      color: var(--border);
+    }
+    .bk-crumb-cur {
+      color: var(--fg);
+      font-weight: 600;
+    }
+
+    /* ── STEPS BAR (Same as Checkout) ── */
+    .bk-steps {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+    }
+    .bk-steps-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+    }
+    .bk-step {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 14px 20px;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--muted);
+      border-bottom: 2px solid transparent;
+      text-decoration: none;
+    }
+    .bk-step.done {
+      color: var(--green);
+    }
+    .bk-step.active {
+      color: var(--hi);
+      border-color: var(--hi);
+    }
+    .bk-step-sep {
+      color: var(--border);
+      font-size: .65rem;
+      margin: 0 4px;
+    }
+
+    /* ── PAGE LAYOUT ── */
+    .bk-success-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 36px 40px 80px;
+    }
+
+    /* ── HERO CONFIRMATION CARD ── */
+    .bk-hero {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 42px 30px 38px;
+      text-align: center;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .bk-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--green), var(--hi));
+    }
+
+    .bk-celebrate-badge {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: rgba(22, 163, 74, 0.1);
+      border: 2px solid rgba(22, 163, 74, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--green);
+      font-size: 2rem;
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .bk-hero-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      background: rgba(22, 163, 74, 0.1);
+      color: var(--green);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .bk-hero-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+
+    .bk-hero-sub {
+      font-size: .9rem;
+      color: var(--muted);
+      max-width: 580px;
+      margin: 0 auto 24px;
+      line-height: 1.6;
+    }
+
+    /* Meta Badges Strip */
+    .bk-meta-strip {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px 24px;
+      background: var(--canvas);
+      border: 1px solid var(--border);
+      padding: 12px 24px;
+      border-radius: 999px;
+    }
+    .bk-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+    .bk-meta-item strong {
+      color: var(--fg);
+      font-weight: 600;
+    }
+    .bk-meta-item i {
+      color: var(--hi);
+      font-size: .8rem;
+    }
+    .bk-copy-id {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 2px 4px;
+      font-size: .78rem;
+      transition: color .2s;
+    }
+    .bk-copy-id:hover {
+      color: var(--hi);
+    }
+
+    /* ── TWO-COLUMN GRID ── */
+    .bk-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* ── SECTION CARD (Same as Checkout) ── */
+    .bk-section {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .bk-section:last-child {
+      margin-bottom: 0;
+    }
+    .bk-section-head {
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .bk-section-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--fg);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .bk-section-title i {
+      color: var(--hi);
+      font-size: .85rem;
+    }
+    .bk-section-body {
+      padding: 22px;
+    }
+
+    /* ── ORDER ITEMS LIST ── */
+    .bk-item-row {
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .bk-item-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .bk-item-row:first-child {
+      padding-top: 0;
+    }
+    .bk-item-img {
+      width: 60px;
+      height: 86px;
+      border-radius: 6px;
+      object-fit: cover;
+      box-shadow: 2px 3px 10px rgba(45, 40, 32, 0.12);
+      border: 1px solid var(--border);
+      background: var(--canvas);
+    }
+    .bk-item-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .bk-item-genre {
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .9px;
+      color: var(--hi);
+    }
+    .bk-item-name {
+      font-family: 'Libre Baskerville', serif;
+      font-size: .86rem;
+      font-weight: 700;
+      color: var(--fg);
+      line-height: 1.4;
+      text-decoration: none;
+    }
+    .bk-item-name:hover {
+      color: var(--hi);
+    }
+    .bk-item-subinfo {
+      font-size: .78rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bk-item-subtotal {
+      font-family: 'Libre Baskerville', serif;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--fg);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* ── DELIVERY ADDRESS DETAILS ── */
+    .bk-addr-box {
+      background: var(--canvas);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 16px 20px;
+    }
+    .bk-addr-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .bk-addr-name {
+      font-family: 'Libre Baskerville', serif;
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--fg);
+    }
+    .bk-addr-phone {
+      font-size: .78rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .bk-addr-text {
+      font-size: .82rem;
+      color: var(--fg);
+      line-height: 1.65;
+    }
+
+    /* ── ORDER SUMMARY PANEL (Exact match with Checkout) ── */
+    .bk-summary {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      position: sticky;
+      top: 88px;
+    }
+    .bk-summary-head {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      font-family: 'Libre Baskerville', serif;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--fg);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .bk-summary-head i {
+      color: var(--hi);
+      font-size: .85rem;
+    }
+    .bk-summary-body {
+      padding: 6px 0;
+    }
+    .bk-sum-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 22px;
+      font-size: .84rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .bk-sum-row:last-of-type {
+      border-bottom: none;
+    }
+    .bk-sum-label {
+      color: var(--muted);
+    }
+    .bk-sum-val {
+      font-weight: 600;
+      color: var(--fg);
+    }
+    .bk-sum-val.green {
+      color: var(--green);
+    }
+
+    .bk-sum-total {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 22px;
+      background: var(--fg);
+      color: #fff;
+    }
+    .bk-sum-total-label {
+      font-size: .85rem;
+      font-weight: 600;
+      opacity: .75;
+    }
+    .bk-sum-total-val {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.28rem;
+      font-weight: 700;
+    }
+
+    .bk-summary-cta {
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ── BUTTONS (Same as Home & Shop) ── */
+    .bk-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 11px 20px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .84rem;
+      font-weight: 600;
+      border-radius: var(--r-sm);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all .18s;
+      border: 1.5px solid transparent;
+      white-space: nowrap;
+    }
+    .bk-btn-dark {
+      background: var(--fg);
+      color: #fff;
+      border-color: var(--fg);
+    }
+    .bk-btn-dark:hover {
+      background: var(--hi);
+      border-color: var(--hi);
+      color: #fff;
+    }
+    .bk-btn-outline {
+      background: none;
+      color: var(--fg);
+      border-color: var(--border);
+    }
+    .bk-btn-outline:hover {
+      border-color: var(--hi);
+      color: var(--hi);
+      background: rgba(184, 84, 42, 0.03);
+    }
+    .bk-btn-ghost {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: .8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: var(--r-sm);
+      text-decoration: none;
+      transition: color .2s, background .2s;
+      justify-content: center;
+    }
+    .bk-btn-ghost:hover {
+      color: var(--hi);
+      background: rgba(184, 84, 42, 0.05);
+    }
+    .bk-btn-full {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .bk-success-wrap {
+        padding: 24px 20px 60px;
+      }
+      .bk-grid {
+        grid-template-columns: 1fr;
+      }
+      .bk-summary {
+        position: static;
+      }
+      .bk-hero {
+        padding: 30px 18px 26px;
+      }
+      .bk-hero-title {
+        font-size: 1.45rem;
+      }
+      .bk-meta-strip {
+        border-radius: var(--r-md);
+        padding: 12px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <%
+    const safeOrder = (typeof order !== 'undefined' && order) ? order : ((typeof locals !== 'undefined' && locals.order) ? locals.order : null);
+    const safeName = (typeof name !== 'undefined' && name) ? name : ((typeof locals !== 'undefined' && locals.name) ? locals.name : 'Valued Customer');
+  %>
+
+  <!-- Shared Header -->
+  <%- include('../partials/userHeader') %>
+
+  <!-- Breadcrumb -->
+  <div class="bk-crumb">
+    <div class="bk-crumb-inner">
+      <a href="/home">Home</a>
+      <span class="bk-crumb-sep"><i class="fas fa-chevron-right"></i></span>
+      <a href="/loadShop">Shop</a>
+      <span class="bk-crumb-sep"><i class="fas fa-chevron-right"></i></span>
+      <span class="bk-crumb-cur">Order Confirmation</span>
+    </div>
+  </div>
+
+  <!-- Steps Bar -->
+  <div class="bk-steps">
+    <div class="bk-steps-inner">
+      <span class="bk-step done"><i class="fas fa-check"></i> Cart</span>
+      <span class="bk-step-sep"><i class="fas fa-chevron-right"></i></span>
+      <span class="bk-step done"><i class="fas fa-check"></i> Checkout</span>
+      <span class="bk-step-sep"><i class="fas fa-chevron-right"></i></span>
+      <span class="bk-step done active"><i class="fas fa-check-circle"></i> Confirmed</span>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="bk-success-wrap">
+
+    <!-- Hero Card -->
+    <div class="bk-hero">
+      <div class="bk-celebrate-badge">
+        <i class="fas fa-check"></i>
+      </div>
+
+      <div class="bk-hero-status">
+        <i class="fas fa-circle-check"></i> Order Placed Successfully
+      </div>
+
+      <h1 class="bk-hero-title">Thank you for your order, <%= safeName %>!</h1>
+      <p class="bk-hero-sub">
+        We have safely received your order and are preparing your books. You can review full tracking updates anytime in your account.
+      </p>
+
+      <!-- Order Meta Badge Strip -->
+      <div class="bk-meta-strip">
+        <div class="bk-meta-item">
+          <i class="fas fa-receipt"></i>
+          <span>Order ID: <strong>#<%= safeOrder && safeOrder.orderId ? safeOrder.orderId : 'CONFIRMED' %></strong></span>
+          <% if (safeOrder && safeOrder.orderId) { %>
+            <button class="bk-copy-id" onclick="copyOrderId('<%= safeOrder.orderId %>')" title="Copy Order ID">
+              <i class="far fa-copy"></i>
+            </button>
+          <% } %>
         </div>
-        
+
+        <div class="bk-meta-item">
+          <i class="fas fa-calendar-day"></i>
+          <span>Date: <strong><%= safeOrder && safeOrder.orderDate ? new Date(safeOrder.orderDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) : new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) %></strong></span>
+        </div>
+
+        <div class="bk-meta-item">
+          <i class="fas fa-credit-card"></i>
+          <span>Payment: <strong><%= safeOrder && safeOrder.paymentMethod ? safeOrder.paymentMethod : 'Online' %></strong></span>
+        </div>
+
+        <div class="bk-meta-item">
+          <i class="fas fa-shield-alt"></i>
+          <span>Status: <strong style="color:var(--green)"><%= safeOrder && safeOrder.paymentStatus ? safeOrder.paymentStatus : 'Received' %></strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2-Column Grid -->
+    <div class="bk-grid">
+
+      <!-- Left Column: Purchased Books & Delivery Address -->
+      <div class="bk-left">
+
+        <!-- Purchased Books Card -->
+        <div class="bk-section">
+          <div class="bk-section-head">
+            <div class="bk-section-title">
+              <i class="fas fa-book-open"></i> Purchased Books
+            </div>
+            <% if (safeOrder && safeOrder.product) { %>
+              <span style="font-size:.78rem;font-weight:600;color:var(--muted)">
+                <%= safeOrder.product.length %> item<%= safeOrder.product.length !== 1 ? 's' : '' %>
+              </span>
+            <% } %>
+          </div>
+
+          <div class="bk-section-body">
+            <% if (safeOrder && safeOrder.product && safeOrder.product.length > 0) { %>
+              <div class="bk-items-list">
+                <% for (let item of safeOrder.product) { 
+                     const pObj = item.productId || {};
+                     const bookTitle = pObj.Bookname || 'Book';
+                     const bookPrice = Number(item.price) || 0;
+                     const itemQty = Number(item.quantity) || 1;
+                     const itemTotal = bookPrice * itemQty;
+                     const bookImg = (pObj.Images && pObj.Images.length > 0) ? '/public/uploads/' + pObj.Images[0] : '/public/spellbook.png';
+                     const bookCat = (pObj.Categories && pObj.Categories.categoryName) ? pObj.Categories.categoryName : 'Book';
+                     const bookLink = pObj._id ? '/shop-product?id=' + pObj._id : '#';
+                %>
+                  <div class="bk-item-row">
+                    <img class="bk-item-img" src="<%= bookImg %>" alt="<%= bookTitle %>" onerror="this.src='/public/spellbook.png'">
+
+                    <div class="bk-item-meta">
+                      <span class="bk-item-genre"><%= bookCat %></span>
+                      <a href="<%= bookLink %>" class="bk-item-name"><%= bookTitle %></a>
+                      <div class="bk-item-subinfo">
+                        <span>Unit: &#8377;<%= bookPrice.toFixed(2) %></span>
+                        <span>&bull;</span>
+                        <span>Qty: <strong><%= itemQty %></strong></span>
+                        <% if (item.productStatus && item.productStatus !== 'Order Placed') { %>
+                          <span>&bull;</span>
+                          <span style="color:var(--hi)"><%= item.productStatus %></span>
+                        <% } %>
+                      </div>
+                    </div>
+
+                    <div class="bk-item-subtotal">
+                      &#8377;<%= itemTotal.toFixed(2) %>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+            <% } else { %>
+              <p style="color:var(--muted);font-size:.85rem">Your order details have been securely logged.</p>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Delivery Address Card -->
+        <div class="bk-section">
+          <div class="bk-section-head">
+            <div class="bk-section-title">
+              <i class="fas fa-map-marker-alt"></i> Delivery Address
+            </div>
+          </div>
+
+          <div class="bk-section-body">
+            <% if (safeOrder && safeOrder.address && (safeOrder.address.houseName || safeOrder.address.city)) { %>
+              <div class="bk-addr-box">
+                <div class="bk-addr-head">
+                  <span class="bk-addr-name"><%= safeOrder.address.name || safeName %></span>
+                  <% if (safeOrder.address.mobile) { %>
+                    <span class="bk-addr-phone"><i class="fas fa-phone-alt"></i> <%= safeOrder.address.mobile %></span>
+                  <% } %>
+                </div>
+                <div class="bk-addr-text">
+                  <%= safeOrder.address.houseName %><br>
+                  <%= [safeOrder.address.city, safeOrder.address.state].filter(Boolean).join(', ') %>
+                  <% if (safeOrder.address.pinCode) { %>
+                    &mdash; <strong><%= safeOrder.address.pinCode %></strong>
+                  <% } %>
+                </div>
+              </div>
+            <% } else { %>
+              <p style="color:var(--muted);font-size:.85rem">Delivery address confirmed on file.</p>
+            <% } %>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Order Summary & Actions -->
+      <div class="bk-right">
+        <div class="bk-summary">
+          <div class="bk-summary-head">
+            <i class="fas fa-receipt"></i> Payment Summary
+          </div>
+
+          <% 
+            let itemsSubtotal = 0;
+            if (safeOrder && safeOrder.product && safeOrder.product.length > 0) {
+              for (let item of safeOrder.product) {
+                itemsSubtotal += (item.quantity || 1) * (item.price || 0);
+              }
+            } else if (safeOrder && safeOrder.totalAmount) {
+              itemsSubtotal = safeOrder.totalAmount;
+            }
+          %>
+
+          <div class="bk-summary-body">
+            <div class="bk-sum-row">
+              <span class="bk-sum-label">Items Subtotal</span>
+              <span class="bk-sum-val">&#8377;<%= itemsSubtotal.toFixed(2) %></span>
+            </div>
+
+            <% if (safeOrder && safeOrder.couponDiscount && safeOrder.couponDiscount > 0) { %>
+              <div class="bk-sum-row">
+                <span class="bk-sum-label">Coupon Discount <%= safeOrder.couponCode ? '(' + safeOrder.couponCode + ')' : '' %></span>
+                <span class="bk-sum-val green">-&#8377;<%= Number(safeOrder.couponDiscount).toFixed(2) %></span>
+              </div>
+            <% } %>
+
+            <div class="bk-sum-row">
+              <span class="bk-sum-label">Delivery</span>
+              <span class="bk-sum-val green">FREE</span>
+            </div>
+          </div>
+
+          <div class="bk-sum-total">
+            <span class="bk-sum-total-label">Total Paid</span>
+            <span class="bk-sum-total-val">&#8377;<%= safeOrder && safeOrder.totalAmount ? parseFloat(safeOrder.totalAmount).toFixed(2) : '0.00' %></span>
+          </div>
+
+          <!-- Actions -->
+          <div class="bk-summary-cta">
+            <% if (safeOrder && safeOrder._id) { %>
+              <a href="/loadOrderDetails?id=<%= safeOrder._id %>" class="bk-btn bk-btn-dark bk-btn-full">
+                <i class="fas fa-receipt"></i> View Order Details
+              </a>
+            <% } else { %>
+              <a href="/loadProfile" class="bk-btn bk-btn-dark bk-btn-full">
+                <i class="fas fa-user"></i> View In My Account
+              </a>
+            <% } %>
+
+            <a href="/loadShop" class="bk-btn bk-btn-outline bk-btn-full">
+              <i class="fas fa-compass"></i> Continue Shopping
+            </a>
+
+            <% if (safeOrder && safeOrder._id) { %>
+              <a href="/loadInvoice?id=<%= safeOrder._id %>" class="bk-btn-ghost" target="_blank">
+                <i class="fas fa-file-invoice"></i> Download Invoice
+              </a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Shared Footer -->
+  <%- include('../partials/userFooter') %>
+
+  <!-- Scripts -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <script>
+    toastr.options = { closeButton: true, progressBar: true, positionClass: 'toast-top-right', timeOut: 1400 };
+
+    // Confetti celebration burst on load
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof confetti === 'function') {
+        const duration = 1.8 * 1000;
+        const end = Date.now() + duration;
+        (function frame() {
+          confetti({
+            particleCount: 3,
+            angle: 60,
+            spread: 50,
+            origin: { x: 0 },
+            colors: ['#b8542a', '#16a34a', '#2d2820', '#d97706']
+          });
+          confetti({
+            particleCount: 3,
+            angle: 120,
+            spread: 50,
+            origin: { x: 1 },
+            colors: ['#b8542a', '#16a34a', '#2d2820', '#d97706']
+          });
+          if (Date.now() < end) requestAnimationFrame(frame);
+        }());
+      }
+    });
+
+    // Copy Order ID with notification
+    function copyOrderId(id) {
+      navigator.clipboard.writeText(id).then(() => {
+        toastr.success('Order ID copied: #' + id);
+      }).catch(() => {
+        const temp = document.createElement('input');
+        temp.value = id;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        toastr.success('Order ID copied: #' + id);
+      });
+    }
+  </script>
 </body>
+
 </html>

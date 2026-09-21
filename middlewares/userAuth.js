@@ -2,6 +2,15 @@ import User from "../models/userModel.js"
 const isLogin = async (req, res, next) => {
   try {
     if (req.session.user) {
+      const user = await User.findById(req.session.user);
+      if (!user) {
+        delete req.session.user;
+        return res.redirect('/login');
+      }
+      if (!user.is_active) {
+        delete req.session.user;
+        return res.redirect('/login?blocked=true');
+      }
       return next();
     } else {
       return res.redirect('/login');
@@ -15,6 +24,11 @@ const isLogin = async (req, res, next) => {
 const isLogout = async (req, res, next) => {
   try {
     if (req.session.user) {
+      const user = await User.findById(req.session.user);
+      if (user && !user.is_active) {
+        delete req.session.user;
+        return next();
+      }
       return res.redirect('/home');
     }
     next();
@@ -26,9 +40,13 @@ const isLogout = async (req, res, next) => {
 
 const isBlocked = async (req, res, next) => {
   try {
+    if (!req.session.user) return res.redirect('/login');
     const user = await User.findById(req.session.user);
     if (!user) return res.redirect('/logout');
-    if (!user.is_active) return res.redirect('/logout');
+    if (!user.is_active) {
+      delete req.session.user;
+      return res.redirect('/login?blocked=true');
+    }
     next();
   } catch (error) {
     console.error("Error checking user block status:", error.message);

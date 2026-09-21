@@ -21,8 +21,7 @@ userRoute.get('/getResetPassword/:token',Auth.isLogout, userControllers.getReset
 userRoute.post('/resetpassword/:token',Auth.isLogout, userControllers.resetpassword);
 userRoute.get('/getOtp', Auth.isLogout, userControllers.getOtp)
 userRoute.post('/verifyOtp', Auth.isLogout, userControllers.verifyOtp)
-userRoute.post('/verifyLogin', Auth.isLogout, userControllers.verifyLogin)
-userRoute.get('/login', Auth.isLogout, userControllers.loadlogin)
+userRoute.post('/verifyLogin', userControllers.verifyLogin)
 userRoute.get('/signup', Auth.isLogout, userControllers.signup)
 userRoute.post('/verifySignup', Auth.isLogout, userControllers.verifySignup)
 
@@ -43,6 +42,7 @@ userRoute.post('/addAddress1', Auth.isLogin, addressController.addAddress1)
 userRoute.get('/loadEditAddress', Auth.isLogin, addressController.loadEditAddress)
 userRoute.get('/loadEditAddress1', Auth.isLogin, addressController.loadEditAddress1)
 userRoute.put('/updateAddress', Auth.isLogin, addressController.updateAddress)
+userRoute.post('/updateAddress', Auth.isLogin, addressController.updateAddress)
 userRoute.post('/updateAddress1', Auth.isLogin, addressController.updateAddress1)
 userRoute.get('/loadOrderDetails', Auth.isLogin, userControllers.loadOrderDetails)
 userRoute.get('/loadInvoice', Auth.isLogin, orderControllers.loadInvoice)
@@ -81,12 +81,15 @@ userRoute.get('/profileEdit', Auth.isLogin, userControllers.profileEdit)
 
 userRoute.delete("/removeWish", Auth.isLogin, userControllers.removeWish)
 userRoute.delete("/removeItem", Auth.isLogin, cartControllers.removeItem)
+userRoute.post("/removeItem", Auth.isLogin, cartControllers.removeItem)
 userRoute.delete('/removeAddress', Auth.isLogin, addressController.removeAddress)
 userRoute.delete('/removeCoupon',Auth.isLogin,cartControllers.removeCoupon)
+userRoute.post('/removeCoupon',Auth.isLogin,cartControllers.removeCoupon)
 userRoute.delete('/clearCart', Auth.isLogin, cartControllers.clearCart)
 
 
 userRoute.patch("/updateCart", Auth.isLogin, cartControllers.updateCart) 
+userRoute.post("/updateCart", Auth.isLogin, cartControllers.updateCart) 
 
 
 userRoute.put('/profileEdit2', Auth.isLogin, userControllers.profileEdit2)

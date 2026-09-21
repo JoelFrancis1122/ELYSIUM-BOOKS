@@ -1,1157 +1,560 @@
-﻿<!DOCTYPE html>
-<html class="no-js" lang="en">
-
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-frontend/shop-checkout.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Jul 2023 10:10:07 GMT -->
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>BOOKSAW</title>
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
-    <!-- Template CSS -->
-    <link rel="stylesheet" href="/public/assets/css/maind134.css?v=3.4">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <meta charset="utf-8">
+  <title>Checkout — BOOKSAW</title>
+  <meta name="description" content="Complete your BOOKSAW order securely.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/public/assets/css/maind134.css?v=3.4">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+:root{--canvas:#f5f0e8;--bg:#faf8f4;--fg:#2d2820;--hi:#b8542a;--muted:#7a6f60;--border:#ddd8ce;--sec:#edeae2;--r-sm:8px;--r-md:14px;--r-lg:20px;--green:#16a34a;--red:#b91c1c}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--canvas);color:var(--fg)}
 
-    <style>
-        .edit-address {
-            cursor: pointer;
-        }
+/* BREADCRUMB */
+.bk-crumb{background:var(--bg);border-bottom:1px solid var(--border);padding:14px 0}
+.bk-crumb-inner{max-width:1200px;margin:0 auto;padding:0 40px;display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--muted)}
+.bk-crumb-inner a{color:var(--muted);text-decoration:none;transition:color .2s}.bk-crumb-inner a:hover{color:var(--hi)}
+.bk-crumb-sep{font-size:.65rem;color:var(--border)}.bk-crumb-cur{color:var(--fg);font-weight:600}
 
-        .remove-icon {
-            margin-left: 570px;
-        }
+/* STEPS BAR */
+.bk-steps{background:var(--bg);border-bottom:1px solid var(--border);padding:0 40px}
+.bk-steps-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center}
+.bk-step{display:flex;align-items:center;gap:7px;padding:14px 20px;font-size:.78rem;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;text-decoration:none}
+.bk-step.done{color:var(--green);border-color:var(--green)}
+.bk-step.active{color:var(--hi);border-color:var(--hi)}
+.bk-step i{font-size:.72rem}
+.bk-step-sep{color:var(--border);font-size:.65rem;margin:0 4px}
 
+/* LAYOUT */
+.bk-checkout{max-width:1200px;margin:0 auto;padding:36px 40px 80px;display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start}
 
-        /* 
+/* SECTION CARD */
+.bk-section{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:20px}
+.bk-section:last-child{margin-bottom:0}
+.bk-section-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bk-section-title{font-family:'Libre Baskerville',serif;font-size:.95rem;font-weight:700;color:var(--fg);display:flex;align-items:center;gap:9px}
+.bk-section-title i{color:var(--hi);font-size:.85rem}
+.bk-section-body{padding:22px}
 
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f2f2f2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-} */
+/* ADDRESS CARDS */
+.bk-addr-list{display:flex;flex-direction:column;gap:12px}
+.bk-addr-card{border:1.5px solid var(--border);border-radius:var(--r-md);padding:16px 18px;cursor:pointer;transition:border-color .2s,box-shadow .2s;position:relative}
+.bk-addr-card:hover{border-color:var(--hi);box-shadow:0 3px 12px rgba(184,84,42,.08)}
+.bk-addr-card.selected{border-color:var(--hi);background:rgba(184,84,42,.03)}
+.bk-addr-card input[type=radio]{position:absolute;top:16px;right:16px;accent-color:var(--hi);width:16px;height:16px;cursor:pointer}
+.bk-addr-num{font-size:.65rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--hi);margin-bottom:5px}
+.bk-addr-name{font-family:'Libre Baskerville',serif;font-size:.88rem;font-weight:700;color:var(--fg);margin-bottom:3px}
+.bk-addr-phone{font-size:.78rem;color:var(--muted);margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.bk-addr-text{font-size:.81rem;color:var(--fg);line-height:1.65}
+.bk-addr-actions{display:flex;gap:8px;margin-top:12px;padding-top:11px;border-top:1px solid var(--border)}
 
-        .coupon-container {
-            display: flex;
-            justify-content: center;
-        }
+/* ORDER ITEMS */
+.bk-item-row{display:grid;grid-template-columns:60px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--border)}
+.bk-item-row:last-child{border-bottom:none}
+.bk-item-img{width:60px;height:86px;border-radius:6px;object-fit:cover;box-shadow:2px 3px 10px rgba(45,40,32,.12)}
+.bk-item-name{font-family:'Libre Baskerville',serif;font-size:.83rem;font-weight:700;color:var(--fg);margin-bottom:4px;line-height:1.4}
+.bk-item-unit{font-size:.77rem;color:var(--muted)}
+.bk-item-subtotal{font-family:'Libre Baskerville',serif;font-size:.9rem;font-weight:700;color:var(--fg);text-align:right;white-space:nowrap}
+.bk-item-del{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;border:none;background:none;cursor:pointer;color:var(--muted);font-size:.78rem;transition:background .18s,color .18s;margin-top:6px}
+.bk-item-del:hover{background:rgba(185,28,28,.07);color:var(--red)}
 
-        .coupon {
-            background-color: #fff;
-            border: 2px dashed #333;
-            border-radius: 10px;
-            padding: 20px;
-            width: 300px;
-        }
+/* QTY */
+.bk-qty{display:inline-flex;align-items:center;border:1.5px solid var(--border);border-radius:var(--r-sm);overflow:hidden;background:var(--canvas)}
+.bk-qty-btn{width:28px;height:28px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg);font-size:.7rem;transition:background .18s}
+.bk-qty-btn:hover{background:var(--fg);color:#fff}
+.bk-qty-val{min-width:28px;text-align:center;font-size:.83rem;font-weight:700;color:var(--fg);border-left:1px solid var(--border);border-right:1px solid var(--border);line-height:28px;padding:0 4px}
 
-        .coupon-header {
-            text-align: center;
-        }
+/* PAYMENT OPTIONS */
+.bk-pay-opts{display:flex;flex-direction:column;gap:10px}
+.bk-pay-opt{border:1.5px solid var(--border);border-radius:var(--r-md);padding:14px 18px;cursor:pointer;transition:border-color .2s,background .2s;display:flex;align-items:center;gap:12px;position:relative}
+.bk-pay-opt:hover{border-color:var(--hi);background:rgba(184,84,42,.03)}
+.bk-pay-opt.selected{border-color:var(--hi);background:rgba(184,84,42,.04)}
+.bk-pay-opt input[type=radio]{accent-color:var(--hi);width:15px;height:15px;flex-shrink:0;cursor:pointer}
+.bk-pay-opt-label{font-size:.85rem;font-weight:600;color:var(--fg);flex:1}
+.bk-pay-opt-badge{font-size:.68rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:rgba(22,163,74,.1);color:#16a34a}
+.bk-pay-opt-icon{font-size:.95rem;color:var(--muted)}
+.bk-cod-note{font-size:.76rem;color:var(--red);margin-top:6px;display:none;align-items:center;gap:5px;padding:7px 12px;background:rgba(185,28,28,.06);border-radius:var(--r-sm)}
 
-        .coupon-header img {
-            width: 150px;
-        }
+/* COUPON */
+.bk-coupon-row{display:flex;gap:10px;align-items:center}
+.bk-coupon-row .bk-input{flex:1}
+.bk-coupon-applied{background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.2);border-radius:var(--r-md);padding:14px 16px;margin-top:14px;display:none}
+.bk-coupon-applied-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.bk-coupon-applied-name{font-size:.82rem;font-weight:700;color:var(--green)}
+.bk-coupon-row-item{display:flex;justify-content:space-between;font-size:.8rem;padding:3px 0;color:var(--muted)}
+.bk-coupon-row-item strong{color:var(--fg)}
+.bk-coupon-row-item.discount strong{color:var(--green)}
 
-        .coupon-header h1 {
-            font-size: 24px;
-            color: #333;
-        }
+/* FORM */
+.bk-field-group{margin-bottom:14px}
+.bk-label{display:block;font-size:.73rem;font-weight:600;letter-spacing:.4px;color:var(--muted);margin-bottom:5px;text-transform:uppercase}
+.bk-input{width:100%;background:var(--canvas);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:9px 13px;font-family:'IBM Plex Sans',sans-serif;font-size:.85rem;color:var(--fg);outline:none;transition:border-color .2s,box-shadow .2s}
+.bk-input:focus{border-color:var(--hi);box-shadow:0 0 0 3px rgba(184,84,42,.07)}
+.bk-input::placeholder{color:var(--muted)}
 
-        .coupon-content {
-            text-align: center;
-        }
+/* BUTTONS */
+.bk-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;font-family:'IBM Plex Sans',sans-serif;font-size:.84rem;font-weight:600;border-radius:var(--r-sm);text-decoration:none;cursor:pointer;transition:all .18s;border:1.5px solid transparent;white-space:nowrap}
+.bk-btn-dark{background:var(--fg);color:#fff;border-color:var(--fg)}.bk-btn-dark:hover{background:var(--hi);border-color:var(--hi)}
+.bk-btn-outline{background:none;color:var(--fg);border-color:var(--border)}.bk-btn-outline:hover{border-color:var(--hi);color:var(--hi)}
+.bk-btn-ghost{background:none;border:none;cursor:pointer;color:var(--red);font-size:.78rem;display:flex;align-items:center;gap:5px;padding:3px 8px;border-radius:var(--r-sm);font-family:'IBM Plex Sans',sans-serif}.bk-btn-ghost:hover{background:rgba(185,28,28,.07)}
+.bk-btn-full{width:100%;justify-content:center;padding:13px 20px;font-size:.9rem}
 
-        .coupon-content p {
-            font-size: 16px;
-            color: #555;
-        }
+/* ORDER SUMMARY PANEL */
+.bk-summary{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;position:sticky;top:88px}
+.bk-summary-head{padding:18px 22px;border-bottom:1px solid var(--border);font-family:'Libre Baskerville',serif;font-size:.95rem;font-weight:700;color:var(--fg);display:flex;align-items:center;gap:9px}
+.bk-summary-head i{color:var(--hi);font-size:.85rem}
+.bk-summary-body{padding:4px 0}
+.bk-sum-row{display:flex;align-items:center;justify-content:space-between;padding:10px 22px;font-size:.83rem;border-bottom:1px solid var(--border)}
+.bk-sum-row:last-of-type{border-bottom:none}
+.bk-sum-label{color:var(--muted)}.bk-sum-val{font-weight:600;color:var(--fg)}
+.bk-sum-total{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:var(--fg);color:#fff}
+.bk-sum-total-label{font-size:.85rem;font-weight:600;opacity:.65}
+.bk-sum-total-val{font-family:'Libre Baskerville',serif;font-size:1.3rem;font-weight:700}
+.bk-summary-cta{padding:16px 22px;display:flex;flex-direction:column;gap:10px}
+.bk-secure-note{font-size:.74rem;color:var(--muted);display:flex;align-items:center;gap:5px;justify-content:center}
 
-        .coupon-content h2 {
-            font-size: 32px;
-            color: #ff5733;
-            margin: 10px 0;
-        }
+/* TRUST STRIP */
+.bk-trust{display:flex;gap:14px;padding:0 22px 16px;flex-wrap:wrap}
+.bk-trust-item{display:flex;align-items:center;gap:6px;font-size:.74rem;color:var(--muted)}
+.bk-trust-item i{color:var(--hi);font-size:.78rem}
 
-        #apply-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-        }
+/* EMPTY */
+.bk-empty{text-align:center;padding:48px 20px}
+.bk-empty-icon{font-size:2.8rem;opacity:.2;margin-bottom:12px}
+.bk-empty-title{font-family:'Libre Baskerville',serif;font-size:1rem;color:var(--fg);margin-bottom:5px}
+.bk-empty-sub{font-size:.82rem;color:var(--muted);margin-bottom:18px}
 
-        #apply-btn:hover {
-            background-color: #45a049;
-        }
-    </style>
+/* RESPONSIVE */
+@media(max-width:940px){
+  .bk-checkout{grid-template-columns:1fr;padding:22px 20px 60px}
+  .bk-summary{position:static}
+}
+@media(max-width:520px){
+  .bk-crumb-inner,.bk-steps{padding:0 16px}
+  .bk-step{padding:12px 10px;font-size:.72rem}
+}
+</style>
 </head>
-
 <body>
-    <%-include('../partials/userHeader')-%>
+<%- include('../partials/userHeader') %>
 
-        <div class="mobile-header-active mobile-header-wrapper-style">
-            <div class="mobile-header-wrapper-inner">
-                <div class="mobile-header-top">
-                    <div class="mobile-header-logo">
-                        <a href="index.html"><img src="/public/main-logo (1).png" alt="logo"></a>
-                    </div>
-                    <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
-                        <button class="close-style search-close">
-                            <i class="icon-top"></i>
-                            <i class="icon-bottom"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="mobile-header-content-area">
-                    <div class="mobile-search search-style-3 mobile-header-border">
-                        <form action="#">
-                            <input type="text" placeholder="Search for items…">
-                            <button type="submit"><i class="fi-rs-search"></i></button>
-                        </form>
-                    </div>
-                    <div class="mobile-menu-wrap mobile-header-border">
-                        <div class="main-categori-wrap mobile-header-border">
-                            <a class="categori-button-active-2" href="#">
-                                <span class="fi-rs-apps"></span> Browse Categories
-                            </a>
-                            <div class="categori-dropdown-wrap categori-dropdown-active-small">
-                                <ul>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-dress"></i>Women's
-                                            Clothing</a></li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-tshirt"></i>Men's
-                                            Clothing</a></li>
-                                    <li> <a href="shop-grid-right.html"><i class="evara-font-smartphone"></i>
-                                            Cellphones</a></li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-desktop"></i>Computer &
-                                            Office</a></li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-cpu"></i>Consumer
-                                            Electronics</a></li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-home"></i>Home & Garden</a>
-                                    </li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-high-heels"></i>Shoes</a>
-                                    </li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-teddy-bear"></i>Mother &
-                                            Kids</a></li>
-                                    <li><a href="shop-grid-right.html"><i class="evara-font-kite"></i>Outdoor fun</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- mobile menu start -->
-                        <nav>
-                            <ul class="mobile-menu">
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="index.html">Home</a>
-                                    <ul class="dropdown">
-                                        <li><a href="index.html">Home 1</a></li>
-                                        <li><a href="index-2.html">Home 2</a></li>
-                                        <li><a href="index-3.html">Home 3</a></li>
-                                        <li><a href="index-4.html">Home 4</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="shop-grid-right.html">shop</a>
-                                    <ul class="dropdown">
-                                        <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
-                                        <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>
-                                        <li><a href="shop-list-right.html">Shop List – Right Sidebar</a></li>
-                                        <li><a href="shop-list-left.html">Shop List – Left Sidebar</a></li>
-                                        <li><a href="shop-fullwidth.html">Shop - Wide</a></li>
-                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                                href="#">Single Product</a>
-                                            <ul class="dropdown">
-                                                <li><a href="shop-product-right.html">Product – Right Sidebar</a></li>
-                                                <li><a href="shop-product-left.html">Product – Left Sidebar</a></li>
-                                                <li><a href="shop-product-full.html">Product – No sidebar</a></li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="shop-filter.html">Shop – Filter</a></li>
-                                        <li><a href="shop-wishlist.html">Shop – Wishlist</a></li>
-                                        <li><a href="/cart">Shop – Cart</a></li>
-                                        <li><a href="shop-checkout.html">Shop – Checkout</a></li>
-                                        <li><a href="shop-compare.html">Shop – Compare</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Mega
-                                        menu</a>
-
-                                </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="blog-category-fullwidth.html">Blog</a>
-                                    <ul class="dropdown">
-                                        <li><a href="blog-category-grid.html">Blog Category Grid</a></li>
-                                        <li><a href="blog-category-list.html">Blog Category List</a></li>
-                                        <li><a href="blog-category-big.html">Blog Category Big</a></li>
-                                        <li><a href="blog-category-fullwidth.html">Blog Category Wide</a></li>
-                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                                href="#">Single Product Layout</a>
-                                            <ul class="dropdown">
-                                                <li><a href="blog-post-left.html">Left Sidebar</a></li>
-                                                <li><a href="blog-post-right.html">Right Sidebar</a></li>
-                                                <li><a href="blog-post-fullwidth.html">No Sidebar</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="#">Pages</a>
-                                    <ul class="dropdown">
-                                        <li><a href="page-about.html">About Us</a></li>
-                                        <li><a href="page-contact.html">Contact</a></li>
-                                        <li><a href="page-account.html">My Account</a></li>
-                                        <li><a href="page-login-register.html">login/register</a></li>
-                                        <li><a href="page-purchase-guide.html">Purchase Guide</a></li>
-                                        <li><a href="page-privacy-policy.html">Privacy Policy</a></li>
-                                        <li><a href="page-terms.html">Terms of Service</a></li>
-                                        <li><a href="page-404.html">404 Page</a></li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
-                                        href="#">Language</a>
-                                    <ul class="dropdown">
-                                        <li><a href="#">English</a></li>
-                                        <li><a href="#">French</a></li>
-                                        <li><a href="#">German</a></li>
-                                        <li><a href="#">Spanish</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </nav>
-                        <!-- mobile menu end -->
-                    </div>
-                    <div class="mobile-header-info-wrap mobile-header-border">
-                        <div class="single-mobile-header-info mt-30">
-                            <a href="page-contact.html"> Our location </a>
-                        </div>
-                        <div class="single-mobile-header-info">
-                            <a href="page-login-register.html">Log In / Sign Up </a>
-                        </div>
-                        <div class="single-mobile-header-info">
-                            <a href="#">(+01) - 2345 - 6789 </a>
-                        </div>
-                    </div>
-                    <div class="mobile-social-icon">
-                        <h5 class="mb-15 text-grey-4">Follow Us</h5>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
-                        <a href="#"><img src="/public/assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <main class="main">
-            <div class="page-header breadcrumb-wrap">
-                <div class="container">
-                    <div class="breadcrumb">
-                        <a href="/" rel="nofollow">Home</a>
-                        <span></span> Checkout
-                    </div>
-                </div>
-            </div>
-            <section class="mt-50 mb-50">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-6 mb-sm-15">
-                            <!-- <div class="toggle_info">
-                            <span><i class="fi-rs-user mr-10"></i><span class="text-muted">Already have an account?</span> <a href="#loginform" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to login</a></span>
-                        </div> -->
-                            <div class="panel-collapse collapse login_form" id="loginform">
-                                <div class="panel-body">
-                                    <p class="mb-30 font-sm">If you have shopped with us before, please enter your
-                                        details below. If you are a new customer, please proceed to the Billing &amp;
-                                        Shipping section.</p>
-                                    <form method="post">
-                                        <div class="form-group">
-                                            <input type="text" name="email" placeholder="Username Or Email">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" name="password" placeholder="Password">
-                                        </div>
-                                        <div class="login_footer form-group">
-                                            <div class="chek-form">
-                                                <div class="custome-checkbox">
-                                                    <input class="form-check-input" type="checkbox" name="checkbox"
-                                                        id="remember" value="">
-                                                    <label class="form-check-label" for="remember"><span>Remember
-                                                            me</span></label>
-                                                </div>
-                                            </div>
-                                            <a href="#">Forgot password?</a>
-                                        </div>
-                                        <div class="form-group">
-                                            <button class="btn btn-md" name="login">Log in</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <!-- <div class="toggle_info">
-                            <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your code</a></span>
-                        </div> -->
-
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="divider mt-50 mb-50"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-
-
-                        <div class="col-md-6">
-                            <div class="mb-25">
-                                <h4>Billing Details</h4>
-                            </div>
-                            <form action="/selectAddress" method="post">
-                                <!-- Assuming you're submitting the selected address via a form -->
-                                <% if (addresses && addresses.length> 0) { %>
-                                    <% addresses.forEach((address, index)=> { %>
-                                        <hr>
-                                        <div class="address-container" id="address_<%= address._id %>">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="selectedAddress"
-                                                    id="address_radio_<%= address._id %>" value="<%= address._id %>"
-                                                    <%=addresses.length===1 ? 'checked' : '' %>
-                                                <label class="form-check-label" for="address_radio_<%= address._id %>">
-                                                    <address>
-                                                        Name: <%= address.name %> <br>
-                                                            Housename: <%= address.houseName %><br>
-                                                                City: <%= address.city %>,<br>
-                                                                    State: <%= address.state %>. <br>
-                                                                        Pincode: <%= address.pinCode %>
-                                                    </address>
-                                                    <a class="remove-icon"
-                                                        onclick="removeAddress('<%= address._id %>')"> <i
-                                                            class="fa-solid fa-trash fa-xl"></i></a>
-                                                    <h4><a href="/loadEditAddress?id=<%= address._id %>"
-                                                            class="edit-address" style="color: green;">Edit</a> </h4>
-                                                </label>
-                                            </div>
-                                            <h5></h5>
-                                        </div>
-
-
-                                        <hr>
-                                        <% }); %>
-                                            <% if (addresses.length < 2) { %> <!-- Check if less than two addresses -->
-                                                <div class="address-container">
-                                                    <input type="button" value="Add Address"
-                                                        onclick="window.location.href='/loadAddAddress'"
-                                                        class="add-address"
-                                                        style="background-color:#046963; color: aliceblue; font-weight: bold;">
-                                                </div>
-                                                <% } %>
-                                                    <% } else { %>
-                                                        <p>No address found.</p>
-                                                        <div class="address-container">
-                                                            <input type="button" value="Add Address"
-                                                                onclick="window.location.href='/loadAddAddress'"
-                                                                class="add-address"
-                                                                style="background-color:#046963; color: aliceblue; font-weight: bold;">
-                                                        </div>
-                                                        <% } %>
-                            </form>
-
-                        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        <div class="col-md-6">
-                            <div class="order_review">
-    <div class="mb-20">
-        <h4>Your Orders</h4>
-    </div>
-    <div class="table-responsive order_table text-center">
-    <table class="table" id="cartTable">
-        <thead>
-            <tr>
-                <th colspan="2">Product</th>
-                <th>Total</th>
-                <th>Remove</th>
-            </tr>
-        </thead>
-        <tbody id="cartBody">
-            <% if (locals.cartData && cartData.product.length > 0) { %>
-                <% let total = 0; %>
-                <% for (let i = 0; i < cartData.product.length; i++) { %>
-             <tr id="cartItem-<%= cartData.product[i].productId._id %>">
-    <td class="image product-thumbnail">
-        <img src="/public/uploads/<%= cartData.product[i].productId.Images[0] %>" alt="Product Image">
-    </td>
-    <td>
-        <h5>
-            <a href="shop-product-full.html">
-                <%= cartData.product[i].productId.Bookname %>
-            </a>
-        </h5>
-    </td>
-
-    <!-- Quantity column -->
-    <td class="text-center" data-title="Quantity">
-        <button class="qty-btn qty-down" onclick="decrease('<%= cartData.product[i].productId._id %>')">
-            <i class="fa-solid fa-minus"></i>
-        </button>
-
-        <span class="qty-val" id="quantity_<%= cartData.product[i].productId._id %>">
-            <%= cartData.product[i].quantity %>
-        </span>
-
-        <button class="qty-btn qty-up" onclick="increase('<%= cartData.product[i].productId._id %>')">
-            <i class="fa-solid fa-plus"></i>
-        </button>
-    </td>
-
-    <!-- Price & subtotal -->
-    <td>
-        $<span id="subtotal_<%= cartData.product[i].productId._id %>">
-            <%= (cartData.product[i].productId.saleprice * cartData.product[i].quantity).toFixed(2) %>
-        </span>
-        <span id="saleprice_<%= cartData.product[i].productId._id %>" style="display:none;">
-            <%= cartData.product[i].productId.saleprice.toFixed(2) %>
-        </span>
-    </td>
-
-    <td>
-        <a href="javascript:void(0)" class="text-danger delete-btn" 
-           onclick="deleteProduct('<%= cartData.product[i].productId._id %>')">
-            <i class="fa fa-trash"></i>
-        </a>
-    </td>
-</tr>
-
-
-                    <% total += cartData.product[i].productId.saleprice * cartData.product[i].quantity; %>
-                <% } %>
-
-                <tr>
-                    <th>Total</th>
-                    <td colspan="3" class="product-subtotal">
-                        <span class="font-xl text-brand fw-900" id="GrandTotal">$<%= total.toFixed(2) %></span>
-                    </td>
-                </tr>
-            <% } else { %>
-                <tr><td colspan="4" class="py-5">Your cart is empty.</td></tr>
-            <% } %>
-        </tbody>
-    </table>
+<!-- Breadcrumb -->
+<div class="bk-crumb">
+  <div class="bk-crumb-inner">
+    <a href="/home">Home</a>
+    <span class="bk-crumb-sep"><i class="fas fa-chevron-right"></i></span>
+    <a href="/loadCart">Cart</a>
+    <span class="bk-crumb-sep"><i class="fas fa-chevron-right"></i></span>
+    <span class="bk-crumb-cur">Checkout</span>
+  </div>
 </div>
 
-    <!-- Rest of the code... -->
+<!-- Steps -->
+<div class="bk-steps">
+  <div class="bk-steps-inner">
+    <a href="/loadCart" class="bk-step done"><i class="fas fa-check-circle"></i> Cart</a>
+    <i class="fas fa-chevron-right bk-step-sep"></i>
+    <span class="bk-step active"><i class="fas fa-credit-card"></i> Checkout</span>
+    <i class="fas fa-chevron-right bk-step-sep"></i>
+    <span class="bk-step"><i class="fas fa-box-open"></i> Confirmation</span>
+  </div>
+</div>
 
-    <div class="panel-body">
-        <p class="mb-30 font-sm">
-        <h4>If you have a coupon code, please apply it below.</h4>
-        </p>
+<div class="bk-checkout">
 
-        <div class="form-group">
-            <input type="text" placeholder="Enter Coupon Code..." id="couponCode" />
+  <!-- ── LEFT: Address + Payment ── -->
+  <div class="bk-left">
+
+    <!-- DELIVERY ADDRESS -->
+    <div class="bk-section">
+      <div class="bk-section-head">
+        <div class="bk-section-title"><i class="fas fa-map-pin"></i> Delivery Address</div>
+        <% if (typeof addresses !== 'undefined' && addresses && addresses.length < 2) { %>
+          <a href="/loadAddAddress" class="bk-btn bk-btn-outline" style="padding:6px 14px;font-size:.78rem"><i class="fas fa-plus"></i> Add New</a>
+        <% } %>
+      </div>
+      <div class="bk-section-body">
+        <form action="/selectAddress" method="post" id="addressForm">
+          <% if (typeof addresses !== 'undefined' && addresses && addresses.length > 0) { %>
+            <div class="bk-addr-list">
+              <% addresses.forEach((address, index) => { %>
+                <div class="bk-addr-card <%= addresses.length === 1 ? 'selected' : '' %>" id="addr-card-<%= address._id %>" onclick="selectAddr('<%= address._id %>')">
+                  <input type="radio" name="selectedAddress" id="address_radio_<%= address._id %>" value="<%= address._id %>" <%= addresses.length === 1 ? 'checked' : '' %> style="position:absolute;top:16px;right:16px">
+                  <div class="bk-addr-num">Address <%= index + 1 %></div>
+                  <div class="bk-addr-name"><%= address.name %></div>
+                  <div class="bk-addr-phone"><i class="fas fa-phone-alt" style="font-size:.7rem"></i> <%= address.mobile %></div>
+                  <div class="bk-addr-text"><%= address.houseName %><br><%= address.city %>, <%= address.state %><br><strong>PIN <%= address.pinCode %></strong></div>
+                  <div class="bk-addr-actions">
+                    <a href="/loadEditAddress?id=<%= address._id %>" class="bk-btn bk-btn-outline" style="padding:5px 12px;font-size:.76rem"><i class="fas fa-edit"></i> Edit</a>
+                    <button type="button" class="bk-btn-ghost" onclick="event.stopPropagation();removeAddress('<%= address._id %>')"><i class="fas fa-trash"></i> Remove</button>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } else { %>
+            <div class="bk-empty">
+              <div class="bk-empty-icon"><i class="fas fa-map-marker-alt"></i></div>
+              <div class="bk-empty-title">No delivery address</div>
+              <p class="bk-empty-sub">Add an address to proceed with checkout.</p>
+              <a href="/loadAddAddress" class="bk-btn bk-btn-dark"><i class="fas fa-plus"></i> Add Address</a>
+            </div>
+          <% } %>
+        </form>
+      </div>
+    </div>
+
+    <!-- COUPON -->
+    <div class="bk-section">
+      <div class="bk-section-head">
+        <div class="bk-section-title"><i class="fas fa-tags"></i> Coupon Code</div>
+      </div>
+      <div class="bk-section-body">
+        <div class="bk-coupon-row">
+          <input type="text" class="bk-input" id="couponCode" placeholder="Enter coupon code…" style="text-transform:uppercase">
+          <button class="bk-btn bk-btn-dark" id="applyCouponBtn" onclick="applyCoupon()"><i class="fas fa-check"></i> Apply</button>
         </div>
-        <div class="form-group">
-            <a class="btn mr-10 mb-sm-15" id="applyCouponBtn" onclick="applyCoupon()">Apply
-                Coupon</a>
+        <div class="bk-coupon-applied" id="couponAppliedBox">
+          <div class="bk-coupon-applied-head">
+            <span class="bk-coupon-applied-name" id="couponAppliedName"></span>
+            <button class="bk-btn-ghost" id="removeCouponBtn"><i class="fas fa-times"></i> Remove</button>
+          </div>
+          <div class="bk-coupon-row-item"><span>Subtotal</span><strong id="couponOrigTotal"></strong></div>
+          <div class="bk-coupon-row-item discount"><span>Discount</span><strong id="couponSaving"></strong></div>
+          <div class="bk-coupon-row-item"><span>New Total</span><strong id="couponNewTotal"></strong></div>
         </div>
         <div id="couponNamePlaceholder"></div>
+      </div>
     </div>
 
-
-    <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-    <div class="payment_method">
-        <div class="mb-25">
-            <h5>Payment</h5>
+    <!-- PAYMENT -->
+    <div class="bk-section">
+      <div class="bk-section-head">
+        <div class="bk-section-title"><i class="fas fa-lock"></i> Payment Method</div>
+      </div>
+      <div class="bk-section-body">
+        <div class="bk-pay-opts">
+          <label class="bk-pay-opt" for="pay-razorpay" onclick="selectPay(this)">
+            <input type="radio" name="payment_option" value="Razorpay" id="pay-razorpay">
+            <i class="fas fa-bolt bk-pay-opt-icon" style="color:#3395ff"></i>
+            <span class="bk-pay-opt-label">Razorpay<br><small style="font-weight:400;color:var(--muted)">Cards, UPI, Net Banking</small></span>
+            <span class="bk-pay-opt-badge">Instant</span>
+          </label>
+          <label class="bk-pay-opt" for="pay-wallet" onclick="selectPay(this)">
+            <input type="radio" name="payment_option" value="Wallet" id="pay-wallet">
+            <i class="fas fa-wallet bk-pay-opt-icon" style="color:var(--hi)"></i>
+            <span class="bk-pay-opt-label">BOOKSAW Wallet<br><small style="font-weight:400;color:var(--muted)">Use your wallet balance</small></span>
+          </label>
+          <label class="bk-pay-opt" for="pay-cod" onclick="selectPay(this)">
+            <input type="radio" name="payment_option" value="Cash on delivery" id="pay-cod" id="exampleRadios5">
+            <i class="fas fa-money-bill-wave bk-pay-opt-icon" style="color:var(--green)"></i>
+            <span class="bk-pay-opt-label">Cash on Delivery<br><small style="font-weight:400;color:var(--muted)">Pay when your order arrives</small></span>
+          </label>
         </div>
-        <div class="payment_option">
-
-            <div class="custome-radio">
-                <input class="form-check-input" required="" type="radio"
-                    name="payment_option" value="Razorpay" id="exampleRadios4">
-                <label class="form-check-label" for="exampleRadios4"
-                    data-bs-toggle="collapse" data-target="#checkPayment"
-                    aria-controls="checkPayment">Razorpay</label>
-                <div class="form-group collapse in" id="checkPayment">
-
-                </div>
-            </div>
-
-            <div class="custome-radio">
-                <input class="form-check-input" required="" type="radio"
-                    name="payment_option" value="Wallet" id="exampleRadios6">
-                <label class="form-check-label" for="exampleRadios6"
-                    data-bs-toggle="collapse" data-target="#checkPayment"
-                    aria-controls="checkPayment">Wallet</label>
-                <div class="form-group collapse in" id="checkPayment">
-
-                </div>
-            </div>
-
-
-            <div class="custome-radio">
-                <input class="form-check-input" required="" type="radio"
-                    name="payment_option" value="Cash on delivery" id="exampleRadios5">
-                <label class="form-check-label" for="exampleRadios5"
-                    data-bs-toggle="collapse" data-target="#paypal"
-                    aria-controls="paypal">Cash on Delivery</label>
-                <div class="form-group collapse in" id="paypal">
-                </div>
-            </div>
-            <p id="codMessage" class="text-danger" style="display: none;">COD is not available for this book.</p>
-
-        </div>
-        <button onclick="placeOrder()" class="btn btn-fill-out btn-block mt-30">Place
-            Order</button>
+        <div class="bk-cod-note" id="codMessage"><i class="fas fa-info-circle"></i> COD is not available for orders above ₹1000.</div>
+      </div>
     </div>
-</div>
-                    </div>
+  </div>
+
+  <!-- ── RIGHT: Order Summary ── -->
+  <div class="bk-summary">
+    <div class="bk-summary-head"><i class="fas fa-receipt"></i> Order Summary</div>
+    <div class="bk-summary-body">
+      <% if (locals.cartData && cartData.product && cartData.product.length > 0) { %>
+        <% let total = 0; %>
+        <div style="padding:16px 22px">
+          <% for (let i = 0; i < cartData.product.length; i++) { %>
+            <% const prod = cartData.product[i]; %>
+            <div class="bk-item-row" id="cartItem-<%= prod.productId._id %>">
+              <img class="bk-item-img" src="/public/uploads/<%= prod.productId.Images[0] %>" alt="<%= prod.productId.Bookname %>">
+              <div>
+                <div class="bk-item-name"><%= prod.productId.Bookname %></div>
+                <div class="bk-item-unit">&#8377;<%= prod.productId.saleprice %> each</div>
+                <div class="bk-qty" style="margin-top:8px">
+                  <button type="button" class="bk-qty-btn" onclick="decrease('<%= prod.productId._id %>')"><i class="fas fa-minus" style="font-size:.65rem"></i></button>
+                  <span class="bk-qty-val" id="quantity_<%= prod.productId._id %>"><%= prod.quantity %></span>
+                  <button type="button" class="bk-qty-btn" onclick="increase('<%= prod.productId._id %>')"><i class="fas fa-plus" style="font-size:.65rem"></i></button>
                 </div>
-            </section>
-        </main>
-        <footer class="main">
-            <section class="newsletter p-30 text-white wow fadeIn animated">
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col-lg-7 mb-md-3 mb-lg-0">
-                            <div class="row align-items-center">
-                                <div class="col flex-horizontal-center">
-                                    <!-- <img class="icon-email" src="/public/assets/imgs/theme/icons/icon-email.svg" alt=""> -->
-                                    <!-- <h4 class="font-size-20 mb-0 ml-3">Sign up to Newsletter</h4> -->
-                                </div>
-                                <div class="col my-4 my-md-0 des">
-                                    <!-- <h5 class="font-size-15 ml-4 mb-0">...and receive <strong>$25 coupon for first -->
-                                            <!-- shopping.</strong></h5> -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-5">
-                            <!-- Subscribe Form -->
-                            <form class="form-subcriber d-flex wow fadeIn animated">
-                                <!-- <input type="email" class="form-control bg-white font-small" -->
-                                    <!-- placeholder="Enter your email"> -->
-                                <!-- <button class="btn bg-dark text-white" type="submit">Subscribe</button> -->
-                            </form>
-                            <!-- End Subscribe Form -->
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section class="section-padding footer-mid">
-                <div class="container pt-15 pb-20">
-                    <div class="row">
-                        <div class="col-lg-4 col-md-6">
-                            <div class="widget-about font-md mb-md-5 mb-lg-0">
-                                <div class="logo logo-width-1 wow fadeIn animated">
-                                    <a href="index.html"><img src="/public/main-logo (1).png" alt="logo"></a>
-                                </div>
-                                <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
-                                <p class="wow fadeIn animated">
-                                    <strong>Address: </strong>562 Wellington Road, Street 32, San Francisco
-                                </p>
-                                <p class="wow fadeIn animated">
-                                    <strong>Phone: </strong>+01 2222 365 /(+91) 01 2345 6789
-                                </p>
-                                <p class="wow fadeIn animated">
-                                    <strong>Hours: </strong>10:00 - 18:00, Mon - Sat
-                                </p>
-                                <h5 class="mb-10 mt-30 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
-                                <div class="mobile-social-icon wow fadeIn animated mb-sm-5 mb-md-0">
-                                    <a href="#"><img src="/public/assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                                    <a href="#"><img src="/public/assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                                    <a href="#"><img src="/public/assets/imgs/theme/icons/icon-instagram.svg"
-                                            alt=""></a>
-                                    <a href="#"><img src="/public/assets/imgs/theme/icons/icon-pinterest.svg"
-                                            alt=""></a>
-                                    <a href="#"><img src="/public/assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-2 col-md-3">
-                            <h5 class="widget-title wow fadeIn animated">About</h5>
-                            <ul class="footer-list wow fadeIn animated mb-sm-5 mb-md-0">
-                                <li><a href="#">About Us</a></li>
-                                <li><a href="#">Delivery Information</a></li>
-                                <li><a href="#">Privacy Policy</a></li>
-                                <li><a href="#">Terms &amp; Conditions</a></li>
-                                <li><a href="#">Contact Us</a></li>
-                                <li><a href="#">Support Center</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-2  col-md-3">
-                            <h5 class="widget-title wow fadeIn animated">My Account</h5>
-                            <ul class="footer-list wow fadeIn animated">
-                                <li><a href="#">Sign In</a></li>
-                                <li><a href="#">View Cart</a></li>
-                                <li><a href="#">My Wishlist</a></li>
-                                <li><a href="#">Track My Order</a></li>
-                                <li><a href="#">Help</a></li>
-                                <li><a href="#">Order</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-4">
-                            <h5 class="widget-title wow fadeIn animated">Install App</h5>
-                            <div class="row">
-                                <div class="col-md-8 col-lg-12">
-                                    <p class="wow fadeIn animated">From App Store or Google Play</p>
-                                    <div class="download-app wow fadeIn animated">
-                                        <a href="#" class="hover-up mb-sm-4 mb-lg-0"><img class="active"
-                                                src="/public/assets/imgs/theme/app-store.jpg" alt=""></a>
-                                        <a href="#" class="hover-up"><img
-                                                src="/public/assets/imgs/theme/google-play.jpg" alt=""></a>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-lg-12 mt-md-3 mt-lg-0">
-                                    <p class="mb-20 wow fadeIn animated">Secured Payment Gateways</p>
-                                    <img class="wow fadeIn animated" src="/public/assets/imgs/theme/payment-method.png"
-                                        alt="">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-          
-        </footer>
-        <!-- Preloader Start -->
-        <div id="preloader-active">
-            <div class="preloader d-flex align-items-center justify-content-center">
-                <div class="preloader-inner position-relative">
-                    <div class="text-center">
-                        <h5 class="mb-5">Now Loading</h5>
-                        <div class="loader">
-                            <div class="bar bar1"></div>
-                            <div class="bar bar2"></div>
-                            <div class="bar bar3"></div>
-                        </div>
-                    </div>
-                </div>
+                <span id="saleprice_<%= prod.productId._id %>" style="display:none"><%= prod.productId.saleprice.toFixed(2) %></span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+                <span class="bk-item-subtotal" id="subtotal_<%= prod.productId._id %>">&#8377;<%= (prod.productId.saleprice * prod.quantity).toFixed(2) %></span>
+                <button type="button" class="bk-item-del" onclick="deleteProduct('<%= prod.productId._id %>')" title="Remove"><i class="fas fa-trash"></i></button>
+              </div>
             </div>
+            <% total += prod.productId.saleprice * prod.quantity; %>
+          <% } %>
         </div>
-        <!-- Vendor JS-->
-        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+      <% } else if (locals.product) { %>
+        <div style="padding:16px 22px">
+          <div class="bk-item-row" id="cartItem-<%= product._id %>">
+            <img class="bk-item-img" src="/public/uploads/<%= product.Images && product.Images[0] ? product.Images[0] : '' %>" alt="<%= product.Bookname %>">
+            <div>
+              <div class="bk-item-name"><%= product.Bookname %></div>
+              <div class="bk-item-unit">&#8377;<%= product.saleprice %> each</div>
+              <div class="bk-qty" style="margin-top:8px">
+                <span class="bk-qty-val">1</span>
+              </div>
+              <span id="saleprice_<%= product._id %>" style="display:none"><%= product.saleprice.toFixed(2) %></span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+              <span class="bk-item-subtotal" id="subtotal_<%= product._id %>">&#8377;<%= product.saleprice.toFixed(2) %></span>
+            </div>
+          </div>
+        </div>
+      <% } else { %>
+        <div class="bk-empty" style="padding:36px 20px">
+          <div class="bk-empty-icon"><i class="fas fa-basket-shopping"></i></div>
+          <div class="bk-empty-title">Cart is empty</div>
+          <p class="bk-empty-sub">Add books before checking out.</p>
+          <a href="/loadShop" class="bk-btn bk-btn-dark"><i class="fas fa-compass"></i> Shop</a>
+        </div>
+      <% } %>
+    </div>
 
-        <script>
-          function placeOrder() {
-    const couponCode = document.getElementById('couponCode').value;
+    <% 
+      let checkoutTotal = 0;
+      if (locals.cartData && cartData.product && cartData.product.length > 0) {
+        cartData.product.forEach(p => { checkoutTotal += p.productId.saleprice * p.quantity; });
+      } else if (locals.product) {
+        checkoutTotal = product.saleprice;
+      }
+    %>
+    <!-- Totals -->
+    <div style="padding:0 22px 14px;border-top:1px solid var(--border)">
+      <div class="bk-sum-row"><span class="bk-sum-label">Subtotal</span><span class="bk-sum-val" id="summarySubtotal">&#8377;<%= checkoutTotal.toFixed(2) %></span></div>
+      <div class="bk-sum-row"><span class="bk-sum-label">Shipping</span><span class="bk-sum-val" style="color:var(--green)">Free</span></div>
+      <div class="bk-sum-row" id="discountRow" style="display:none"><span class="bk-sum-label">Coupon discount</span><span class="bk-sum-val" style="color:var(--green)" id="discountVal"></span></div>
+    </div>
+    <div class="bk-sum-total">
+      <span class="bk-sum-total-label">Total</span>
+      <span class="bk-sum-total-val" id="GrandTotal">&#8377;<%= checkoutTotal.toFixed(2) %></span>
+    </div>
+    <div class="bk-summary-cta">
+      <button onclick="placeOrder()" id="placeOrderBtn" class="bk-btn bk-btn-dark bk-btn-full">
+        <i class="fas fa-lock"></i> Place Order
+      </button>
+      <a href="/loadCart" class="bk-btn bk-btn-outline bk-btn-full"><i class="fas fa-arrow-left"></i> Back to Cart</a>
+      <p class="bk-secure-note"><i class="fas fa-shield-halved"></i> Secure &amp; encrypted checkout</p>
+    </div>
+    <div class="bk-trust">
+      <div class="bk-trust-item"><i class="fas fa-rotate-left"></i> Easy Returns</div>
+      <div class="bk-trust-item"><i class="fas fa-truck"></i> Free Shipping</div>
+      <div class="bk-trust-item"><i class="fas fa-headset"></i> 24/7 Support</div>
+    </div>
+  </div>
 
-    console.log("place order worked");
-    let selectedRadioButton = document.querySelector('input[name="payment_option"]:checked');
-    if (!selectedRadioButton) {
-        toastr.info("Please select a Payment Method.");
-        return false; // Prevent the form from being submitted
-    }
-    const selectedRadioButtons = selectedRadioButton.value;
+</div><!-- /bk-checkout -->
 
-    if (!selectedRadioButtons) {
-        toastr.info("Please select a Payment Method.");
-        return false; // Prevent the form from being submitted
-    }
-    const selectedAddress1 = document.querySelector('input[name="selectedAddress"]:checked');
-    if (!selectedAddress1) {
-        toastr.info("Please select an address.");
-        return false; // Prevent the form from being submitted
-    }
+<%- include('../partials/userFooter') %>
 
-    const selectedAddress = selectedAddress1.value;
-    const totalAmountWithSymbol = document.getElementById("GrandTotal").innerText;
-    const totalAmount = parseFloat(totalAmountWithSymbol.replace('$', ''));
-    const orderData = {
-        paymentMethod: selectedRadioButtons,
-        paymentStatus: "Failed",
-        amount: totalAmount,
-        address: selectedAddress,
-        couponCode: couponCode,
-        
-    };
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+/* ── HELPERS ── */
+function parseRupee(s){ return parseFloat(String(s).replace(/[^0-9.]/g,''))||0; }
+function fmtRupee(n){ return '\u20b9'+parseFloat(n).toFixed(2); }
 
-    let url = '';
-    if (selectedRadioButtons === 'Razorpay') {
-        // If payment method is Razorpay, make a fetch request to '/onlinepay' endpoint
+function updateTotalPrice(){
+  let total=0;
+  document.querySelectorAll('[id^="subtotal_"]').forEach(el=>{ total+=parseRupee(el.textContent); });
+  const gt=document.getElementById('GrandTotal');
+  const ss=document.getElementById('summarySubtotal');
+  if(gt) gt.textContent=fmtRupee(total);
+  if(ss) ss.textContent=fmtRupee(total);
+  checkCODAvailability();
+}
 
-        url = '/onlinepay';
-        let orderId =''
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(orderData),
-        })
-        .then((response) => response.json())
-        .then(data => {
-    orderId = data.order.orderId;
-    // Initialize Razorpay checkout with received order details
-    const options = {
-        "key": 'rzp_test_bdVGrcCwlFiIwl', // Replace with your Razorpay key ID
-        "amount": data.order2.amount, // Check if the amount is correct based on your totalAmount
-        "currency": 'INR', // Change the currency to match your requirements
-        "name": 'BOOK-SAW',
-        "description": 'Purchase Description',
-        "image":"/public/spellbook.png",
-        "order_id": data.order2.id,
-        "handler": function (response) {
-            console.log(response, "respossadasd")
-            if (response.razorpay_payment_id) {
-                // If payment is successful, update payment status to "Received"
-                orderData.paymentStatus = "Received";
-                // Save the order again with updated payment status
-                fetch(`/saveOrder?id=${orderId}`, { // Pass the orderId as a query parameter
-                    
-                    method: 'PATCH', 
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({orderId}), // Send updated orderData
-                })
-                .then(() => {
-                    Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        title: "Payment successful!",
-                        showConfirmButton: false,
-                        timer: 2000
-                    }).then(() => {
-                        window.location.href = '/orderSuccess';
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Something went wrong!",
-                    });
-                });
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Payment failed!",
-                    text: "Something went wrong with the payment. Please try again or choose a different payment method.",
-                });
-            }
-            removeItem();
-        },
-        "prefill": {
-            "name": 'Joel',
-            "email": 'joel@example.com',
-            "contact": '9999999999',
-        },
-        "theme": {
-            "color": '#8B008B'
-                        ,"profile_picture": "/public/spellbook.png"
-        },
-    };
-    const razorpayInstance = new Razorpay(options);
-    razorpayInstance.open();
-})
+/* ── ADDRESS SELECTION ── */
+function selectAddr(id){
+  document.querySelectorAll('.bk-addr-card').forEach(c=>c.classList.remove('selected'));
+  const card=document.getElementById('addr-card-'+id);
+  if(card) card.classList.add('selected');
+  const radio=document.getElementById('address_radio_'+id);
+  if(radio) radio.checked=true;
+}
 
-        .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Something went wrong!",
-            });
-        });
-                } else {
-                    // If payment method is not Razorpay, make a fetch request to '/placeorder' endpoint
-                    url = '/placeorder';
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(orderData),
-                    })
-                    .then(response => response.json())
-.then(data => {
-    if (data.message === "Insufficient wallet balance") {
-        Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Insufficient wallet balance!",
-        });
+/* ── PAYMENT SELECTION ── */
+function selectPay(label){
+  document.querySelectorAll('.bk-pay-opt').forEach(l=>l.classList.remove('selected'));
+  label.classList.add('selected');
+}
+
+/* ── QTY ── */
+function increase(productId){
+  const qEl=document.getElementById('quantity_'+productId);
+  const cur=parseInt(qEl.textContent) || 1;
+  fetch('/updateCart',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({productId,quantity:1})})
+  .then(async r=>{
+    const data = await r.json().catch(()=>({}));
+    if(r.ok && data.success !== false){
+      const nextQty = data.newQuantity !== undefined ? data.newQuantity : cur+1;
+      qEl.textContent=nextQty;
+      const sp=parseRupee(document.getElementById('saleprice_'+productId).textContent);
+      document.getElementById('subtotal_'+productId).textContent=fmtRupee(sp*nextQty);
+      updateTotalPrice();
     } else {
-        Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Order Placed",
-            showConfirmButton: false,
-            timer: 2000
-        }).then(() => {
-            window.location.href = '/orderSuccess';
-        });
-        removeItem();
+      toastr.error(data.message || 'Failed to update quantity');
     }
-})
-.catch(error => {
-    console.error('Error:', error);
-    Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong!",
-    });
-});
-                }
-            }
-
-            function removeItem() {
-                fetch('/clearCart', {
-                    method: 'delete',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({}),
-                })
-                    .then(response => {
-                        // Handle the response if needed
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            }
-
-function updateTotalPrice() {
-    let total = 0;
-    const cartRows = document.querySelectorAll('#cartBody tr[id^="cartItem-"]');
-
-    cartRows.forEach(row => {
-        // Target the *fourth* td for the subtotal (image=1, name=2, quantity=3, subtotal=4, delete=5)
-        const priceCell = row.querySelector('td:nth-child(4)');
-        if (priceCell) {
-            // Extract the text from the subtotal span inside
-            const subtotalSpan = priceCell.querySelector('span[id^="subtotal_"]');
-            if (subtotalSpan) {
-                const priceText = subtotalSpan.textContent.replace('$', '').trim();
-                const price = parseFloat(priceText);
-                if (!isNaN(price)) {
-                    total += price;
-                }
-            }
-        }
-    });
-
-    const totalElement = document.getElementById('GrandTotal');
-    if (totalElement) {
-        totalElement.innerText = `$${total.toFixed(2)}`;
+  }).catch(e=>toastr.error('Error: '+e.message));
+}
+function decrease(productId){
+  const qEl=document.getElementById('quantity_'+productId);
+  const cur=parseInt(qEl.textContent) || 1;
+  if(cur<=1){toastr.warning('Minimum quantity is 1.');return;}
+  fetch('/updateCart',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({productId,quantity:-1})})
+  .then(async r=>{
+    const data = await r.json().catch(()=>({}));
+    if(r.ok && data.success !== false){
+      const nextQty = data.newQuantity !== undefined ? data.newQuantity : cur-1;
+      qEl.textContent=nextQty;
+      const sp=parseRupee(document.getElementById('saleprice_'+productId).textContent);
+      document.getElementById('subtotal_'+productId).textContent=fmtRupee(sp*nextQty);
+      updateTotalPrice();
+    } else {
+      toastr.error(data.message || 'Failed to update quantity');
     }
-
-    // Disable checkout if total = 0
-    const checkoutButton = document.querySelector('.btn.btn-fill-out.btn-block.mt-30');
-    if (checkoutButton) {
-        if (total <= 0) {
-            checkoutButton.disabled = true;
-            checkoutButton.style.opacity = '0.5';
-            checkoutButton.style.cursor = 'not-allowed';
-        } else {
-            checkoutButton.disabled = false;
-            checkoutButton.style.opacity = '1';
-            checkoutButton.style.cursor = 'pointer';
-        }
-    }
+  }).catch(e=>toastr.error('Error: '+e.message));
 }
 
-async function deleteProduct(productId) {
+/* ── DELETE FROM CART ── */
+async function deleteProduct(productId){
+  try{
+    const r=await fetch('/removeItem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({productId})});
+    const data=await r.json().catch(()=>({}));
+    if(r.ok && data.success !== false){ const row=document.getElementById('cartItem-'+productId); if(row)row.remove(); updateTotalPrice(); toastr.success('Item removed.'); }
+    else toastr.error(data.message || 'Failed to remove item.');
+  }catch(e){toastr.error('Error: '+e.message);}
+}
+
+/* ── REMOVE ADDRESS ── */
+function removeAddress(addressId){
+  const el=document.getElementById('addr-card-'+addressId);
+  if(el)el.remove();
+  fetch('/removeAddress',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({addressId})})
+  .catch(e=>console.error(e));
+}
+
+/* ── COD CHECK ── */
+function checkCODAvailability(){
+  const total=parseRupee(document.getElementById('GrandTotal').textContent);
+  const codMsg=document.getElementById('codMessage');
+  const codRadio=document.getElementById('pay-cod');
+  if(total>=1000){
+    if(codRadio)codRadio.disabled=true;
+    if(codMsg)codMsg.style.display='flex';
+  }else{
+    if(codRadio)codRadio.disabled=false;
+    if(codMsg)codMsg.style.display='none';
+  }
+}
+
+/* ── COUPON ── */
+let _couponCode='';
+async function applyCoupon(){
+  const couponCode=document.getElementById('couponCode').value.trim();
+  if(!couponCode){toastr.warning('Enter a coupon code.');return;}
+  const grandTotalEl=document.getElementById('GrandTotal');
+  const selectedAmount=parseRupee(grandTotalEl.textContent);
+  try{
+    const r=await fetch('/applyCoupon',{method:'post',headers:{'Content-Type':'application/json'},body:JSON.stringify({couponCode,selectedAmount})});
+    if(!r.ok)throw new Error('Failed.');
+    const data=await r.json();
+    if(data.used){toastr.error(data.message);return;}
+    if(data.success){
+      toastr.success(data.message);
+      _couponCode=couponCode;
+      const orig=selectedAmount;
+      const saving=parseFloat(data.discountAmount) || 0;
+      const newTotal=Math.max(0, orig - saving);
+      grandTotalEl.textContent=fmtRupee(newTotal);
+      document.getElementById('couponCode').readOnly=true;
+      /* styled breakdown box */
+      const discPct = data.discountPercent ? ' ('+data.discountPercent+'% off)' : '';
+      document.getElementById('couponAppliedName').textContent=(data.couponName || couponCode)+discPct;
+      document.getElementById('couponOrigTotal').textContent=fmtRupee(orig);
+      document.getElementById('couponSaving').textContent='-'+fmtRupee(saving);
+      document.getElementById('couponNewTotal').textContent=fmtRupee(newTotal);
+      document.getElementById('couponAppliedBox').style.display='block';
+      /* summary discount row */
+      document.getElementById('discountVal').textContent='-'+fmtRupee(saving);
+      document.getElementById('discountRow').style.display='flex';
+    }else{toastr.error(data.message);}
+  }catch(e){console.error(e);toastr.error('Error applying coupon.');}
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const removeBtn=document.getElementById('removeCouponBtn');
+  if(removeBtn)removeBtn.addEventListener('click', async ()=>{
+    const code=_couponCode||document.getElementById('couponCode').value;
     try {
-        const response = await fetch('/removeItem', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ productId })
-        });
+      await fetch('/removeCoupon',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({couponCode:code})});
+    } catch(e){}
+    location.reload();
+  });
+  checkCODAvailability();
+});
 
-        if (response.ok) {
-            // Select row dynamically using productId
-            const row = document.getElementById(`cartItem-${productId}`);
-            console.log(row,"kittyo ??")
-            if (row) row.remove();
+/* ── PLACE ORDER ── */
+function placeOrder(){
+  const couponCode=_couponCode || '';
+  const payRadio=document.querySelector('input[name="payment_option"]:checked');
+  if(!payRadio){toastr.info('Please select a payment method.');return;}
+  const addrRadio=document.querySelector('input[name="selectedAddress"]:checked');
+  if(!addrRadio){toastr.info('Please select a delivery address.');return;}
+  const payMethod=payRadio.value;
+  const selectedAddress=addrRadio.value;
+  const totalAmount=parseRupee(document.getElementById('GrandTotal').textContent);
+  const orderData={paymentMethod:payMethod,paymentStatus:'Failed',amount:totalAmount,address:selectedAddress,couponCode};
 
-            // Update total after removing item
-            updateTotalPrice();
-            console.log('✅ Product removed successfully');
-        } else {
-            console.error('❌ Failed to remove product');
-        }
-    } catch (error) {
-        console.error('⚠️ Error:', error);
-    }
-}
-            
-        </script>
-
-
-
-
-
-
-
-
-
-
-
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
-        <script>
-            const placeOrderBtn = document.getElementById('placeOrderBtn');
-
-            placeOrderBtn.addEventListener('click', function (event) {
-                event.preventDefault();
-                placeOrder(); // Call placeOrder function instead of displaying SweetAlert2
-            });
-        </script>
-
-        <script>
-
-            function increase(productId) {
-    const quantityElement = document.getElementById(`quantity_${productId}`);
-    const currentQuantity = parseInt(quantityElement.textContent);
-
-    fetch('/updateCart', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId, quantity: 1 }) // increase by 1
-    })
-    .then(res => {
-        if (res.ok) {
-            // Update quantity
-            quantityElement.textContent = currentQuantity + 1;
-
-            // Update subtotal
-            const salePrice = parseFloat(document.getElementById(`saleprice_${productId}`).textContent);
-            const subtotalElement = document.getElementById(`subtotal_${productId}`);
-            subtotalElement.textContent = `$${((currentQuantity + 1) * salePrice).toFixed(2)}`;
-
-            // Update grand total
-            updateTotalPrice();
-        }
-    }).catch(err => console.error(err));
+  if(payMethod==='Razorpay'){
+    let orderId='';
+    fetch('/onlinepay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(orderData)})
+    .then(r=>r.json()).then(data=>{
+      orderId=data.order.orderId;
+      const opts={
+        key:'rzp_test_bdVGrcCwlFiIwl',amount:data.order2.amount,currency:'INR',
+        name:'BOOKSAW',description:'Book Purchase',image:'/public/spellbook.png',
+        order_id:data.order2.id,
+        handler:function(resp){
+          if(resp.razorpay_payment_id){
+            orderData.paymentStatus='Received';
+            fetch('/saveOrder?id='+orderId,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId})})
+            .then(()=>{ Swal.fire({icon:'success',title:'Payment successful!',showConfirmButton:false,timer:2000}).then(()=>window.location.href='/orderSuccess'); })
+            .catch(()=>Swal.fire({icon:'error',title:'Error saving order'}));
+          }else{Swal.fire({icon:'error',title:'Payment failed!'});}
+          clearCart();
+        },
+        prefill:{name:'Customer',email:'customer@booksaw.com',contact:'9999999999'},
+        theme:{color:'#2d2820'}
+      };
+      new Razorpay(opts).open();
+    }).catch(()=>Swal.fire({icon:'error',title:'Oops!',text:'Something went wrong.'}));
+  } else {
+    fetch('/placeorder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(orderData)})
+    .then(r=>r.json()).then(data=>{
+      if(data.message==='Insufficient wallet balance'){
+        Swal.fire({icon:'error',title:'Oops!',text:'Insufficient wallet balance!'});
+      }else{
+        Swal.fire({icon:'success',title:'Order Placed!',showConfirmButton:false,timer:2000}).then(()=>window.location.href='/orderSuccess');
+        clearCart();
+      }
+    }).catch(()=>Swal.fire({icon:'error',title:'Oops!',text:'Something went wrong.'}));
+  }
 }
 
-function decrease(productId) {
-    const quantityElement = document.getElementById(`quantity_${productId}`);
-    const currentQuantity = parseInt(quantityElement.textContent);
-
-    if (currentQuantity <= 1) return; // can't go below 1
-
-    fetch('/updateCart', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId, quantity: -1 }) // decrease by 1
-    })
-    .then(res => {
-        if (res.ok) {
-            // Update quantity
-            quantityElement.textContent = currentQuantity - 1;
-
-            // Update subtotal
-            const salePrice = parseFloat(document.getElementById(`saleprice_${productId}`).textContent);
-            const subtotalElement = document.getElementById(`subtotal_${productId}`);
-            subtotalElement.textContent = `$${((currentQuantity - 1) * salePrice).toFixed(2)}`;
-
-            // Update grand total
-            updateTotalPrice();
-        }
-    }).catch(err => console.error(err));
+function clearCart(){
+  fetch('/clearCart',{method:'delete',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}).catch(e=>console.error(e));
 }
-
-            function removeAddress(addressId) {
-                const addressElement = document.getElementById('address_' + addressId);
-                if (addressElement) {
-                    addressElement.parentNode.removeChild(addressElement);
-                    console.log('Address removed successfully');
-                    fetch('/removeAddress', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ addressId })
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                console.error('Failed to remove address');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                } else {
-                    console.error('Address element not found');
-                }
-            }
-        </script>
-
-        <script>
-            async function applyCoupon() {
-                const couponCode = document.getElementById('couponCode').value;
-                const grandTotalElement = document.getElementById('GrandTotal');
-                const selectedAmountText = grandTotalElement.innerText;
-                const selectedAmount = parseFloat(selectedAmountText.replace('$', '')); // Extract numeric value
-
-                console.log(selectedAmount, "odi vvannitend")
-                try {
-                    const couponCodeInput = document.getElementById('couponCode');
-                    const selectedAmountInput = document.getElementById('GrandTotal');
-
-                    const response = await fetch('/applyCoupon', {
-                        method: 'post',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ couponCode, selectedAmount })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Failed to apply coupon.');
-                    }
-
-                    const data = await response.json();
-                    if (data.used) {
-                        toastr.error(data.message);
-                    }
-                    if (data.success) {
-    toastr.success(data.message);
-    const couponName = data.couponName;
-    const discountAmount = data.discountAmount; // This is percentage, e.g., "20"
-    const originalTotal = parseFloat(document.getElementById('GrandTotal').innerText.replace('$', ''));
-    const discountPercent = parseFloat(discountAmount) / 100;
-    const actualDiscount = originalTotal * discountPercent; // Actual $ savings
-    const discountedTotal = originalTotal * (1 - discountPercent);
-    
-    // Update the grand total display (for order calc)
-    document.getElementById('GrandTotal').innerText = '$' + discountedTotal.toFixed(2);
-    couponCodeInput.readOnly = true;
-    
-    // Enhanced breakdown in placeholder
-    document.getElementById('couponNamePlaceholder').innerHTML = `
-        <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px;">
-            <strong>Coupon Applied(${discountAmount}% off)</strong>
-            <hr style="margin: 5px 0;">
-            <p><small>Subtotal: <span style="font-weight: bold;">$${originalTotal.toFixed(2)}</span></small></p>
-            <p style="color: #28a745;"><small>Discount: -<span style="font-weight: bold;">$${actualDiscount.toFixed(2)}</span></small></p>
-            <hr style="margin: 5px 0;">
-            <p><small>Total: <span style="font-weight: bold; color: #dc3545;">$${discountedTotal.toFixed(2)}</span></small></p>
-            <button id="removeCouponBtn" style="background: none; border: none; cursor: pointer; float: right; color: #dc3545;">
-                <i class="fas fa-times"></i> Remove
-            </button>
-        </div>
-    `;
-    
-    // Event listener for remove (unchanged, but now with styled button)
-    document.getElementById('removeCouponBtn').addEventListener('click', function () {
-        fetch('/removeCoupon', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ couponCode }),
-        })
-        .then(response => {
-            if (response.ok) {
-                location.reload(); // Resets to original totals
-            } else {
-                console.error('Failed to remove coupon');
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    });
-} else {
-    toastr.error(data.message);
-}
-
-                } catch (error) {
-                    console.error('Error applying coupon:', error);
-                    // Handle error display or logging
-                }
-            }
-
-        </script>
-  <script>
-
-    // Function to check if Cash on Delivery should be disabled and show message
-    function checkCODAvailability() {
-        var total = parseFloat(document.getElementById('GrandTotal').innerText.replace('$', ''));
-        var codRadio = document.getElementById('exampleRadios5');
-        var codMessage = document.getElementById('codMessage'); // Get the message element
-        
-        // Check if total is greater than or equal to the threshold
-        if (total >= 10) {
-            codRadio.disabled = true; // Disable COD option
-            codMessage.style.display = 'block'; // Show the message
-        } else {
-            codRadio.disabled = false; // Enable COD option
-            codMessage.style.display = 'none'; // Hide the message
-        }
-    }
-
-    // Call the function initially and whenever the total changes
-    window.onload = function() {
-        checkCODAvailability();
-    };
 </script>
-
-
-    
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-        <script src="/public/assets/js/vendor/modernizr-3.6.0.min.js"></script>
-        <script src="/public/assets/js/vendor/jquery-3.6.0.min.js"></script>
-        <script src="/public/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
-        <script src="/public/assets/js/vendor/bootstrap.bundle.min.js"></script>
-        <script src="/public/assets/js/plugins/slick.js"></script>
-        <script src="/public/assets/js/plugins/jquery.syotimer.min.js"></script>
-        <script src="/public/assets/js/plugins/wow.js"></script>
-        <script src="/public/assets/js/plugins/jquery-ui.js"></script>
-        <script src="/public/assets/js/plugins/perfect-scrollbar.js"></script>
-        <script src="/public/assets/js/plugins/magnific-popup.js"></script>
-        <script src="/public/assets/js/plugins/select2.min.js"></script>
-        <script src="/public/assets/js/plugins/waypoints.js"></script>
-        <script src="/public/assets/js/plugins/counterup.js"></script>
-        <script src="/public/assets/js/plugins/jquery.countdown.min.js"></script>
-        <script src="/public/assets/js/plugins/images-loaded.js"></script>
-        <script src="/public/assets/js/plugins/isotope.js"></script>
-        <script src="/public/assets/js/plugins/scrollup.js"></script>
-        <script src="/public/assets/js/plugins/jquery.vticker-min.js"></script>
-        <!-- Template  JS -->
-        <script src="/public/assets/js/maind134.js?v=3.4"></script>
-        <script src="/public/assets/js/shopd134.js?v=3.4"></script>
 </body>
-
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-frontend/shop-checkout.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Jul 2023 10:10:07 GMT -->
-
 </html>

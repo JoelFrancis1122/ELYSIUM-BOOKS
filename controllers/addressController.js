@@ -1,8 +1,21 @@
 import Address from "../models/addressModel.js";
+import User from "../models/userModel.js";
+import Cart from "../models/cartModel.js";
+import Wishlist from "../models/wishlistModel.js";
 
 const loadAddAddress = async (req, res) => {
   try {
-    res.render("addAddress");
+    const userId = req.session.user;
+    const [userData, cartData, wishlistData] = await Promise.all([
+      User.findById(userId),
+      Cart.findOne({ userId }),
+      Wishlist.findOne({ userId })
+    ]);
+    res.render("addAddress", {
+      name: userData?.name ?? null,
+      cartLength: cartData ? cartData.product.length : 0,
+      wishlistLength: wishlistData ? wishlistData.product.length : 0,
+    });
   } catch (error) {
     console.error(error);
   }
@@ -51,8 +64,18 @@ const addAddress1 = async (req, res) => {
 const loadEditAddress = async (req, res) => {
   try {
     const userId = req.session.user;
-    const addressData = await Address.findById(req.query.id);
-    res.render("editAddress", { addresses: addressData });
+    const [addressData, userData, cartData, wishlistData] = await Promise.all([
+      Address.findById(req.query.id),
+      User.findById(userId),
+      Cart.findOne({ userId }),
+      Wishlist.findOne({ userId })
+    ]);
+    res.render("editAddress", {
+      addresses: addressData,
+      name: userData?.name ?? null,
+      cartLength: cartData ? cartData.product.length : 0,
+      wishlistLength: wishlistData ? wishlistData.product.length : 0,
+    });
   } catch (error) {
     console.error(error);
   }
@@ -61,8 +84,18 @@ const loadEditAddress = async (req, res) => {
 const loadEditAddress1 = async (req, res) => {
   try {
     const userId = req.session.user;
-    const addressData = await Address.findById(req.query.id);
-    res.render("editAddressProfile", { addresses: addressData });
+    const [addressData, userData, cartData, wishlistData] = await Promise.all([
+      Address.findById(req.query.id),
+      User.findById(userId),
+      Cart.findOne({ userId }),
+      Wishlist.findOne({ userId })
+    ]);
+    res.render("editAddressProfile", {
+      addresses: addressData,
+      name: userData?.name ?? null,
+      cartLength: cartData ? cartData.product.length : 0,
+      wishlistLength: wishlistData ? wishlistData.product.length : 0,
+    });
   } catch (error) {
     console.error(error);
   }

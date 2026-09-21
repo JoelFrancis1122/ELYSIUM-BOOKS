@@ -1,231 +1,738 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>BOOKSAW Invoice</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<html class="no-js" lang="en">
 
-  <link rel="icon" href="/public/spellbook.png" />
+<head>
+  <meta charset="utf-8">
+  <title>Tax Invoice #<%= orders ? orders.orderId : '' %> — BOOKSAW</title>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="description" content="Official tax invoice from BOOKSAW Booksellers">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
+
+  <!-- Google Fonts: Warm Literary Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- CSS Framework & Icons -->
+  <link rel="stylesheet" href="/public/assets/css/maind134.css?v=3.4">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <style>
-    body {
-      background: #f4f6f8;
+    /* ============================================================
+       BOOKSAW TAX INVOICE — WARM LITERARY DESIGN SYSTEM
+       Harmonized with Home, Shop, and Order Details
+       ============================================================ */
+    :root {
+      --canvas: #f5f0e8;
+      --bg: #faf8f4;
+      --fg: #2d2820;
+      --hi: #b8542a;
+      --hi-light: #d4673a;
+      --muted: #7a6f60;
+      --border: #ddd8ce;
+      --card: #ffffff;
+      --green: #16a34a;
+      --red: #b91c1c;
+      --r-sm: 8px;
+      --r-md: 14px;
+      --r-lg: 20px;
+      --shadow-sm: 0 2px 8px rgba(45, 40, 32, 0.06);
+      --shadow-md: 0 10px 32px rgba(45, 40, 32, 0.09);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
+      padding: 0;
     }
 
-    /* ACTION BUTTONS */
-    .invoice-actions {
-      text-align: center;
-      margin: 20px 0;
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--canvas);
+      color: var(--fg);
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    .invoice-actions button {
+    /* ── BREADCRUMB ── */
+    .bk-crumb {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+    }
+    .bk-crumb-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+    .bk-crumb-inner a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .bk-crumb-inner a:hover {
+      color: var(--hi);
+    }
+    .bk-crumb-sep {
+      font-size: .65rem;
+      color: var(--border);
+    }
+    .bk-crumb-cur {
+      color: var(--fg);
+      font-weight: 600;
+    }
+
+    /* ── INVOICE WRAPPER ── */
+    .bk-invoice-wrap {
+      max-width: 900px;
+      margin: 36px auto 80px;
+      padding: 0 24px;
+    }
+
+    /* ── TOOLBAR ── */
+    .bk-invoice-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .bk-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .bk-toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bk-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 10px 18px;
-      border-radius: 6px;
-      border: none;
-      background: #2563eb;
-      color: #fff;
-      font-size: 14px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .84rem;
+      font-weight: 600;
+      border-radius: var(--r-sm);
+      text-decoration: none;
       cursor: pointer;
-      margin: 0 6px;
+      transition: all .18s;
+      border: 1.5px solid transparent;
+      white-space: nowrap;
+    }
+    .bk-btn-primary {
+      background: var(--hi);
+      color: #fff;
+      border-color: var(--hi);
+      box-shadow: 0 3px 12px rgba(184, 84, 42, 0.22);
+    }
+    .bk-btn-primary:hover {
+      background: var(--hi-light);
+      border-color: var(--hi-light);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .bk-btn-outline {
+      background: #fff;
+      color: var(--fg);
+      border-color: var(--border);
+    }
+    .bk-btn-outline:hover {
+      border-color: var(--hi);
+      color: var(--hi);
+      background: rgba(184, 84, 42, 0.04);
     }
 
-    /* INVOICE */
-    #invoice {
+    /* ── INVOICE PAPER SHEET ── */
+    #invoiceDoc {
       background: #ffffff;
-      max-width: 800px;
-      margin: auto;
-      padding: 40px;
-      color: #000;
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-md);
+      padding: 48px 52px;
+      position: relative;
     }
 
-    .invoice-header {
+    /* Invoice Header Top */
+    .bk-inv-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 26px;
+      margin-bottom: 30px;
+      gap: 20px;
+    }
+    .bk-inv-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .bk-inv-logo {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+    }
+    .bk-inv-tagline {
+      font-size: .82rem;
+      color: var(--muted);
+      letter-spacing: .3px;
+    }
+    .bk-inv-gst {
+      font-size: .75rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .bk-inv-meta {
+      text-align: right;
+    }
+    .bk-inv-meta h1 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .bk-inv-ordernum {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--hi);
+      margin-bottom: 4px;
+    }
+    .bk-inv-date {
+      font-size: .82rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    /* Status Pills */
+    .bk-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    .bk-pill-recv { background: rgba(22, 163, 74, 0.12); color: #16a34a; }
+    .bk-pill-pend { background: rgba(217, 119, 6, 0.12); color: #d97706; }
+    .bk-pill-fail { background: rgba(185, 28, 28, 0.12); color: #b91c1c; }
+    .bk-pill-ref  { background: rgba(124, 58, 237, 0.12); color: #7c3aed; }
+    .bk-pill-del  { background: rgba(22, 163, 74, 0.12); color: #16a34a; }
+
+    /* ── TWO-COLUMN ENTITY GRID ── */
+    .bk-inv-addresses {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .bk-inv-addr-block h3 {
+      font-size: .76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      color: var(--hi);
+      margin-bottom: 10px;
+    }
+    .bk-inv-addr-block .name {
+      font-family: 'Libre Baskerville', serif;
+      font-size: .98rem;
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 4px;
+    }
+    .bk-inv-addr-block .details {
+      font-size: .84rem;
+      color: var(--fg);
+      line-height: 1.6;
+    }
+    .bk-inv-addr-block .phone {
+      font-size: .82rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── ITEMS TABLE ── */
+    .bk-inv-table-wrap {
+      overflow-x: auto;
+      margin-bottom: 28px;
+    }
+    .bk-inv-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .bk-inv-table th {
+      background: var(--canvas);
+      padding: 12px 14px;
+      font-size: .76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--fg);
+      border-top: 1px solid var(--border);
+      border-bottom: 2px solid var(--border);
+    }
+    .bk-inv-table td {
+      padding: 14px;
+      font-size: .86rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .bk-inv-table th:last-child,
+    .bk-inv-table td:last-child {
+      text-align: right;
+    }
+    .bk-inv-table th:nth-child(3),
+    .bk-inv-table td:nth-child(3),
+    .bk-inv-table th:nth-child(4),
+    .bk-inv-table td:nth-child(4) {
+      text-align: center;
+    }
+
+    .bk-item-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .bk-item-thumb {
+      width: 38px;
+      height: 52px;
+      border-radius: 4px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+      background: var(--canvas);
+      flex-shrink: 0;
+    }
+    .bk-item-name {
+      font-family: 'Libre Baskerville', serif;
+      font-weight: 700;
+      color: var(--fg);
+      font-size: .88rem;
+      line-height: 1.35;
+    }
+
+    /* Cancelled Row styling */
+    .bk-item-cancelled {
+      background: rgba(185, 28, 28, 0.03);
+    }
+    .bk-item-cancelled .bk-item-name {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    /* ── TOTALS & SUMMARY ── */
+    .bk-inv-bottom {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 30px;
+      margin-top: 10px;
+      align-items: start;
+    }
+    .bk-inv-notes {
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .bk-inv-notes strong {
+      color: var(--fg);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .bk-inv-calc {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      overflow: hidden;
+    }
+    .bk-calc-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid #e5e7eb;
-      padding-bottom: 20px;
-      margin-bottom: 30px;
+      padding: 10px 18px;
+      font-size: .85rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .bk-calc-row:last-of-type {
+      border-bottom: none;
+    }
+    .bk-calc-label {
+      color: var(--muted);
+    }
+    .bk-calc-val {
+      font-weight: 600;
+      color: var(--fg);
+    }
+    .bk-calc-val.green {
+      color: var(--green);
     }
 
-    .invoice-header img {
-      width: 120px;
+    .bk-calc-total {
+      background: var(--fg);
+      color: #fff;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .bk-calc-total .label {
+      font-size: .86rem;
+      font-weight: 600;
+      opacity: .8;
+    }
+    .bk-calc-total .amount {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
     }
 
-    .invoice-title {
-      text-align: right;
-    }
-
-    .invoice-title h2 {
-      margin: 0;
-    }
-
-    .invoice-info p {
-      margin: 4px 0;
-      font-size: 14px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    table thead {
-      background: #f1f5f9;
-    }
-
-    table th,
-    table td {
-      padding: 12px;
-      border: 1px solid #e5e7eb;
-      font-size: 14px;
-    }
-
-    table td:last-child,
-    table th:last-child {
-      text-align: right;
-    }
-
-    /* CANCELLED ROW */
-    .cancelled {
-      text-decoration: line-through;
-      color: #9ca3af;
-    }
-
-    .cancelled td::after {
-      content: " (Cancelled)";
-      color: #ef4444;
-      font-weight: bold;
-    }
-
-    .total-section {
-      text-align: right;
-      margin-top: 20px;
-    }
-
-    .invoice-footer {
+    /* ── FOOTER SIGN-OFF ── */
+    .bk-inv-foot {
       margin-top: 40px;
-      font-size: 13px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
       text-align: center;
-      color: #6b7280;
+      font-size: .8rem;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .bk-inv-foot-heart {
+      color: var(--hi);
     }
 
-    /* PRINT RULES */
+    /* ── PRINT STYLES ── */
     @media print {
-      body * {
-        visibility: hidden;
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
       }
-
-      #invoice,
-      #invoice * {
-        visibility: visible;
-      }
-
-      #invoice {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-      }
-
-      .invoice-actions {
+      .bk-crumb,
+      .bk-invoice-toolbar,
+      .bk-header,
+      #bk-site-header,
+      footer.main,
+      .bk-drawer {
         display: none !important;
+      }
+      .bk-invoice-wrap {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      #invoiceDoc {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 20px 24px !important;
+        border-radius: 0 !important;
+      }
+      .bk-inv-table th {
+        background: #f5f5f5 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .bk-calc-total {
+        background: #2d2820 !important;
+        color: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .bk-invoice-wrap {
+        padding: 0 16px;
+        margin-top: 20px;
+      }
+      #invoiceDoc {
+        padding: 24px 20px;
+      }
+      .bk-inv-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .bk-inv-meta {
+        text-align: left;
+      }
+      .bk-inv-addresses {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+      .bk-inv-bottom {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 
 <body>
+  <!-- Shared Header -->
+  <%- include('../partials/userHeader') %>
 
-  <!-- ACTION BUTTONS -->
-  <div class="invoice-actions">
-    <button onclick="window.print()">Print</button>
-    <button id="downloadPdf">Download PDF</button>
+  <!-- Breadcrumb -->
+  <div class="bk-crumb">
+    <div class="bk-crumb-inner">
+      <a href="/home">Home</a>
+      <span class="bk-crumb-sep"><i class="fas fa-chevron-right"></i></span>
+      <a href="/loadProfile">My Account</a>
+      <span class="bk-crumb-sep"><i class="fas fa-chevron-right"></i></span>
+      <% if (orders) { %>
+        <a href="/loadOrderDetails?id=<%= orders._id %>">Order #<%= orders.orderId %></a>
+        <span class="bk-crumb-sep"><i class="fas fa-chevron-right"></i></span>
+      <% } %>
+      <span class="bk-crumb-cur">Tax Invoice</span>
+    </div>
   </div>
 
-  <!-- INVOICE -->
-  <div id="invoice">
-
-    <div class="invoice-header">
-      <img src="/public/main-logo (1).png" alt="BOOKSAW Logo" />
-
-      <div class="invoice-title">
-        <h2>INVOICE</h2>
-        <p>Order ID: <%= orders.orderId %></p>
-        <p>Date: <%= orders.orderDate.toLocaleString() %></p>
+  <div class="bk-invoice-wrap">
+    <% if (orders) { %>
+      <!-- Top Action Toolbar -->
+      <div class="bk-invoice-toolbar">
+        <div class="bk-toolbar-left">
+          <a href="/loadOrderDetails?id=<%= orders._id %>" class="bk-btn bk-btn-outline">
+            <i class="fas fa-arrow-left"></i> Back to Order Details
+          </a>
+        </div>
+        <div class="bk-toolbar-right">
+          <button type="button" class="bk-btn bk-btn-outline" onclick="window.print()">
+            <i class="fas fa-print"></i> Print Invoice
+          </button>
+          <button type="button" class="bk-btn bk-btn-primary" id="downloadPdfBtn">
+            <i class="fas fa-file-pdf"></i> Download PDF
+          </button>
+        </div>
       </div>
-    </div>
 
-    <div class="invoice-info">
-      <p><strong>Billed To:</strong></p>
-      <p><%= address.name %></p>
-      <p>Phone: <%= address.mobile %></p>
-    </div>
+      <!-- INVOICE PAPER DOCUMENT -->
+      <div id="invoiceDoc">
 
-    <table>
-      <thead>
-        <tr>
-          <th>Book Name</th>
-          <th>Unit Price</th>
-          <th>Quantity</th>
-          <th>Total</th>
-        </tr>
-      </thead>
+        <!-- Header -->
+        <div class="bk-inv-head">
+          <div class="bk-inv-brand">
+            <img class="bk-inv-logo" src="/public/main-logo (1).png" alt="BOOKSAW Booksellers">
+            <span class="bk-inv-tagline">Curators of Fine Literature & Bestsellers</span>
+            <div class="bk-inv-gst">
+              BOOKSAW Retail India Pvt. Ltd.<br>
+              GSTIN: 29AABCB1234F1Z5 &bull; CIN: U22110KA2023PTC154210
+            </div>
+          </div>
 
-      <tbody>
-        <% let grandTotal = 0; %>
+          <div class="bk-inv-meta">
+            <h1>TAX INVOICE</h1>
+            <div class="bk-inv-ordernum">INV-<%= orders.orderId %></div>
+            <div class="bk-inv-date">
+              <i class="far fa-calendar-alt"></i> <%= orders.orderDate ? new Date(orders.orderDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A' %>
+            </div>
 
-        <% orders.product.forEach(item => { %>
-          <tr class="<%= item.productStatus === 'Cancelled' ? 'cancelled' : '' %>">
-            <td><%= item.productId.Bookname %></td>
-            <td>$<%= item.price %></td>
-            <td><%= item.quantity %></td>
-            <td>
-              <% if(item.productStatus === 'Cancelled') { %>
-                $0.00
-              <% } else { %>
-                $<%= (item.price * item.quantity).toFixed(2) %>
+            <!-- Payment Status Pill -->
+            <%
+              let pPill = 'bk-pill-pend';
+              if (orders.paymentStatus === 'Received') pPill = 'bk-pill-recv';
+              else if (orders.paymentStatus === 'Failed') pPill = 'bk-pill-fail';
+              else if (orders.paymentStatus === 'Refund') pPill = 'bk-pill-ref';
+            %>
+            <span class="bk-pill <%= pPill %>">
+              Payment: <%= orders.paymentStatus %>
+            </span>
+          </div>
+        </div>
+
+        <!-- Addresses Grid -->
+        <div class="bk-inv-addresses">
+          <!-- Customer Details -->
+          <div class="bk-inv-addr-block">
+            <h3><i class="fas fa-user-check"></i> Billed & Shipped To</h3>
+            <% if (address) { %>
+              <div class="name"><%= address.name %></div>
+              <div class="details">
+                <%= address.houseName %><br>
+                <%= [address.city, address.state].filter(Boolean).join(', ') %>
+                <% if (address.pinCode) { %> &mdash; <strong>PIN <%= address.pinCode %></strong><% } %>
+              </div>
+              <% if (address.mobile) { %>
+                <div class="phone"><i class="fas fa-phone-alt"></i> +91 <%= address.mobile %></div>
               <% } %>
-            </td>
-          </tr>
+            <% } else if (orders.address) { %>
+              <div class="name"><%= orders.address.name %></div>
+              <div class="details">
+                <%= orders.address.houseName %><br>
+                <%= [orders.address.city, orders.address.state].filter(Boolean).join(', ') %>
+                <% if (orders.address.pinCode) { %> &mdash; <strong>PIN <%= orders.address.pinCode %></strong><% } %>
+              </div>
+              <% if (orders.address.mobile) { %>
+                <div class="phone"><i class="fas fa-phone-alt"></i> +91 <%= orders.address.mobile %></div>
+              <% } %>
+            <% } else { %>
+              <div class="details">Registered Customer Details on File</div>
+            <% } %>
+          </div>
 
-          <% if(item.productStatus !== 'Cancelled') { %>
-            <% grandTotal += item.price * item.quantity; %>
-          <% } %>
-        <% }) %>
+          <!-- Sold By Details -->
+          <div class="bk-inv-addr-block">
+            <h3><i class="fas fa-store"></i> Sold By / Origin Warehouse</h3>
+            <div class="name">BOOKSAW Fulfillment Centre</div>
+            <div class="details">
+              Plot 42, Reading Avenue, Industrial Area<br>
+              Bangalore, Karnataka &mdash; <strong>PIN 560001</strong><br>
+              Email: support@booksaw.in &bull; Helpline: 1800-266-5729
+            </div>
+            <div class="phone"><i class="fas fa-credit-card"></i> Method: <%= orders.paymentMethod || 'Online' %></div>
+          </div>
+        </div>
 
-      </tbody>
-    </table>
+        <!-- Items Table -->
+        <div class="bk-inv-table-wrap">
+          <table class="bk-inv-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">#</th>
+                <th>Book Details</th>
+                <th style="width: 120px;">Unit Price</th>
+                <th style="width: 80px;">Qty</th>
+                <th style="width: 130px;">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% 
+                let computedSubtotal = 0;
+                if (orders.product && orders.product.length > 0) {
+                  orders.product.forEach((item, idx) => {
+                    const pObj = item.productId || {};
+                    const title = pObj.Bookname || 'Book';
+                    const unitPrice = Number(item.price) || 0;
+                    const qty = Number(item.quantity) || 1;
+                    const isCancelled = item.productStatus === 'Cancelled';
+                    const isReturned = item.productStatus === 'Returned';
+                    const lineTotal = unitPrice * qty;
+                    if (!isCancelled) computedSubtotal += lineTotal;
+                    const bookImg = (pObj.Images && pObj.Images.length > 0) ? '/public/uploads/' + pObj.Images[0] : '/public/spellbook.png';
+              %>
+                <tr class="<%= isCancelled ? 'bk-item-cancelled' : '' %>">
+                  <td style="color:var(--muted); font-weight:600;"><%= idx + 1 %></td>
+                  <td>
+                    <div class="bk-item-cell">
+                      <img class="bk-item-thumb" src="<%= bookImg %>" alt="<%= title %>" onerror="this.src='/public/spellbook.png'">
+                      <div>
+                        <div class="bk-item-name"><%= title %></div>
+                        <% if (isCancelled) { %>
+                          <span class="bk-pill bk-pill-fail" style="margin-top: 4px; font-size: .65rem;">Cancelled</span>
+                        <% } else if (isReturned) { %>
+                          <span class="bk-pill bk-pill-ref" style="margin-top: 4px; font-size: .65rem;">Returned</span>
+                        <% } %>
+                      </div>
+                    </div>
+                  </td>
+                  <td>&#8377;<%= unitPrice.toFixed(2) %></td>
+                  <td><%= qty %></td>
+                  <td>
+                    <% if (isCancelled) { %>
+                      <span style="color:var(--muted); text-decoration: line-through;">&#8377;<%= lineTotal.toFixed(2) %></span>
+                    <% } else { %>
+                      <strong>&#8377;<%= lineTotal.toFixed(2) %></strong>
+                    <% } %>
+                  </td>
+                </tr>
+              <% 
+                  });
+                }
+              %>
+            </tbody>
+          </table>
+        </div>
 
-    <div class="total-section">
-      <h3>Total: $<%= orderData.totalAmount || grandTotal.toFixed(2) %></h3>
-    </div>
+        <!-- Bottom Totals & Legal -->
+        <div class="bk-inv-bottom">
+          <div class="bk-inv-notes">
+            <strong>Payment & Guarantee Information</strong>
+            This tax invoice confirms your purchase at BOOKSAW. All titles are guaranteed original editions directly from certified publishers. Delivered orders are eligible for return within 7 days of delivery.<br><br>
+            <em>All prices are inclusive of applicable GST (Goods and Services Tax).</em>
+          </div>
 
-    <div class="invoice-footer">
-      Thank you for shopping with BOOKSAW ❤️
-    </div>
+          <div class="bk-inv-calc">
+            <div class="bk-calc-row">
+              <span class="bk-calc-label">Items Subtotal</span>
+              <span class="bk-calc-val">&#8377;<%= computedSubtotal.toFixed(2) %></span>
+            </div>
 
+            <% if (orders.couponDiscount && orders.couponDiscount > 0) { %>
+              <div class="bk-calc-row">
+                <span class="bk-calc-label">Coupon Discount <%= orders.couponCode ? '(' + orders.couponCode + ')' : '' %></span>
+                <span class="bk-calc-val green">-&#8377;<%= Number(orders.couponDiscount).toFixed(2) %></span>
+              </div>
+            <% } %>
+
+            <div class="bk-calc-row">
+              <span class="bk-calc-label">Shipping & Handling</span>
+              <span class="bk-calc-val green">FREE</span>
+            </div>
+
+            <div class="bk-calc-total">
+              <span class="label">Grand Total Paid</span>
+              <span class="amount">&#8377;<%= orders.totalAmount ? Number(orders.totalAmount).toFixed(2) : computedSubtotal.toFixed(2) %></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Sign-off -->
+        <div class="bk-inv-foot">
+          <div>Thank you for choosing <strong>BOOKSAW</strong> &mdash; Home of Inspiring Reads <span class="bk-inv-foot-heart">&#9829;</span></div>
+          <div style="font-size:.74rem;">This is a computer-generated tax invoice. No physical signature is required.</div>
+        </div>
+
+      </div>
+    <% } else { %>
+      <div style="text-align:center; padding: 60px 20px; background:var(--bg); border: 1px solid var(--border); border-radius:var(--r-lg);">
+        <h2 style="font-family:'Libre Baskerville',serif; margin-bottom:12px;">Invoice Not Found</h2>
+        <p style="color:var(--muted); margin-bottom:20px;">We were unable to locate the requested order invoice.</p>
+        <a href="/loadProfile" class="bk-btn bk-btn-primary">Return to My Orders</a>
+      </div>
+    <% } %>
   </div>
 
-  <!-- PDF SCRIPT -->
+  <!-- Shared Footer -->
+  <%- include('../partials/userFooter') %>
+
+  <!-- PDF Generation Script -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script>
-    document.getElementById("downloadPdf").addEventListener("click", () => {
-      html2pdf()
-        .set({
-          margin: 10,
-          filename: "BOOKSAW-Invoice.pdf",
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-        })
-        .from(document.getElementById("invoice"))
-        .save();
+    document.getElementById("downloadPdfBtn")?.addEventListener("click", () => {
+      const element = document.getElementById("invoiceDoc");
+      const orderId = "<%= orders ? orders.orderId : 'BOOKSAW' %>";
+      
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: "BOOKSAW-Invoice-" + orderId + ".pdf",
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+      };
+
+      html2pdf().set(opt).from(element).save();
     });
   </script>
-
 </body>
+
 </html>
-5

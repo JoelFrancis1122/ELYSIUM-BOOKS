@@ -1,144 +1,434 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="no-js" lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOOKSAW</title>
-    <!-- Bootstrap CSS link -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    
-    <style>
-        /* Custom CSS for additional styling */
-        body {
-            background-color: #f8f9fa;
-        }
+  <meta charset="utf-8">
+  <title>Edit Saved Address — BOOKSAW</title>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="description" content="Edit saved address on BOOKSAW">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/x-icon" href="/public/spellbook.png">
 
-        .card {
-            margin: 50px auto;
-            max-width: 600px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
+  <!-- Google Fonts: Warm Literary Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-        .card-header {
-            border-bottom: none;
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
-            background-color: #007bff;
-            color: #fff;
-        }
+  <!-- CSS Framework & Icons -->
+  <link rel="stylesheet" href="/public/assets/css/maind134.css?v=3.4">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
-        .card-body {
-            padding: 40px;
-        }
+  <style>
+    /* ============================================================
+       BOOKSAW EDIT PROFILE ADDRESS — WARM LITERARY THEME
+       Unified with Home, Shop, Cart, Checkout, and Profile
+       ============================================================ */
+    :root {
+      --canvas: #f5f0e8;
+      --bg: #faf8f4;
+      --fg: #2d2820;
+      --hi: #b8542a;
+      --hi-light: #d4673a;
+      --muted: #7a6f60;
+      --border: #ddd8ce;
+      --card: #ffffff;
+      --sec: #edeae2;
+      --green: #16a34a;
+      --red: #b91c1c;
+      --r-sm: 8px;
+      --r-md: 14px;
+      --r-lg: 20px;
+      --shadow-sm: 0 2px 8px rgba(45, 40, 32, 0.06);
+      --shadow-md: 0 8px 32px rgba(45, 40, 32, 0.08);
+    }
 
-        .form-control {
-            border-radius: 10px;
-        }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        .btn-primary {
-            border-radius: 10px;
-        }
-    </style>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--canvas);
+      color: var(--fg);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
+    /* ── BREADCRUMB ── */
+    .bk-crumb {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+    }
+    .bk-crumb-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+    .bk-crumb-inner a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .bk-crumb-inner a:hover {
+      color: var(--hi);
+    }
+    .bk-crumb-sep {
+      font-size: .65rem;
+      color: var(--border);
+    }
+    .bk-crumb-cur {
+      color: var(--fg);
+      font-weight: 600;
+    }
+
+    /* ── CONTAINER ── */
+    .bk-addr-wrap {
+      max-width: 680px;
+      margin: 40px auto 80px;
+      padding: 0 24px;
+    }
+
+    /* ── FORM CARD ── */
+    .bk-addr-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    .bk-addr-header {
+      padding: 28px 32px 24px;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+    }
+    .bk-addr-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(184, 84, 42, 0.08);
+      color: var(--hi);
+      font-size: .75rem;
+      font-weight: 700;
+      border-radius: 999px;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .bk-addr-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+    .bk-addr-subtitle {
+      font-size: .85rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .bk-addr-body {
+      padding: 30px 32px;
+    }
+
+    /* ── FORM GROUPS ── */
+    .bk-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .bk-form-group {
+      margin-bottom: 18px;
+    }
+    .bk-form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .bk-label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--fg);
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .bk-label span {
+      color: var(--hi);
+    }
+
+    .bk-input-wrap {
+      position: relative;
+    }
+    .bk-input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: .88rem;
+      pointer-events: none;
+      transition: color .2s;
+    }
+
+    .bk-input {
+      width: 100%;
+      padding: 12px 14px 12px 38px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .9rem;
+      color: var(--fg);
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-sm);
+      outline: none;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .bk-input:focus {
+      border-color: var(--hi);
+      box-shadow: 0 0 0 3px rgba(184, 84, 42, 0.12);
+    }
+    .bk-input:focus + .bk-input-icon,
+    .bk-input-wrap:focus-within .bk-input-icon {
+      color: var(--hi);
+    }
+
+    .bk-input-hint {
+      font-size: .74rem;
+      color: var(--muted);
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* ── ACTION BUTTONS ── */
+    .bk-addr-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 26px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+    }
+
+    .bk-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 22px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .86rem;
+      font-weight: 600;
+      border-radius: var(--r-sm);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all .18s;
+      border: 1.5px solid transparent;
+      white-space: nowrap;
+    }
+    .bk-btn-primary {
+      background: var(--hi);
+      color: #fff;
+      border-color: var(--hi);
+      box-shadow: 0 4px 14px rgba(184, 84, 42, 0.25);
+    }
+    .bk-btn-primary:hover {
+      background: var(--hi-light);
+      border-color: var(--hi-light);
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(184, 84, 42, 0.32);
+    }
+    .bk-btn-outline {
+      background: transparent;
+      color: var(--muted);
+      border-color: var(--border);
+    }
+    .bk-btn-outline:hover {
+      border-color: var(--fg);
+      color: var(--fg);
+      background: rgba(45, 40, 32, 0.03);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .bk-crumb-inner {
+        padding: 0 20px;
+      }
+      .bk-addr-wrap {
+        padding: 0 16px;
+        margin-top: 24px;
+      }
+      .bk-addr-header,
+      .bk-addr-body {
+        padding: 22px 20px;
+      }
+      .bk-form-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .bk-addr-actions {
+        flex-direction: column-reverse;
+      }
+      .bk-btn {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <div class="card border-primary">
-        <div class="card-header">
-            <h5 class="mb-0 text-center">Edit Address</h5>
-        </div>
-        <% if (addresses) { %>
-        <div class="card-body">
-            <form id="addressForm" action="/updateAddress1?id=<%=addresses._id%>" method="post">
-               
+  <!-- Shared Header -->
+  <%- include('../partials/userHeader') %>
 
-
-
-
-
-
-                    <div class="mb-3">
-                        <label for="inputAddress" class="form-label">Name</label>
-                        <input type="text" class="form-control form-control-lg" name="name" id="inputAddress" value="<%= addresses.name %>" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="inputCity" class="form-label">Mobile</label>
-                        <input type="tel" pattern="[0-9]{10}" maxlength="10" class="form-control form-control-lg" name="mobile" id="inputCity"  value="<%= addresses.mobile %>" required>
-                        <small>Please enter a 10-digit mobile number.</small>
-                    </div>
-                    <div class="mb-3">
-                        <label for="inputState" class="form-label">House Name</label>
-                        <input type="text" class="form-control form-control-lg" name="houseName" id="inputState"  value="<%= addresses.houseName %>" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="inputZip" class="form-label">City</label>
-                        <input type="text" class="form-control form-control-lg" name="city" id="inputZip" value="<%= addresses.city %>"  required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="inputState" class="form-label">State</label>
-                        <input type="text" class="form-control form-control-lg" name="state" id="inputState" value="<%= addresses.state %>" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="inputZip" class="form-label">Pincode</label>
-                        <input type="text" class="form-control form-control-lg" maxlength="6" name="pinCode" id="inputZip" value="<%= addresses.pinCode %>" required pattern="[0-9]{6}">
-                        <small>Please enter a 6-digit pin code.</small>
-                    </div> 
-
-
-
-
-
-
-
-
-
-
-
-
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">Save Address</button>
-            </form>
-        </div>
+  <!-- Breadcrumb -->
+  <div class="bk-crumb">
+    <div class="bk-crumb-inner">
+      <a href="/home">Home</a>
+      <span class="bk-crumb-sep"><i class="fas fa-chevron-right"></i></span>
+      <a href="/loadProfile">My Account</a>
+      <span class="bk-crumb-sep"><i class="fas fa-chevron-right"></i></span>
+      <span class="bk-crumb-cur">Edit Saved Address</span>
     </div>
-    <% } %>
+  </div>
 
+  <!-- Form Container -->
+  <div class="bk-addr-wrap">
+    <div class="bk-addr-card">
+      <div class="bk-addr-header">
+        <div class="bk-addr-badge">
+          <i class="fas fa-address-book"></i> Address Book
+        </div>
+        <h1 class="bk-addr-title">Edit Saved Address</h1>
+        <p class="bk-addr-subtitle">Update your address profile so checkout is fast, seamless, and always accurate.</p>
+      </div>
 
-    <script>
-        document.getElementById("addressForm").addEventListener("submit", function(event) {
-            // Prevent form submission
-            event.preventDefault();
-    
-            // Validate Name field to disallow spaces
-            const nameInput = document.getElementById("inputAddress");
-            if (/\s/.test(nameInput.value)) {
-                toastr.error("Name should not contain spaces.");
-                nameInput.focus();
-                return;
-            }
-    
-            // Validate State, City, and House Name fields to disallow numbers
-            const stateInput = document.getElementById("inputState");
-            const cityInput = document.getElementById("inputZip");
-            const houseNameInput = document.getElementById("inputZip");
-    
-            if (/\d/.test(stateInput.value) || /\d/.test(cityInput.value) || /\d/.test(houseNameInput.value)) {
-                toastr.error("State, City, and House Name should not contain numbers.");
-                stateInput.focus();
-                return;
-            }
-    
-            // If all validations pass, submit the form
-            this.submit();
-        });
-    </script>
+      <div class="bk-addr-body">
+        <% if (locals.addresses) { %>
+          <form id="addressProfileForm" action="/updateAddress1?id=<%= addresses._id %>" method="POST">
+            
+            <!-- Row 1: Name & Mobile -->
+            <div class="bk-form-grid">
+              <div class="bk-form-group">
+                <label class="bk-label" for="inputName">Full Name <span>*</span></label>
+                <div class="bk-input-wrap">
+                  <input class="bk-input" type="text" id="inputName" name="name" value="<%= addresses.name %>" placeholder="e.g. Maya Lin" required>
+                  <i class="fas fa-user bk-input-icon"></i>
+                </div>
+              </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+              <div class="bk-form-group">
+                <label class="bk-label" for="inputMobile">Mobile Number <span>*</span></label>
+                <div class="bk-input-wrap">
+                  <input class="bk-input" type="tel" id="inputMobile" name="mobile" maxlength="10" pattern="[0-9]{10}" value="<%= addresses.mobile %>" placeholder="10-digit number" required>
+                  <i class="fas fa-phone-alt bk-input-icon"></i>
+                </div>
+                <div class="bk-input-hint"><i class="fas fa-info-circle"></i> 10-digit mobile number for order notifications</div>
+              </div>
+            </div>
+
+            <!-- Row 2: House / Flat / Street -->
+            <div class="bk-form-group">
+              <label class="bk-label" for="inputHouse">House / Flat / Building Name <span>*</span></label>
+              <div class="bk-input-wrap">
+                <input class="bk-input" type="text" id="inputHouse" name="houseName" value="<%= addresses.houseName %>" placeholder="Apartment, Studio, or Floor" required>
+                <i class="fas fa-home bk-input-icon"></i>
+              </div>
+            </div>
+
+            <!-- Row 3: City & State -->
+            <div class="bk-form-grid">
+              <div class="bk-form-group">
+                <label class="bk-label" for="inputCity">City / District <span>*</span></label>
+                <div class="bk-input-wrap">
+                  <input class="bk-input" type="text" id="inputCity" name="city" value="<%= addresses.city %>" placeholder="City or Town" required>
+                  <i class="fas fa-city bk-input-icon"></i>
+                </div>
+              </div>
+
+              <div class="bk-form-group">
+                <label class="bk-label" for="inputState">State <span>*</span></label>
+                <div class="bk-input-wrap">
+                  <input class="bk-input" type="text" id="inputState" name="state" value="<%= addresses.state %>" placeholder="State" required>
+                  <i class="fas fa-map-marker-alt bk-input-icon"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 4: PIN Code -->
+            <div class="bk-form-group">
+              <label class="bk-label" for="inputPin">PIN Code <span>*</span></label>
+              <div class="bk-input-wrap">
+                <input class="bk-input" type="text" id="inputPin" name="pinCode" maxlength="6" pattern="[0-9]{6}" value="<%= addresses.pinCode %>" placeholder="6-digit PIN code" required>
+                <i class="fas fa-mail-bulk bk-input-icon"></i>
+              </div>
+              <div class="bk-input-hint"><i class="fas fa-info-circle"></i> Standard 6-digit Indian postal code</div>
+            </div>
+
+            <!-- Actions -->
+            <div class="bk-addr-actions">
+              <a href="/loadProfile" class="bk-btn bk-btn-outline">
+                <i class="fas fa-arrow-left"></i> Cancel & Return to Profile
+              </a>
+              <button type="submit" class="bk-btn bk-btn-primary" id="save-address-profile-btn">
+                <i class="fas fa-check"></i> Save Address Changes
+              </button>
+            </div>
+
+          </form>
+        <% } else { %>
+          <div style="text-align:center;padding:40px 10px;">
+            <p style="color:var(--muted);margin-bottom:18px;">Address record could not be found.</p>
+            <a href="/loadProfile" class="bk-btn bk-btn-primary">Return to Profile</a>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Footer -->
+  <%- include('../partials/userFooter') %>
+
+  <!-- Scripts -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    toastr.options = { closeButton: true, progressBar: true, positionClass: 'toast-top-right', timeOut: 1800 };
+
+    document.getElementById('addressProfileForm')?.addEventListener('submit', function(e) {
+      const mobile = document.getElementById('inputMobile').value.trim();
+      const pin = document.getElementById('inputPin').value.trim();
+      const name = document.getElementById('inputName').value.trim();
+      const house = document.getElementById('inputHouse').value.trim();
+      const city = document.getElementById('inputCity').value.trim();
+      const state = document.getElementById('inputState').value.trim();
+
+      if (!name) { e.preventDefault(); toastr.error('Please enter the full name.'); return; }
+      if (!/^[0-9]{10}$/.test(mobile)) { e.preventDefault(); toastr.error('Please enter a valid 10-digit mobile number.'); return; }
+      if (!house) { e.preventDefault(); toastr.error('Please enter the house or building name.'); return; }
+      if (!city) { e.preventDefault(); toastr.error('Please enter the city.'); return; }
+      if (!state) { e.preventDefault(); toastr.error('Please enter the state.'); return; }
+      if (!/^[0-9]{6}$/.test(pin)) { e.preventDefault(); toastr.error('Please enter a valid 6-digit PIN code.'); return; }
+    });
+  </script>
 </body>
 
 </html>
-

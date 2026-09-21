@@ -73,26 +73,31 @@ const onlinePay = async (req, res) => {
         .json({ success: false, message: "No products found to order" });
     }
 
-    // ✅ Handle optional coupon
+    // ✅ Handle optional coupon calculation (do NOT burn coupon here; coupon is only redeemed once payment succeeds in saveOrder)
     let couponDiscount = 0;
+    let normalizedCouponCode = "";
     if (couponCode && couponCode.trim() !== "") {
-      const coupon = await Coupon.findOne({ couponCode, isActive: true });
+      const cleanCode = couponCode.trim().toUpperCase();
+      const coupon = await Coupon.findOne({
+        $or: [
+          { couponCode: cleanCode },
+          { couponCode: new RegExp(`^${couponCode.trim()}$`, "i") }
+        ],
+        isActive: true,
+        expirationDate: { $gte: new Date() }
+      });
       if (coupon) {
-        if (amount >= coupon.minimumPurchase) {
+        normalizedCouponCode = coupon.couponCode;
+        if (!coupon.minimumPurchase || amount >= coupon.minimumPurchase) {
           let discount = amount * (coupon.discountAmount / 100);
           if (coupon.maxDiscount > 0)
             discount = Math.min(discount, coupon.maxDiscount);
-          couponDiscount = discount;
-
-          // Mark coupon as used only AFTER successful payment
-          coupon.redeemedUsers.push({ userId, usedTime: new Date() });
-          coupon.timesUsed++;
-          await coupon.save();
+          couponDiscount = Math.round(discount);
         }
       }
     }
 
-    // ✅ Create the new order
+    // ✅ Create the new order with Pending paymentStatus
     const order = new Orders({
       orderId: newOrderId,
       userId,
@@ -100,16 +105,16 @@ const onlinePay = async (req, res) => {
       paymentStatus,
       totalAmount: amount,
       couponDiscount,
+      couponCode: normalizedCouponCode || couponCode || "",
       product: productDataToSave,
       address,
     });
 
     await order.save();
 
-    // ✅ Create Razorpay order
-    const amounts = amount * 84; // USD → INR conversion (if needed)
+    // ✅ Create Razorpay order in INR (amount in paise: 1 INR = 100 paise)
     const order2 = await instance.orders.create({
-      amount: amounts * 100,
+      amount: Math.round(Number(amount) * 100),
       currency: "INR",
       receipt: userId.toString(),
     });
@@ -227,6 +232,7 @@ const placeOrder = async (req, res) => {
       product: productDataToSave,
       address,
       couponDiscount,
+      couponCode: req.body.couponCode || "",
     });
 
     await order.save();
@@ -295,6 +301,23 @@ const saveOrder = async (req, res) => {
       { new: true }
     );
 
+    // ✅ Payment confirmed: Now record coupon redemption for this user
+    if (order && order.couponCode) {
+      const cleanCode = order.couponCode.trim().toUpperCase();
+      await Coupon.findOneAndUpdate(
+        {
+          $or: [
+            { couponCode: cleanCode },
+            { couponCode: new RegExp(`^${order.couponCode.trim()}$`, "i") }
+          ]
+        },
+        {
+          $push: { redeemedUsers: { userId, usedTime: new Date() } },
+          $inc: { timesUsed: 1 },
+        }
+      );
+    }
+
     if (order) {
       res.redirect("/orderSuccess");
     } else {
@@ -351,7 +374,8 @@ const addToCart = async (req, res) => {
     const existingProductIndex = cart.product.findIndex(
       (item) => item.productId.toString() === productId
     );
-    if (existingProductIndex !== -1) {
+    const isNew = existingProductIndex === -1; // true only when brand-new item
+    if (!isNew) {
       const totalQuantity = cart.product[existingProductIndex].quantity + 1;
       if (totalQuantity > product.stock) {
         return res
@@ -368,7 +392,8 @@ const addToCart = async (req, res) => {
 
     await cart.save();
 
-    // Send a response indicating success along with the updated cart length
+    // uniqueCount = number of distinct products in cart (for the header badge)
+    const uniqueCount = cart.product.length;
     const cartLength = cart.product.reduce(
       (total, item) => total + item.quantity,
       0
@@ -379,6 +404,8 @@ const addToCart = async (req, res) => {
         success: true,
         message: "Product added to cart successfully",
         cartLength,
+        uniqueCount,
+        isNew,
       });
   } catch (error) {
     console.error(error.message);
@@ -390,34 +417,71 @@ const updateCart = async (req, res) => {
   try {
     const { productId, quantity } = req.body;
     const userId = req.session.user;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Please login to update cart" });
+    }
+
+    const numQty = parseInt(quantity, 10);
+    if (isNaN(numQty) || !productId) {
+      return res.status(400).json({ success: false, message: "Invalid quantity or product ID" });
+    }
+
     let cart = await Cart.findOne({ userId });
     if (!cart) {
       cart = new Cart({ userId, product: [] });
     }
-    const productIndex = cart.product.findIndex(
-      (item) => item.productId.toString() === productId
-    );
+
+    const productIndex = cart.product.findIndex((item) => {
+      const itemPid = item.productId && item.productId._id 
+        ? item.productId._id.toString() 
+        : (item.productId ? item.productId.toString() : "");
+      return itemPid === productId.toString();
+    });
+
     if (productIndex !== -1) {
-      if (quantity > 0) {
-        cart.product[productIndex].quantity += quantity;
-      } else if (
-        quantity < 0 &&
-        cart.product[productIndex].quantity + quantity > 0
-      ) {
-        cart.product[productIndex].quantity += quantity;
-      } else {
-        cart.product.splice(productIndex, 1);
+      const product = await Product.findById(productId);
+      const currentQty = cart.product[productIndex].quantity;
+      const targetQty = currentQty + numQty;
+
+      if (numQty > 0) {
+        if (product && targetQty > product.stock) {
+          return res.status(400).json({
+            success: false,
+            message: `Only ${product.stock} units available in stock.`,
+            maxStock: product.stock,
+            currentQuantity: currentQty,
+          });
+        }
+        cart.product[productIndex].quantity = targetQty;
+      } else if (numQty < 0) {
+        if (targetQty > 0) {
+          cart.product[productIndex].quantity = targetQty;
+        } else {
+          cart.product.splice(productIndex, 1);
+        }
       }
-    } else if (quantity > 0) {
-      cart.product.push({ productId, quantity });
+    } else if (numQty > 0) {
+      const product = await Product.findById(productId);
+      const price = product ? product.saleprice : 0;
+      cart.product.push({ productId, quantity: numQty, price });
     }
+
     await cart.save();
-    const quantityData = {
-      quantity: quantity,
-    };
-    res.status(200).json({ quantityData });
+
+    const updatedItem = productIndex !== -1 && cart.product[productIndex] 
+      ? cart.product[productIndex] 
+      : null;
+
+    return res.status(200).json({
+      success: true,
+      message: "Cart updated successfully",
+      newQuantity: updatedItem ? updatedItem.quantity : 0,
+      cartLength: cart.product.length,
+    });
   } catch (error) {
-    console.log(error.message);
+    console.error("Error in updateCart:", error);
+    return res.status(500).json({ success: false, message: error.message || "Failed to update cart" });
   }
 };
 
@@ -425,22 +489,37 @@ const removeItem = async (req, res) => {
   try {
     const { productId } = req.body;
     const userId = req.session.user;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Please login" });
+    }
+
     let cart = await Cart.findOne({ userId });
     if (!cart) {
-      console.log("cart not found");
+      return res.status(404).json({ success: false, message: "Cart not found" });
     }
-    const productIndex = cart.product.findIndex(
-      (item) => item.productId.toString() === productId
-    );
+
+    const productIndex = cart.product.findIndex((item) => {
+      const itemPid = item.productId && item.productId._id 
+        ? item.productId._id.toString() 
+        : (item.productId ? item.productId.toString() : "");
+      return itemPid === productId.toString();
+    });
+
     if (productIndex !== -1) {
       cart.product.splice(productIndex, 1);
-      const updateCart = await cart.save();
-      return res.status(200).send("Product removed from the cart");
+      await cart.save();
+      return res.status(200).json({
+        success: true,
+        message: "Product removed from cart",
+        cartLength: cart.product.length,
+      });
     } else {
-      return res.status(404).send("Product not found in the cart");
+      return res.status(404).json({ success: false, message: "Product not found in cart" });
     }
   } catch (error) {
-    console.error(error.message);
+    console.error("Error in removeItem:", error);
+    return res.status(500).json({ success: false, message: error.message || "Failed to remove item" });
   }
 };
 
@@ -528,73 +607,109 @@ const addCoupon = async (req, res) => {
       maxDiscount,
       expirationDate,
     } = req.body;
-    const existingCoupon = await Coupon.findOne({ couponCode });
+
+    const code = (couponCode || "").trim().toUpperCase();
+    const name = (couponName || "").trim();
     const couponData = await Coupon.find().sort({ Date: -1 });
 
-    const today = new Date();
+    if (!code || !name) {
+      return res.render("Coupon", { couponData, errorMessage: "Name and Code are required." });
+    }
+
     const expiryDate = new Date(expirationDate);
-    if (expiryDate <= today) {
+    expiryDate.setHours(23, 59, 59, 999);
+    const now = new Date();
+
+    if (expiryDate < now) {
       return res.render("Coupon", { expiredDate: true, couponData });
     }
+
+    const existingCoupon = await Coupon.findOne({
+      $or: [
+        { couponCode: code },
+        { couponCode: new RegExp(`^${code}$`, "i") }
+      ]
+    });
 
     if (existingCoupon) {
       return res.render("Coupon", { couponExists: true, couponData });
     }
 
     const coupon = new Coupon({
-      couponName,
-      couponCode,
-      minimumPurchase,
-      discountAmount,
-      maxDiscount, // ⚡ new field
-      expirationDate,
+      couponName: name,
+      couponCode: code,
+      minimumPurchase: Number(minimumPurchase) || 0,
+      discountAmount: Number(discountAmount) || 0,
+      maxDiscount: Number(maxDiscount) || 0,
+      expirationDate: expiryDate,
+      isActive: true,
+      timesUsed: 0,
+      redeemedUsers: [],
     });
 
-    const savedCoupon = await coupon.save();
-
-    if (savedCoupon) {
-      return res.redirect("/admin/loadCoupon");
-    }
+    await coupon.save();
+    return res.redirect("/admin/loadCoupon");
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Internal server error" });
+    console.error("Error in addCoupon:", error);
+    const couponData = await Coupon.find().sort({ Date: -1 });
+    return res.render("Coupon", { couponData, errorMessage: error.message || "Failed to create coupon" });
   }
 };
 
 const ToggleblockCoupon = async (req, res) => {
   try {
-    const Couid = req.query.Couid;
+    const Couid = req.query.Couid || req.body.Couid;
     const coupons = await Coupon.findOne({ _id: Couid });
+    if (!coupons) {
+      if (req.xhr || req.headers.accept?.includes("json") || req.headers["content-type"]?.includes("json")) {
+        return res.status(404).json({ success: false, message: "Coupon not found" });
+      }
+      return res.redirect("/admin/loadCoupon");
+    }
     coupons.isActive = !coupons.isActive;
     await coupons.save();
-    res.redirect("/admin/loadCoupon");
+    if (req.xhr || req.headers.accept?.includes("json") || req.headers["content-type"]?.includes("json")) {
+      return res.json({
+        success: true,
+        isActive: coupons.isActive,
+        message: `Coupon ${coupons.isActive ? "unblocked" : "blocked"} successfully`,
+      });
+    }
+    return res.redirect("/admin/loadCoupon");
   } catch (error) {
-    console.log(error.message);
+    console.error("Error in ToggleblockCoupon:", error);
+    if (req.xhr || req.headers.accept?.includes("json") || req.headers["content-type"]?.includes("json")) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+    return res.redirect("/admin/loadCoupon");
   }
 };
+
 const removeCoupon = async (req, res) => {
   try {
-    const { couponCode } = req.body; // Assuming the coupon code is passed in the request body
-    const userId = req.session.user; // Assuming you have the user's ID in the session
-    // Find the coupon document based on the coupon code
-    const updatedCoupon = await Coupon.findOneAndUpdate(
-      { couponCode: couponCode },
-      { $pull: { redeemedUsers: { userId: userId } } }, // Pull the user ID from the redeemedUsers array
-      { new: true } // To return the updated document
-    );
+    const { couponCode } = req.body;
+    const userId = req.session.user;
 
-    if (updatedCoupon) {
-      console.log("Coupon updated successfully:", updatedCoupon);
-      // Handle success if needed
-    } else {
-      console.log("Coupon not found or user not redeemed it:", couponCode);
-      // Handle not found or user not redeemed the coupon
+    if (couponCode && userId) {
+      const cleanCode = couponCode.trim().toUpperCase();
+      await Coupon.findOneAndUpdate(
+        {
+          $or: [
+            { couponCode: cleanCode },
+            { couponCode: new RegExp(`^${couponCode.trim()}$`, "i") }
+          ]
+        },
+        {
+          $pull: { redeemedUsers: { userId: userId.toString() } },
+          $inc: { timesUsed: -1 }
+        }
+      );
     }
 
-    res.redirect("/admin/loadCoupon");
+    return res.json({ success: true, message: "Coupon removed successfully" });
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).send("Internal Server Error");
+    console.error("Error in removeCoupon:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
@@ -603,42 +718,101 @@ const applyCoupon = async (req, res) => {
     const { couponCode, selectedAmount } = req.body;
     const userId = req.session.user;
 
+    if (!couponCode || couponCode.trim() === "") {
+      return res.json({ success: false, message: "Please enter a coupon code." });
+    }
+
+    const cleanCode = couponCode.trim().toUpperCase();
+
+    // Find coupon by exact or case-insensitive code
     const coupon = await Coupon.findOne({
-      couponCode,
-      isActive: true,
-      expirationDate: { $gte: Date.now() },
+      $or: [
+        { couponCode: cleanCode },
+        { couponCode: new RegExp(`^${couponCode.trim()}$`, "i") }
+      ]
     });
 
-    if (!coupon)
+    if (!coupon) {
       return res.json({
         success: false,
-        message: "Coupon not found or expired.",
-      });
-
-    if (coupon.redeemedUsers.find((u) => u.userId === userId)) {
-      return res.json({ success: false, message: "Coupon already used." });
-    }
-
-    if (selectedAmount < coupon.minimumPurchase) {
-      return res.json({
-        success: false,
-        message: "Not applicable for this price.",
+        message: "Invalid coupon code.",
       });
     }
 
-    let discount = selectedAmount * (coupon.discountAmount / 100);
-    if (coupon.maxDiscount > 0)
+    if (!coupon.isActive) {
+      return res.json({
+        success: false,
+        message: "This coupon is currently inactive or blocked.",
+      });
+    }
+
+    if (new Date(coupon.expirationDate) < new Date()) {
+      return res.json({
+        success: false,
+        message: "This coupon has expired.",
+      });
+    }
+
+    // Check if this user is recorded in redeemedUsers
+    const alreadyRedeemed =
+      coupon.redeemedUsers &&
+      coupon.redeemedUsers.some(
+        (u) => u.userId && u.userId.toString() === userId.toString()
+      );
+
+    if (alreadyRedeemed) {
+      // Auto-heal check: Check if the user actually has a completed, non-cancelled order with this coupon
+      const activeCompletedOrder = await Orders.findOne({
+        userId,
+        couponCode: { $in: [coupon.couponCode, cleanCode] },
+        $or: [
+          { paymentStatus: "Received", orderStatus: { $ne: "Cancelled" } },
+          { paymentMethod: "Cash On Delivery", orderStatus: { $ne: "Cancelled" } },
+          { paymentMethod: "Wallet", orderStatus: { $ne: "Cancelled" } }
+        ]
+      });
+
+      if (!activeCompletedOrder) {
+        // User closed modal, abandoned checkout, or order was cancelled previously:
+        // Auto-heal by removing them from redeemedUsers so coupon can be used again!
+        await Coupon.findOneAndUpdate(
+          { _id: coupon._id },
+          {
+            $pull: { redeemedUsers: { userId: userId.toString() } },
+            $inc: { timesUsed: -1 }
+          }
+        );
+      } else {
+        return res.json({ success: false, message: "You have already used this coupon." });
+      }
+    }
+
+    const currentTotal = Number(selectedAmount) || 0;
+
+    if (coupon.minimumPurchase && currentTotal < coupon.minimumPurchase) {
+      return res.json({
+        success: false,
+        message: `Minimum purchase of ₹${coupon.minimumPurchase} required for this coupon.`,
+      });
+    }
+
+    let discount = currentTotal * (coupon.discountAmount / 100);
+    if (coupon.maxDiscount > 0) {
       discount = Math.min(discount, coupon.maxDiscount);
+    }
+    discount = Math.round(discount);
 
-    // ✅ only return discount, don’t mark used yet
     return res.json({
       success: true,
-      message: "Coupon valid!",
+      message: `Coupon "${coupon.couponName}" applied successfully!`,
+      couponName: coupon.couponName,
+      couponCode: coupon.couponCode,
+      discountPercent: coupon.discountAmount,
       discountAmount: discount,
       couponId: coupon._id,
     });
   } catch (err) {
-    console.error(err);
+    console.error("Error in applyCoupon:", err);
     return res.status(500).json({ success: false, message: "Server error." });
   }
 };
@@ -674,6 +848,13 @@ const googleAuth = async (req, res) => {
     };
     const referralCode = generateReferralCode();
     if (existingUser) {
+      if (!existingUser.is_active) {
+        return res.json({
+          success: false,
+          banned: true,
+          message: "Your account has been blocked by the administrator. Please contact support.",
+        });
+      }
       // User already exists, set session for existing user
       req.session.user = existingUser._id;
       userData = existingUser;
